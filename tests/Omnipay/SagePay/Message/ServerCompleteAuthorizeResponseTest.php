@@ -2,7 +2,7 @@
 
 namespace Omnipay\SagePay\Message;
 
-use Omnipay\TestCase;
+use Omnipay\Tests\TestCase;
 use Mockery as m;
 
 class ServerCompleteAuthorizeResponseTest extends TestCase

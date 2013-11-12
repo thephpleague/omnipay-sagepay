@@ -2,7 +2,7 @@
 
 namespace Omnipay\SagePay;
 
-use Omnipay\GatewayTestCase;
+use Omnipay\Tests\GatewayTestCase;
 
 class DirectGatewayTest extends GatewayTestCase
 {

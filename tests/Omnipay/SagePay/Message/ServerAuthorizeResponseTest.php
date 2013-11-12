@@ -2,7 +2,7 @@
 
 namespace Omnipay\SagePay\Message;
 
-use Omnipay\TestCase;
+use Omnipay\Tests\TestCase;
 
 class ServerAuthorizeResponseTest extends TestCase
 {
