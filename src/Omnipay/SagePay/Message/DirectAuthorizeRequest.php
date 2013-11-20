@@ -25,8 +25,7 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['ApplyAVSCV2'] = 0; // use account setting
         $data['Apply3DSecure'] = 0; // use account setting
 
-        if(!$this->getCardReference())
-        {
+        if(!$this->getCardReference()) {
             $card = $this->getCard();
             // billing details
             $data['BillingFirstnames'] = $card->getFirstName();
