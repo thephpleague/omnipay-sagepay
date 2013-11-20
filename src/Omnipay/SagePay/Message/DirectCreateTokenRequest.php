@@ -7,7 +7,6 @@ namespace Omnipay\SagePay\Message;
  * Sage Pay Direct Create Token Request
  */
 class DirectCreateTokenRequest extends AbstractRequest
-
 {
     protected $action = 'TOKEN';
     protected $cardBrandMap = array(

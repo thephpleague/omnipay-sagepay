@@ -14,8 +14,8 @@ class DirectRemoveTokenRequest extends AbstractRequest
         $data = $this->getBaseData();
 
         return $data;
-    }    
-    
+    }
+
     public function getData()
     {
         $data = $this->getBaseAuthorizeData();

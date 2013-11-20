@@ -6,7 +6,6 @@ namespace Omnipay\SagePay\Message;
  * Sage Pay Direct Purchase Request
  */
 class DirectRepeatPaymentRequest extends AbstractRequest
-
 {
     protected $action = 'REPEAT';
     
@@ -42,7 +41,8 @@ class DirectRepeatPaymentRequest extends AbstractRequest
     }
     
   
-    public function getDescription(){
+    public function getDescription()
+    {
         return $this->getParameter('description');
     }
     
@@ -51,7 +51,8 @@ class DirectRepeatPaymentRequest extends AbstractRequest
         return $this->setParameter('description', $value);
     }
   
-    public function getRelatedVPSTxId(){
+    public function getRelatedVPSTxId()
+    {
         return $this->getParameter('relatedVPSTxId');
     }
     
@@ -60,7 +61,8 @@ class DirectRepeatPaymentRequest extends AbstractRequest
         return $this->setParameter('relatedVPSTxId', $value);
     }
     
-    public function getRelatedTransactionId(){
+    public function getRelatedTransactionId()
+    {
         return $this->getParameter('relatedTransactionId');
     }
     
@@ -69,7 +71,8 @@ class DirectRepeatPaymentRequest extends AbstractRequest
         return $this->setParameter('relatedTransactionId', $value);
     }
    
-    public function getRelatedSecurityKey(){
+    public function getRelatedSecurityKey()
+    {
         return $this->getParameter('relatedSecurityKey');
     }
     
@@ -78,7 +81,8 @@ class DirectRepeatPaymentRequest extends AbstractRequest
         return $this->setParameter('relatedSecurityKey', $value);
     }
    
-    public function getRelatedTxAuthNo(){
+    public function getRelatedTxAuthNo()
+    {
         return $this->getParameter('relatedTxAuthNo');
     }
     
@@ -87,10 +91,9 @@ class DirectRepeatPaymentRequest extends AbstractRequest
         return $this->setParameter('relatedTxAuthNo', $value);
     }
     
-    
     public function getService()
     {
         return 'repeat';
     }
-
   } 
+  

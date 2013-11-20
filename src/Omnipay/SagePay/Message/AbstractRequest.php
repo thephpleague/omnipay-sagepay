@@ -21,7 +21,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('vendor', $value);
     }
 
-    public function getFirstName(){
+    public function getFirstName()
+    {
         return $this->getParameter('firstName');
     }
     
@@ -30,7 +31,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('firstName', $value);
     }
     
-    public function getLastName(){
+    public function getLastName()
+    {
         return $this->getParameter('lastName');
     }
     
@@ -40,7 +42,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     }
     
     
-    public function getBillingAddress1(){
+    public function getBillingAddress1()
+    {
         return $this->getParameter('billingAddress1');
     }
     
@@ -49,7 +52,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('billingAddress1', $value);
     }
     
-    public function getBillingAddress2(){
+    public function getBillingAddress2()
+    {
         return $this->getParameter('billingAddress2');
     }
     
@@ -58,7 +62,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('billingAddress2', $value);
     }
     
-    public function getBillingCity(){
+    public function getBillingCity()
+    {
         return $this->getParameter('billingCity');
     }
     
@@ -67,7 +72,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('billingCity', $value);
     }
     
-    public function getBillingPostcode(){
+    public function getBillingPostcode()
+    {
         return $this->getParameter('billingPostcode');
     }
     
@@ -76,7 +82,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('billingPostcode', $value);
     }
     
-    public function getBillingState(){
+    public function getBillingState()
+    {
         return $this->getParameter('billingState');
     }
     
@@ -85,7 +92,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('billingState', $value);
     }
     
-    public function getBillingPhone(){
+    public function getBillingPhone()
+    {
         return $this->getParameter('billingPhone');
     }
     
@@ -94,7 +102,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('billingPhone', $value);
     }
     
-    public function getBillingCountry(){
+    public function getBillingCountry()
+    {
         return $this->getParameter('billingCountry');
     }
     
@@ -103,7 +112,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('billingCountry', $value);
     }
     
-    public function getShippingAddress1(){
+    public function getShippingAddress1()
+    {
         return $this->getParameter('shippingAddress1');
     }
     
@@ -112,7 +122,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('shippingAddress1', $value);
     }
     
-    public function getShippingAddress2(){
+    public function getShippingAddress2()
+    {
         return $this->getParameter('shippingAddress2');
     }
     
@@ -121,7 +132,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('shippingAddress2', $value);
     }
     
-    public function getShippingCity(){
+    public function getShippingCity()
+    {
         return $this->getParameter('shippingCity');
     }
     
@@ -130,7 +142,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('shippingCity', $value);
     }
     
-    public function getShippingPostcode(){
+    public function getShippingPostcode()
+    {
         return $this->getParameter('shippingPostcode');
     }
     
@@ -139,7 +152,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('shippingPostcode', $value);
     }
     
-    public function getShippingState(){
+    public function getShippingState()
+    {
         return $this->getParameter('shippingState');
     }
     
@@ -148,7 +162,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('shippingState', $value);
     }
     
-    public function getShippingPhone(){
+    public function getShippingPhone()
+    {
         return $this->getParameter('shippingPhone');
     }
     
@@ -157,7 +172,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('shippingPhone', $value);
     }
     
-    public function getShippingCountry(){
+    public function getShippingCountry()
+    {
         return $this->getParameter('shippingCountry');
     }
     
@@ -166,7 +182,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('shippingCountry', $value);
     }
      
-    public function getCompany(){
+    public function getCompany()
+    {
         return $this->getParameter('company');
     }
     
@@ -175,7 +192,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('company', $value);
     }
     
-     public function getEmail(){
+    public function getEmail()
+    {
         return $this->getParameter('email');
     }
     
