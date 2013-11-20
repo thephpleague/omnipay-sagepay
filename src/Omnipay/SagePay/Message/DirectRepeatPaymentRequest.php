@@ -95,5 +95,7 @@ class DirectRepeatPaymentRequest extends AbstractRequest
     {
         return 'repeat';
     }
-  } 
-  
+}
+
+
+ 

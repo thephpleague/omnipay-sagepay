@@ -25,7 +25,8 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['ApplyAVSCV2'] = 0; // use account setting
         $data['Apply3DSecure'] = 0; // use account setting
 
-        if(!$this->getCardReference()){
+        if(!$this->getCardReference())
+        {
             $card = $this->getCard();
             // billing details
             $data['BillingFirstnames'] = $card->getFirstName();
@@ -82,7 +83,7 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data = $this->getBaseAuthorizeData();
         
         //If this is a Token payment, add the Token data item, otherwise its a normal card purchase.
-        if ($this->getCardReference()){
+        if ($this->getCardReference()) {
             $data['Token']      = $this->getCardReference();
             $data['CV2']        =   $this->getParameter('cvv');
             $data['StoreToken'] = 1;
