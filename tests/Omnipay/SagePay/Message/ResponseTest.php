@@ -6,12 +6,15 @@ use Omnipay\Tests\TestCase;
 
 class ResponseTest extends TestCase
 {
+    public function setUp()
+    {
+        $this->getMockRequest()->shouldReceive('getTransactionId')->andReturn('123456');
+    }
+
     public function testDirectPurchaseSuccess()
     {
         $httpResponse = $this->getMockHttpResponse('DirectPurchaseSuccess.txt');
         $response = new Response($this->getMockRequest(), $httpResponse->getBody());
-
-        $this->getMockRequest()->shouldReceive('getTransactionId')->once()->andReturn('123456');
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
@@ -26,7 +29,7 @@ class ResponseTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123456"}', $response->getTransactionReference());
         $this->assertSame('The VendorTxCode \'984297\' has been used before.  Each transaction you send should have a unique VendorTxCode.', $response->getMessage());
     }
 
@@ -39,7 +42,7 @@ class ResponseTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123456"}', $response->getTransactionReference());
         $this->assertNull($response->getMessage());
         $this->assertSame('https://test.sagepay.com/Simulator/3DAuthPage.asp', $response->getRedirectUrl());
 
@@ -55,7 +58,7 @@ class ResponseTest extends TestCase
         $response = new Response($this->getMockRequest(), $httpResponse->getBody());
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123456"}', $response->getTransactionReference());
         $this->assertSame('The transaction was RELEASEed successfully.', $response->getMessage());
     }
 
@@ -65,7 +68,7 @@ class ResponseTest extends TestCase
         $response = new Response($this->getMockRequest(), $httpResponse->getBody());
 
         $this->assertFalse($response->isSuccessful());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123456"}', $response->getTransactionReference());
         $this->assertSame('You are trying to RELEASE a transaction that has already been RELEASEd or ABORTed.', $response->getMessage());
     }
 }

@@ -40,16 +40,18 @@ class Response extends AbstractResponse implements RedirectResponseInterface
      */
     public function getTransactionReference()
     {
-        if (isset($this->data['SecurityKey']) && isset($this->data['TxAuthNo']) && isset($this->data['VPSTxId'])) {
-            return json_encode(
-                array(
-                    'SecurityKey' => $this->data['SecurityKey'],
-                    'TxAuthNo' => $this->data['TxAuthNo'],
-                    'VPSTxId' => $this->data['VPSTxId'],
-                    'VendorTxCode' => $this->getRequest()->getTransactionId(),
-                )
-            );
+        $reference = array();
+        $reference['VendorTxCode'] = $this->getRequest()->getTransactionId();
+
+        foreach (array('SecurityKey', 'TxAuthNo', 'VPSTxId') as $key) {
+            if (isset($this->data[$key])) {
+                $reference[$key] = $this->data[$key];
+            }
         }
+
+        ksort($reference);
+
+        return json_encode($reference);
     }
 
     public function getMessage()

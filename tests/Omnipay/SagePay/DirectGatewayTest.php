@@ -21,6 +21,7 @@ class DirectGatewayTest extends GatewayTestCase
 
         $this->captureOptions = array(
             'amount' => '10.00',
+            'transactionId' => '123',
             'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
         );
     }
@@ -45,7 +46,7 @@ class DirectGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('The VendorTxCode \'984297\' has been used before.  Each transaction you send should have a unique VendorTxCode.', $response->getMessage());
     }
 
@@ -57,7 +58,7 @@ class DirectGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertNull($response->getMessage());
         $this->assertSame('https://test.sagepay.com/Simulator/3DAuthPage.asp', $response->getRedirectUrl());
 
@@ -87,7 +88,7 @@ class DirectGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('The VendorTxCode \'984297\' has been used before.  Each transaction you send should have a unique VendorTxCode.', $response->getMessage());
     }
 
@@ -99,7 +100,7 @@ class DirectGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertNull($response->getMessage());
         $this->assertSame('https://test.sagepay.com/Simulator/3DAuthPage.asp', $response->getRedirectUrl());
 
@@ -116,7 +117,7 @@ class DirectGatewayTest extends GatewayTestCase
         $response = $this->gateway->capture($this->captureOptions)->send();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('The transaction was RELEASEed successfully.', $response->getMessage());
     }
 
@@ -127,7 +128,7 @@ class DirectGatewayTest extends GatewayTestCase
         $response = $this->gateway->capture($this->captureOptions)->send();
 
         $this->assertFalse($response->isSuccessful());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('You are trying to RELEASE a transaction that has already been RELEASEd or ABORTed.', $response->getMessage());
     }
 
@@ -138,7 +139,7 @@ class DirectGatewayTest extends GatewayTestCase
         $response = $this->gateway->refund($this->captureOptions)->send();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('The transaction was RELEASEed successfully.', $response->getMessage());
     }
 
@@ -149,7 +150,7 @@ class DirectGatewayTest extends GatewayTestCase
         $response = $this->gateway->refund($this->captureOptions)->send();
 
         $this->assertFalse($response->isSuccessful());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('You are trying to RELEASE a transaction that has already been RELEASEd or ABORTed.', $response->getMessage());
     }
 }

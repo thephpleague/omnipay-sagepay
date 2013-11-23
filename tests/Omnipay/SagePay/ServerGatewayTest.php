@@ -40,7 +40,7 @@ class ServerGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"SecurityKey":"IK776BWNHN","VPSTxId":"{1E7D9C70-DBE2-4726-88EA-D369810D801D}","VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('Server transaction registered successfully.', $response->getMessage());
         $this->assertSame('https://test.sagepay.com/Simulator/VSPServerPaymentPage.asp?TransactionID={1E7D9C70-DBE2-4726-88EA-D369810D801D}', $response->getRedirectUrl());
     }
@@ -53,7 +53,7 @@ class ServerGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('The Description field should be between 1 and 100 characters long.', $response->getMessage());
     }
 
@@ -101,7 +101,7 @@ class ServerGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"SecurityKey":"IK776BWNHN","VPSTxId":"{1E7D9C70-DBE2-4726-88EA-D369810D801D}","VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('Server transaction registered successfully.', $response->getMessage());
         $this->assertSame('https://test.sagepay.com/Simulator/VSPServerPaymentPage.asp?TransactionID={1E7D9C70-DBE2-4726-88EA-D369810D801D}', $response->getRedirectUrl());
     }
@@ -114,7 +114,7 @@ class ServerGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('The Description field should be between 1 and 100 characters long.', $response->getMessage());
     }
 
