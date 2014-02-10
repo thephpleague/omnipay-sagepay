@@ -16,6 +16,16 @@ class ServerGateway extends DirectGateway
         return 'Sage Pay Server';
     }
 
+    public function getProfile()
+    {
+        return $this->getParameter('profile');
+    }
+
+    public function setProfile($value = 'NORMAL')
+    {
+        return $this->setParameter('profile', $value);
+    }
+
     public function authorize(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\SagePay\Message\ServerAuthorizeRequest', $parameters);
