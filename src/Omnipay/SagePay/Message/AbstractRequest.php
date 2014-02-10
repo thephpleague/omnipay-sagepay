@@ -26,7 +26,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->getParameter('profile');
     }
 
-    public function setProfile($value = "NORMAL")
+    public function setProfile($value = 'NORMAL')
     {
         return $this->setParameter('profile', $value);
     }
