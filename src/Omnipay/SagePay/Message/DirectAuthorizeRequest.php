@@ -127,4 +127,29 @@ class DirectAuthorizeRequest extends AbstractRequest
 
         return $brand;
     }
+
+    
+    /**
+     * CVV parameter getter
+     *
+     * @return string
+     */
+    public function getCvv()
+    {
+        return $this->getParameter('cvv');
+    }
+
+    /**
+     * CVV parameter setter
+     * Setter added to allow payments with token and cvv.
+     * Without setter CVV parameter is stripped out from request parameters.
+     *
+     * @param $value string
+     * @return $this
+     */
+    public function setCvv($value)
+    {
+        return $this->setParameter('cvv', $value);
+    }
+
 }
