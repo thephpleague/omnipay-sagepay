@@ -36,12 +36,56 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->action;
     }
 
+    public function getAccountType()
+    {
+        return $this->getParameter('accountType');
+    }
+
+    /**
+     * Set account type.
+     * 
+     * This is ignored for all PAYPAL transactions.
+     * 
+     * @param string $value E: Use the e-commerce merchant account. (default)
+     *                      M: Use the mail/telephone order account. (if present)
+     *                      C: Use the continuous authority merchant account. (if present)
+     */
+    public function setAccountType($value)
+    {
+        return $this->setParameter('accountType', $value);
+    }
+
+    public function get3DSecure()
+    {
+        return $this->getParameter('apply3DSecure');
+    }
+
+    /**
+     * Whether or not to apply 3D secure authentication.
+     * 
+     * This is ignored for PAYPAL, EUROPEAN PAYMENT transactions.
+     * 
+     * @param  int $value 0: If 3D-Secure checks are possible and rules allow, perform the
+     *                       checks and apply the authorisation rules. (default)
+     *                    1: Force 3D-Secure checks for this transaction if possible and
+     *                       apply rules for authorisation.
+     *                    2: Do not perform 3D-Secure checks for this transactios and always
+     *                       authorise.
+     *                    3: Force 3D-Secure checks for this transaction if possible but ALWAYS
+     *                       obtain an auth code, irrespective of rule base.
+     */
+    public function set3DSecure($value)
+    {
+        return $this->setParameter('apply3DSecure', $value);
+    }
+
     protected function getBaseData()
     {
         $data = array();
         $data['VPSProtocol'] = '2.23';
         $data['TxType'] = $this->action;
         $data['Vendor'] = $this->getVendor();
+        $data['AccountType'] = $this->getAccountType() ?: 'E';
 
         return $data;
     }

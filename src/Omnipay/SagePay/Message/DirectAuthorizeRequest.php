@@ -25,7 +25,7 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['VendorTxCode'] = $this->getTransactionId();
         $data['ClientIPAddress'] = $this->getClientIp();
         $data['ApplyAVSCV2'] = 0; // use account setting
-        $data['Apply3DSecure'] = 0; // use account setting
+        $data['Apply3DSecure'] = $this->get3DSecure() ?: 0; // use account setting
 
         // billing details
         $data['BillingFirstnames'] = $card->getFirstName();
