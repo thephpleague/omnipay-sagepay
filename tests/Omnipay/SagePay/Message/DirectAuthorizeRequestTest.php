@@ -14,10 +14,40 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->initialize(
             array(
                 'amount' => '12.00',
+                'currency' => 'GBP',
                 'transactionId' => '123',
                 'card' => $this->getValidCard(),
             )
         );
+    }
+
+    public function testGetDataDefaults()
+    {
+        $data = $this->request->getData();
+
+        $this->assertSame('E', $data['AccountType']);
+        $this->assertSame(0, $data['ApplyAVSCV2']);
+        $this->assertSame(0, $data['Apply3DSecure']);
+    }
+
+    public function testGetData()
+    {
+        $this->request->setAccountType('M');
+        $this->request->setApplyAVSCV2(2);
+        $this->request->setApply3DSecure(3);
+        $this->request->setDescription('food');
+        $this->request->setClientIp('127.0.0.1');
+
+        $data = $this->request->getData();
+
+        $this->assertSame('M', $data['AccountType']);
+        $this->assertSame('food', $data['Description']);
+        $this->assertSame('12.00', $data['Amount']);
+        $this->assertSame('GBP', $data['Currency']);
+        $this->assertSame('123', $data['VendorTxCode']);
+        $this->assertSame('127.0.0.1', $data['ClientIPAddress']);
+        $this->assertSame(2, $data['ApplyAVSCV2']);
+        $this->assertSame(3, $data['Apply3DSecure']);
     }
 
     public function testGetDataCustomerDetails()
