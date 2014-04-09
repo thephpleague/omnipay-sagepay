@@ -36,6 +36,26 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->action;
     }
 
+    /**
+     * Set the apply AVSCV2 checks.
+     * 
+     * @param  int $value 0: If AVS/CV2 enabled then check them. If rules apply, use rules. (default)
+     *                    1: Force AVS/CV2 checks even if not enabled for the account. If rules apply
+     *                       use rules.
+     *                    2: Force NO AVS/CV2 checks even if enabled on account.
+     *                    3: Force AVS/CV2 checks even if not enabled for account but DON'T apply any
+     *                       rules.
+     */
+    public function setApplyAVSCV2($value)
+    {
+        return $this->setParameter('applyAVSCV2', $value);
+    }
+
+    public function getApplyAVSCV2()
+    {
+        return $this->getParameter('applyAVSCV2');
+    }
+
     public function getAccountType()
     {
         return $this->getParameter('accountType');
@@ -55,7 +75,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('accountType', $value);
     }
 
-    public function get3DSecure()
+    public function getApply3DSecure()
     {
         return $this->getParameter('apply3DSecure');
     }
@@ -74,7 +94,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      *                    3: Force 3D-Secure checks for this transaction if possible but ALWAYS
      *                       obtain an auth code, irrespective of rule base.
      */
-    public function set3DSecure($value)
+    public function setApply3DSecure($value)
     {
         return $this->setParameter('apply3DSecure', $value);
     }
