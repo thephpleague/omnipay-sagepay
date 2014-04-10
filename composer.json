@@ -25,7 +25,7 @@
         }
     ],
     "autoload": {
-        "psr-0": { "Omnipay\\SagePay\\" : "src/" }
+        "psr-4": { "Omnipay\\SagePay\\" : "src/" }
     },
     "require": {
         "omnipay/common": "~2.0"
