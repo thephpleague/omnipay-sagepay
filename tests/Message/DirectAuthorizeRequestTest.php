@@ -84,8 +84,8 @@ class DirectAuthorizeRequestTest extends TestCase
 
         $data = $this->request->getData();
 
-        $this->assertNull($data['BillingState']);
-        $this->assertNull($data['DeliveryState']);
+        $this->assertSame('', $data['BillingState']);
+        $this->assertSame('', $data['DeliveryState']);
     }
 
     public function testGetDataVisa()
