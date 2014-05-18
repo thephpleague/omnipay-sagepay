@@ -110,6 +110,28 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $data;
     }
 
+    protected function getItemData()
+    {
+        $data = array();
+        $items = $this->getItems();
+
+        if ($items) {
+            
+            $data['basket'] = count($items) . ':';
+
+            foreach ($items as $n => $item) {
+                $data['basket'] .= $item->getName() . ':';
+                $data['basket'] .= $item->getQuantity() . ':';
+                $data['basket'] .= $this->formatCurrency($item->getPrice()) . ':';
+                $data['basket'] .= $item->getTax() . ':';
+                $data['basket'] .= $this->formatCurrency($item->getFullPrice()) . ':';
+                $data['basket'] .= $this->formatCurrency($item->getQuantity() * $item->getFullPrice());
+            }
+        }
+
+        return $data;
+    }
+
     public function sendData($data)
     {
         $httpResponse = $this->httpClient->post($this->getEndpoint(), null, $data)->send();
