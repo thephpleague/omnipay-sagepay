@@ -14,7 +14,8 @@ class ServerAuthorizeResponse extends Response
 
     public function isRedirect()
     {
-        return isset($this->data['Status']) && 'OK' === $this->data['Status'];
+        return isset($this->data['Status']) &&
+           in_array($this->data['Status'], array('OK', 'OK REPEATED'));
     }
 
     public function getRedirectUrl()
