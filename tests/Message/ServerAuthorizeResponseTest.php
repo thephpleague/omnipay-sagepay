@@ -21,6 +21,8 @@ class ServerAuthorizeResponseTest extends TestCase
         $this->assertSame('{"SecurityKey":"IK776BWNHN","VPSTxId":"{1E7D9C70-DBE2-4726-88EA-D369810D801D}","VendorTxCode":"123456"}', $response->getTransactionReference());
         $this->assertSame('Server transaction registered successfully.', $response->getMessage());
         $this->assertSame('https://test.sagepay.com/Simulator/VSPServerPaymentPage.asp?TransactionID={1E7D9C70-DBE2-4726-88EA-D369810D801D}', $response->getRedirectUrl());
+        $this->assertSame('GET', $response->getRedirectMethod());
+        $this->assertNull($response->getRedirectData());
     }
 
 
