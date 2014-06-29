@@ -84,6 +84,8 @@ class DirectAuthorizeRequestTest extends TestCase
 
         $data = $this->request->getData();
 
+        // these must be empty string, not null
+        // (otherwise Guzzle ignores them, and SagePay throws a fit)
         $this->assertSame('', $data['BillingState']);
         $this->assertSame('', $data['DeliveryState']);
     }
