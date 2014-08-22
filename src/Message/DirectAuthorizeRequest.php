@@ -28,8 +28,8 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['Apply3DSecure'] = $this->getApply3DSecure() ?: 0;
 
         // billing details
-        $data['BillingFirstnames'] = $card->getFirstName();
-        $data['BillingSurname'] = $card->getLastName();
+        $data['BillingFirstnames'] = $card->getBillingFirstName();
+        $data['BillingSurname'] = $card->getBillingLastName();
         $data['BillingAddress1'] = $card->getBillingAddress1();
         $data['BillingAddress2'] = $card->getBillingAddress2();
         $data['BillingCity'] = $card->getBillingCity();
@@ -39,8 +39,8 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['BillingPhone'] = $card->getBillingPhone();
 
         // shipping details
-        $data['DeliveryFirstnames'] = $card->getFirstName();
-        $data['DeliverySurname'] = $card->getLastName();
+        $data['DeliveryFirstnames'] = $card->getShippingFirstName();
+        $data['DeliverySurname'] = $card->getShippingLastName();
         $data['DeliveryAddress1'] = $card->getShippingAddress1();
         $data['DeliveryAddress2'] = $card->getShippingAddress2();
         $data['DeliveryCity'] = $card->getShippingCity();
