@@ -54,6 +54,11 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         return json_encode($reference);
     }
 
+    public function getStatus()
+    {
+        return isset($this->data['Status']) ? $this->data['Status'] : null;
+    }
+
     public function getMessage()
     {
         return isset($this->data['StatusDetail']) ? $this->data['StatusDetail'] : null;
