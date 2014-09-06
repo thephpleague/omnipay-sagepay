@@ -12,7 +12,7 @@
         "sage pay",
         "sagepay"
     ],
-    "homepage": "https://github.com/omnipay/sagepay",
+    "homepage": "https://github.com/thephpleague/omnipay-sagepay",
     "license": "MIT",
     "authors": [
         {
@@ -21,7 +21,7 @@
         },
         {
             "name": "Omnipay Contributors",
-            "homepage": "https://github.com/omnipay/sagepay/contributors"
+            "homepage": "https://github.com/thephpleague/omnipay-sagepay/contributors"
         }
     ],
     "autoload": {
