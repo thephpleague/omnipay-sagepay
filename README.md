@@ -33,6 +33,8 @@ The following gateways are provided by this package:
 
 * SagePay_Direct
 * SagePay_Server
+* SagePay_Direct3
+* SagePay_Server3
 
 For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
 repository.
