@@ -8,6 +8,6 @@ Content-Type: Text/Plain
 Set-Cookie: ASPSESSIONIDSEHSCTTR=NNBHGPBDLOMKKPGPNDDJFBAB; secure; path=/
 Cache-control: private
 
-VPSProtocol=2.23
+VPSProtocol=3.00
 Status=INVALID
 StatusDetail=You are trying to RELEASE a transaction that has already been RELEASEd or ABORTed.

@@ -8,7 +8,7 @@ Content-Type: Text/Plain
 Set-Cookie: ASPSESSIONIDSEHSCTTR=JAEHGPBDBOBICGBGJEHFJHPE; secure; path=/
 Cache-control: private
 
-VPSProtocol=2.23
+VPSProtocol=3.00
 Status=OK
 StatusDetail=Server transaction registered successfully.
 VPSTxId={1E7D9C70-DBE2-4726-88EA-D369810D801D}

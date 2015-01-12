@@ -8,6 +8,6 @@ Content-Type: Text/Plain
 Set-Cookie: ASPSESSIONIDSEHSCTTR=PIMGGPBDEAHAGKNHFGMICIAM; secure; path=/
 Cache-control: private
 
-VPSProtocol=2.23
+VPSProtocol=3.00
 Status=INVALID
 StatusDetail=The VendorTxCode '984297' has been used before.  Each transaction you send should have a unique VendorTxCode.

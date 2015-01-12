@@ -8,6 +8,6 @@ Content-Type: Text/Plain
 Set-Cookie: ASPSESSIONIDSEHSCTTR=EODHGPBDGNKCCIGEMFBBCBPD; secure; path=/
 Cache-control: private
 
-VPSProtocol=2.23
+VPSProtocol=3.00
 Status=INVALID
 StatusDetail=The Description field should be between 1 and 100 characters long.

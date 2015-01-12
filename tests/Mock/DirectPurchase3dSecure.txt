@@ -8,7 +8,7 @@ Content-Type: Text/Plain
 Set-Cookie: ASPSESSIONIDSEHSCTTR=FDNGGPBDBPAHLBIMINACENLN; secure; path=/
 Cache-control: private
 
-VPSProtocol=2.23
+VPSProtocol=3.00
 Status=3DAUTH
 3DSecureStatus=OK
 MD=065379457749061954
