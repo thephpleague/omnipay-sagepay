@@ -33,7 +33,15 @@ class ServerCompleteAuthorizeRequest extends AbstractRequest
             $this->httpRequest->request->get('AddressStatus').
             $this->httpRequest->request->get('PayerStatus').
             $this->httpRequest->request->get('CardType').
-            $this->httpRequest->request->get('Last4Digits')
+            $this->httpRequest->request->get('Last4Digits').
+
+            // New for protocol v3.00
+            // Described in the docs as "mandatory" but not supplied when PayPal is used,
+            // so provide the defaults.
+            $this->httpRequest->request->get('DeclineCode', '').
+            $this->httpRequest->request->get('ExpiryDate', '').
+            $this->httpRequest->request->get('FraudResponse', '').
+            $this->httpRequest->request->get('BankAuthCode', '')
         );
 
         if (strtolower($this->httpRequest->request->get('VPSSignature')) !== $signature) {

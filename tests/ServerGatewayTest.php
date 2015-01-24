@@ -6,6 +6,8 @@ use Omnipay\Tests\GatewayTestCase;
 
 class ServerGatewayTest extends GatewayTestCase
 {
+    protected $error_3082_text = '3082 : The Description value is too long.';
+
     public function setUp()
     {
         parent::setUp();
@@ -54,7 +56,7 @@ class ServerGatewayTest extends GatewayTestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
-        $this->assertSame('The Description field should be between 1 and 100 characters long.', $response->getMessage());
+        $this->assertSame($this->error_3082_text, $response->getMessage());
     }
 
     public function testCompleteAuthorizeSuccess()
@@ -115,7 +117,7 @@ class ServerGatewayTest extends GatewayTestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
-        $this->assertSame('The Description field should be between 1 and 100 characters long.', $response->getMessage());
+        $this->assertSame($this->error_3082_text, $response->getMessage());
     }
 
     public function testCompletePurchaseSuccess()

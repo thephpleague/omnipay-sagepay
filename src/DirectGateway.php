@@ -13,6 +13,8 @@ use Omnipay\SagePay\Message\RefundRequest;
  */
 class DirectGateway extends AbstractGateway
 {
+    // Gateway identification.
+
     public function getName()
     {
         return 'Sage Pay Direct';
@@ -26,6 +28,8 @@ class DirectGateway extends AbstractGateway
         );
     }
 
+    // Vendor identification.
+
     public function getVendor()
     {
         return $this->getParameter('vendor');
@@ -35,6 +39,15 @@ class DirectGateway extends AbstractGateway
     {
         return $this->setParameter('vendor', $value);
     }
+
+    // Access to the HTTP client for debugging.
+
+    public function getHttpClient()
+    {
+        return $this->httpClient;
+    }
+
+    // Available services.
 
     public function authorize(array $parameters = array())
     {
