@@ -24,6 +24,7 @@ class DirectGateway extends AbstractGateway
             'vendor' => '',
             'testMode' => false,
             'simulatorMode' => false,
+            'referrerId' => '',
         );
     }
 
@@ -45,6 +46,16 @@ class DirectGateway extends AbstractGateway
     public function setSimulatorMode($value)
     {
         return $this->setParameter('simulatorMode', $value);
+    }
+
+    public function getReferrerId()
+    {
+        return $this->getParameter('referrerId');
+    }
+
+    public function setReferrerId($value)
+    {
+        return $this->setParameter('referrerId', $value);
     }
 
     public function authorize(array $parameters = array())

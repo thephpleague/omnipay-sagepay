@@ -55,6 +55,19 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('accountType', $value);
     }
 
+    public function getReferrerId()
+    {
+        return $this->getParameter('referrerId');
+    }
+
+    /**
+     * Set the referrer ID for PAYMENT, DEFERRED and AUTHENTICATE transactions.
+     */
+    public function setReferrerId($value)
+    {
+        return $this->setParameter('referrerId', $value);
+    }
+
     public function getApplyAVSCV2()
     {
         return $this->getParameter('applyAVSCV2');
