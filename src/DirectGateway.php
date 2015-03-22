@@ -3,10 +3,6 @@
 namespace Omnipay\SagePay;
 
 use Omnipay\Common\AbstractGateway;
-use Omnipay\SagePay\Message\CaptureRequest;
-use Omnipay\SagePay\Message\DirectAuthorizeRequest;
-use Omnipay\SagePay\Message\DirectPurchaseRequest;
-use Omnipay\SagePay\Message\RefundRequest;
 
 /**
  * Sage Pay Direct Gateway
