@@ -41,6 +41,8 @@ class DirectGateway extends AbstractGateway
     }
 
     // Access to the HTTP client for debugging.
+    // NOTE: this is likely to be removed or replaced with something
+    // more appropriate.
 
     public function getHttpClient()
     {
