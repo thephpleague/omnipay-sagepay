@@ -26,7 +26,10 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['ClientIPAddress'] = $this->getClientIp();
         $data['ApplyAVSCV2'] = $this->getApplyAVSCV2() ?: 0;
         $data['Apply3DSecure'] = $this->getApply3DSecure() ?: 0;
-        $data['ReferrerID'] = $this->getReferrerId();
+
+        if ($this->getReferrerId()) {
+            $data['ReferrerID'] = $this->getReferrerId();
+        }
 
         // billing details
         $data['BillingFirstnames'] = $card->getBillingFirstName();

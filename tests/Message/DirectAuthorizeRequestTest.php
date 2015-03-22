@@ -52,6 +52,16 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertSame('3F7A4119-8671-464F-A091-9E59EB47B80C', $data['ReferrerID']);
     }
 
+    public function testGetDataNoReferrerId()
+    {
+        // Default value is equivalent to this:
+        $this->request->setReferrerId('');
+
+        $data = $this->request->getData();
+
+        $this->assertArrayNotHasKey('ReferrerID', $data);
+    }
+
     public function testGetDataCustomerDetails()
     {
         $card = $this->request->getCard();
