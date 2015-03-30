@@ -21,6 +21,7 @@ class DirectGateway extends AbstractGateway
         return array(
             'vendor' => '',
             'testMode' => false,
+            'referrerId' => '',
         );
     }
 
@@ -46,6 +47,15 @@ class DirectGateway extends AbstractGateway
     }
 
     // Available services.
+    public function getReferrerId()
+    {
+        return $this->getParameter('referrerId');
+    }
+
+    public function setReferrerId($value)
+    {
+        return $this->setParameter('referrerId', $value);
+    }
 
     public function authorize(array $parameters = array())
     {
