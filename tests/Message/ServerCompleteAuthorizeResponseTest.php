@@ -25,6 +25,9 @@ class ServerCompleteAuthorizeResponseTest extends TestCase
                 'PayerStatus' => 'k',
                 'CardType' => 'l',
                 'Last4Digits' => 'm',
+                'DeclineCode' => '00',
+                'ExpiryDate' => '0722',
+                'BankAuthCode' => '999777',
             )
         );
 

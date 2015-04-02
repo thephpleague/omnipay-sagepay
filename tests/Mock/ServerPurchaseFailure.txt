@@ -1,13 +1,11 @@
 HTTP/1.1 200 OK
-Date: Sat, 16 Feb 2013 08:59:41 GMT
-Server: Microsoft-IIS/6.0
 P3P: CP="CUR"
-X-Powered-By: ASP.NET
-Content-Length: 113
-Content-Type: Text/Plain
-Set-Cookie: ASPSESSIONIDSEHSCTTR=EODHGPBDGNKCCIGEMFBBCBPD; secure; path=/
-Cache-control: private
+Content-Language: en-GB
+Content-Length: 88
+Date: Tue, 20 Jan 2015 16:45:41 GMT
+Server: undisclosed
+Set-Cookie: NSC_WRE-uftu.tbhfqbz.dpn-Kbwb7=f76fde52445f8236609ebb88e4554f525455a4a4d5e0;path=/;secure;httponly
 
-VPSProtocol=2.23
+VPSProtocol=3.00
 Status=INVALID
-StatusDetail=The Description field should be between 1 and 100 characters long.
+StatusDetail=3082 : The Description value is too long.

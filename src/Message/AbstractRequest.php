@@ -2,6 +2,8 @@
 
 namespace Omnipay\SagePay\Message;
 
+use Omnipay\Common\Exception\InvalidRequestException;
+
 /**
  * Sage Pay Abstract Request
  */
@@ -9,7 +11,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
     protected $liveEndpoint = 'https://live.sagepay.com/gateway/service';
     protected $testEndpoint = 'https://test.sagepay.com/gateway/service';
-    protected $simulatorEndpoint = 'https://test.sagepay.com/Simulator';
 
     public function getVendor()
     {
@@ -19,16 +20,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function setVendor($value)
     {
         return $this->setParameter('vendor', $value);
-    }
-
-    public function getSimulatorMode()
-    {
-        return $this->getParameter('simulatorMode');
-    }
-
-    public function setSimulatorMode($value)
-    {
-        return $this->setParameter('simulatorMode', $value);
     }
 
     public function getService()
@@ -115,7 +106,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     protected function getBaseData()
     {
         $data = array();
-        $data['VPSProtocol'] = '2.23';
+        $data['VPSProtocol'] = '3.00';
         $data['TxType'] = $this->action;
         $data['Vendor'] = $this->getVendor();
         $data['AccountType'] = $this->getAccountType() ?: 'E';
@@ -133,19 +124,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function getEndpoint()
     {
         $service = strtolower($this->getService());
-
-        if ($this->getSimulatorMode()) {
-            // hooray for consistency
-            if ($service == 'vspdirect-register') {
-                return $this->simulatorEndpoint.'/VSPDirectGateway.asp';
-            } elseif ($service == 'vspserver-register') {
-                return $this->simulatorEndpoint.'/VSPServerGateway.asp?Service=VendorRegisterTx';
-            } elseif ($service == 'direct3dcallback') {
-                return $this->simulatorEndpoint.'/VSPDirectCallback.asp';
-            }
-
-            return $this->simulatorEndpoint.'/VSPServerGateway.asp?Service=Vendor'.ucfirst($service).'Tx';
-        }
 
         if ($this->getTestMode()) {
             return $this->testEndpoint."/$service.vsp";
