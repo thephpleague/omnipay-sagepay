@@ -34,7 +34,6 @@ class ServerCompleteAuthorizeRequest extends AbstractRequest
             $this->httpRequest->request->get('PayerStatus').
             $this->httpRequest->request->get('CardType').
             $this->httpRequest->request->get('Last4Digits').
-
             // New for protocol v3.00
             // Described in the docs as "mandatory" but not supplied when PayPal is used,
             // so provide the defaults.
