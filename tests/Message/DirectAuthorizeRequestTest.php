@@ -37,6 +37,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->setApply3DSecure(3);
         $this->request->setDescription('food');
         $this->request->setClientIp('127.0.0.1');
+        $this->request->setReferrerId('3F7A4119-8671-464F-A091-9E59EB47B80C');
 
         $data = $this->request->getData();
 
@@ -48,6 +49,17 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertSame('127.0.0.1', $data['ClientIPAddress']);
         $this->assertSame(2, $data['ApplyAVSCV2']);
         $this->assertSame(3, $data['Apply3DSecure']);
+        $this->assertSame('3F7A4119-8671-464F-A091-9E59EB47B80C', $data['ReferrerID']);
+    }
+
+    public function testGetDataNoReferrerId()
+    {
+        // Default value is equivalent to this:
+        $this->request->setReferrerId('');
+
+        $data = $this->request->getData();
+
+        $this->assertArrayNotHasKey('ReferrerID', $data);
     }
 
     public function testGetDataCustomerDetails()

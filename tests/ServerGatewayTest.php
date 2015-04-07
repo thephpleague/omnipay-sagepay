@@ -6,6 +6,8 @@ use Omnipay\Tests\GatewayTestCase;
 
 class ServerGatewayTest extends GatewayTestCase
 {
+    protected $error_3082_text = '3082 : The Description value is too long.';
+
     public function setUp()
     {
         parent::setUp();
@@ -54,7 +56,7 @@ class ServerGatewayTest extends GatewayTestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
-        $this->assertSame('The Description field should be between 1 and 100 characters long.', $response->getMessage());
+        $this->assertSame($this->error_3082_text, $response->getMessage());
     }
 
     public function testCompleteAuthorizeSuccess()
@@ -74,14 +76,24 @@ class ServerGatewayTest extends GatewayTestCase
                 'PayerStatus' => 'k',
                 'CardType' => 'l',
                 'Last4Digits' => 'm',
-                'VPSSignature' => md5('{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}438791OKbexamplecJEUPDN1N7Edefghijklm'),
+                // New fields for protocol v3.00
+                'DeclineCode' => '00',
+                'ExpiryDate' => '0722',
+                'BankAuthCode' => '999777',
+                'VPSSignature' => md5(
+                    '{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}'
+                    . '438791' . 'OK' . 'bexamplecJEUPDN1N7Edefghijklm' . '00' . '0722' . '999777'
+                ),
             )
         );
 
         $response = $this->gateway->completeAuthorize($this->completePurchaseOptions)->send();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertSame('{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"b","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame(
+            '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"b","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"123"}',
+            $response->getTransactionReference()
+        );
         $this->assertNull($response->getMessage());
     }
 
@@ -115,7 +127,7 @@ class ServerGatewayTest extends GatewayTestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
-        $this->assertSame('The Description field should be between 1 and 100 characters long.', $response->getMessage());
+        $this->assertSame($this->error_3082_text, $response->getMessage());
     }
 
     public function testCompletePurchaseSuccess()

@@ -3,16 +3,14 @@
 namespace Omnipay\SagePay;
 
 use Omnipay\Common\AbstractGateway;
-use Omnipay\SagePay\Message\CaptureRequest;
-use Omnipay\SagePay\Message\DirectAuthorizeRequest;
-use Omnipay\SagePay\Message\DirectPurchaseRequest;
-use Omnipay\SagePay\Message\RefundRequest;
 
 /**
  * Sage Pay Direct Gateway
  */
 class DirectGateway extends AbstractGateway
 {
+    // Gateway identification.
+
     public function getName()
     {
         return 'Sage Pay Direct';
@@ -23,9 +21,11 @@ class DirectGateway extends AbstractGateway
         return array(
             'vendor' => '',
             'testMode' => false,
-            'simulatorMode' => false,
+            'referrerId' => '',
         );
     }
+
+    // Vendor identification.
 
     public function getVendor()
     {
@@ -37,14 +37,24 @@ class DirectGateway extends AbstractGateway
         return $this->setParameter('vendor', $value);
     }
 
-    public function getSimulatorMode()
+    // Access to the HTTP client for debugging.
+    // NOTE: this is likely to be removed or replaced with something
+    // more appropriate.
+
+    public function getHttpClient()
     {
-        return $this->getParameter('simulatorMode');
+        return $this->httpClient;
     }
 
-    public function setSimulatorMode($value)
+    // Available services.
+    public function getReferrerId()
     {
-        return $this->setParameter('simulatorMode', $value);
+        return $this->getParameter('referrerId');
+    }
+
+    public function setReferrerId($value)
+    {
+        return $this->setParameter('referrerId', $value);
     }
 
     public function authorize(array $parameters = array())

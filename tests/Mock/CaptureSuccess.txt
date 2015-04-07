@@ -8,6 +8,6 @@ Content-Type: Text/Plain
 Set-Cookie: ASPSESSIONIDSEHSCTTR=FNBHGPBDMGDJCNLCDCDPGKCA; secure; path=/
 Cache-control: private
 
-VPSProtocol=2.23
+VPSProtocol=3.00
 Status=OK
 StatusDetail=The transaction was RELEASEed successfully.
