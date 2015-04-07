@@ -117,8 +117,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function sendData($data)
     {
         // Issue #20 no data values should be null.
-        array_walk($data, function(&$value) {
-            if (!isset($value)) $value = '';
+        array_walk($data, function (&$value) {
+            if (!isset($value)) {
+                $value = '';
+            }
         });
 
         $httpResponse = $this->httpClient->post($this->getEndpoint(), null, $data)->send();
