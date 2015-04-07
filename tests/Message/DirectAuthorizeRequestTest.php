@@ -125,4 +125,22 @@ class DirectAuthorizeRequestTest extends TestCase
 
         $this->assertSame('dc', $data['CardType']);
     }
+
+    public function testGetDataNullBillingAddress2()
+    {
+        $card = $this->request->getCard();
+
+        // This emulates not setting the billing address 2 at all
+        // (it defaults to null).
+        $card->setBillingAddress2(null);
+
+        $data = $this->request->getData();
+
+        $this->assertNull($data['BillingAddress2']);
+
+        // This tests that the BillingAddress2 may be left unset,
+        // which defaults to null. When it is sent to SagePay, it gets
+        // converted to an empty string. I'm not clear how that would be
+        // tested.
+    }
 }
