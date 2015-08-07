@@ -53,25 +53,49 @@ class ServerCompleteAuthorizeResponseTest extends TestCase
     public function testConfirm()
     {
         $response = m::mock('\Omnipay\SagePay\Message\ServerCompleteAuthorizeResponse')->makePartial();
-        $response->shouldReceive('sendResponse')->once()->with('OK', 'https://www.example.com/', 'detail');
+        $response->shouldReceive('sendResponse')->once()->with('OK', 'https://www.example.com/', 'detail', false);
 
         $response->confirm('https://www.example.com/', 'detail');
+    }
+
+    public function testConfirmWithReturn()
+    {
+        $response = m::mock('\Omnipay\SagePay\Message\ServerCompleteAuthorizeResponse')->makePartial();
+        $response->shouldReceive('sendResponse')->once()->with('OK', 'https://www.example.com/', 'detail', true);
+
+        $response->confirm('https://www.example.com/', 'detail', true);
     }
 
     public function testError()
     {
         $response = m::mock('\Omnipay\SagePay\Message\ServerCompleteAuthorizeResponse')->makePartial();
-        $response->shouldReceive('sendResponse')->once()->with('ERROR', 'https://www.example.com/', 'detail');
+        $response->shouldReceive('sendResponse')->once()->with('ERROR', 'https://www.example.com/', 'detail', false);
 
         $response->error('https://www.example.com/', 'detail');
+    }
+
+    public function testErrorWithReturn()
+    {
+        $response = m::mock('\Omnipay\SagePay\Message\ServerCompleteAuthorizeResponse')->makePartial();
+        $response->shouldReceive('sendResponse')->once()->with('ERROR', 'https://www.example.com/', 'detail', true);
+
+        $response->error('https://www.example.com/', 'detail', true);
     }
 
     public function testInvalid()
     {
         $response = m::mock('\Omnipay\SagePay\Message\ServerCompleteAuthorizeResponse')->makePartial();
-        $response->shouldReceive('sendResponse')->once()->with('INVALID', 'https://www.example.com/', 'detail');
+        $response->shouldReceive('sendResponse')->once()->with('INVALID', 'https://www.example.com/', 'detail', false);
 
         $response->invalid('https://www.example.com/', 'detail');
+    }
+
+    public function testInvalid()
+    {
+        $response = m::mock('\Omnipay\SagePay\Message\ServerCompleteAuthorizeResponse')->makePartial();
+        $response->shouldReceive('sendResponse')->once()->with('INVALID', 'https://www.example.com/', 'detail', true);
+
+        $response->invalid('https://www.example.com/', 'detail', true);
     }
 
     public function testSendResponse()
@@ -88,5 +112,14 @@ class ServerCompleteAuthorizeResponseTest extends TestCase
         $response->shouldReceive('exitWith')->once()->with("Status=FOO\r\nRedirectUrl=https://www.example.com/\r\nStatusDetail=Bar");
 
         $response->sendResponse('FOO', 'https://www.example.com/', 'Bar');
+    }
+
+    public function testSendResponseDetailWithReturn()
+    {
+        $response = m::mock('\Omnipay\SagePay\Message\ServerCompleteAuthorizeResponse')->makePartial();
+
+        $responseString = $response->sendResponse('FOO', 'https://www.example.com/', 'Bar', true);
+
+        $this->assertEquals("Status=FOO\r\nRedirectUrl=https://www.example.com/\r\nStatusDetail=Bar", $responseString);
     }
 }
