@@ -90,7 +90,7 @@ class ServerCompleteAuthorizeResponseTest extends TestCase
         $response->invalid('https://www.example.com/', 'detail');
     }
 
-    public function testInvalid()
+    public function testInvalidWithReturn()
     {
         $response = m::mock('\Omnipay\SagePay\Message\ServerCompleteAuthorizeResponse')->makePartial();
         $response->shouldReceive('sendResponse')->once()->with('INVALID', 'https://www.example.com/', 'detail', true);
