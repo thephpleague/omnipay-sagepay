@@ -25,7 +25,8 @@ class ServerPurchaseRequest extends ServerAuthorizeRequest
         $data = parent::getData();
 
         $surchargeXml = $this->getSurchargeXml();
-        if($surchargeXml){
+        if($surchargeXml)
+        {
             $data['SurchargeXML'] = $this->getSurchargeXml();
         }
 
