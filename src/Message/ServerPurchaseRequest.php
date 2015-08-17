@@ -7,6 +7,7 @@ namespace Omnipay\SagePay\Message;
  */
 class ServerPurchaseRequest extends ServerAuthorizeRequest
 {
+
     protected $action = 'PAYMENT';
 
     public function setSurchargeXml($surchargeXml)
@@ -30,6 +31,5 @@ class ServerPurchaseRequest extends ServerAuthorizeRequest
 
         return $data;
     }
-
 
 }
