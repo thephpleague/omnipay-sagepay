@@ -12,12 +12,12 @@ class ServerPurchaseRequest extends ServerAuthorizeRequest
 
     public function setSurchargeXml($surchargeXml)
     {
-        $this->setParameter('SurchargeXML', $surchargeXml);
+        $this->setParameter('surchargeXml', $surchargeXml);
     }
 
     public function getSurchargeXml()
     {
-        return $this->getParameter('SurchargeXML');
+        return $this->getParameter('surchargeXml');
     }
 
     public function getData()
@@ -25,12 +25,10 @@ class ServerPurchaseRequest extends ServerAuthorizeRequest
         $data = parent::getData();
 
         $surchargeXml = $this->getSurchargeXml();
-        if($surchargeXml)
-        {
-            $data['SurchargeXML'] = $this->getSurchargeXml();
+        if ($surchargeXml) {
+            $data['surchargeXml'] = $this->getSurchargeXml();
         }
 
         return $data;
     }
-
 }

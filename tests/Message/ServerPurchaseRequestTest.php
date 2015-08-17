@@ -17,13 +17,13 @@ class ServerPurchaseRequestTest extends TestCase
                 'returnUrl' => 'http://www.example.com/return',
                 'amount' => '12.00',
                 'transactionId' => '123',
-                'SurchargeXML' => self::SURCHARGE_XML,
+                'surchargeXml' => self::SURCHARGE_XML,
                 'card' => $this->getValidCard(),
             )
         );
 
         $data = $request->getData();
-        $this->assertSame(self::SURCHARGE_XML, $data['SurchargeXML']);
+        $this->assertSame(self::SURCHARGE_XML, $data['surchargeXml']);
     }
 
     public function setSetSurchargeXml()
@@ -41,7 +41,7 @@ class ServerPurchaseRequestTest extends TestCase
         $request->setSurchargeXml(self::SURCHARGE_XML);
 
         $data = $request->getData();
-        $this->assertSame(self::SURCHARGE_XML, $data['SurchargeXML']);
+        $this->assertSame(self::SURCHARGE_XML, $data['surchargeXml']);
     }
 
 }
