@@ -26,7 +26,7 @@ class ServerPurchaseRequestTest extends TestCase
         $this->assertSame(self::SURCHARGE_XML, $data['surchargeXml']);
     }
 
-    public function setSetSurchargeXml()
+    public function testSetSurchargeXml()
     {
         $request = new ServerPurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
         $request->initialize(
