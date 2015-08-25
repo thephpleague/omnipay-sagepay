@@ -2,11 +2,28 @@
 
 namespace Omnipay\SagePay;
 
+use Omnipay\SagePay\Message\ServerDeferredPurchaseRequest;
+use Omnipay\SagePay\Message\ServerPurchaseRequest;
 use Omnipay\Tests\GatewayTestCase;
 
 class ServerGatewayTest extends GatewayTestCase
 {
     protected $error_3082_text = '3082 : The Description value is too long.';
+
+    /**
+     * @var ServerGateway
+     */
+    protected $gateway;
+
+    /**
+     * @var array
+     */
+    protected $purchaseOptions;
+
+    /**
+     * @var array
+     */
+    protected $completePurchaseOptions;
 
     public function setUp()
     {
@@ -109,7 +126,13 @@ class ServerGatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('ServerPurchaseSuccess.txt');
 
-        $response = $this->gateway->purchase($this->purchaseOptions)->send();
+        /** @var ServerPurchaseRequest $request */
+        $request = $this->gateway->purchase($this->purchaseOptions);
+
+        $this->assertArrayHasKey('TxType', $request->getData(), "TxType is not included in the request");
+        $this->assertEquals('PAYMENT', $request->getData()['TxType'], 'TxType does not equal PAYMENT');
+
+        $response = $request->send();
 
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
@@ -122,7 +145,13 @@ class ServerGatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('ServerPurchaseFailure.txt');
 
-        $response = $this->gateway->purchase($this->purchaseOptions)->send();
+        /** @var ServerPurchaseRequest $request */
+        $request = $this->gateway->purchase($this->purchaseOptions);
+
+        $this->assertArrayHasKey('TxType', $request->getData(), "TxType is not included in the request");
+        $this->assertEquals('PAYMENT', $request->getData()['TxType'], 'TxType does not equal PAYMENT');
+
+        $response = $request->send();
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
@@ -156,6 +185,43 @@ class ServerGatewayTest extends GatewayTestCase
         $this->assertTrue($response->isSuccessful());
         $this->assertSame('{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"b","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertNull($response->getMessage());
+    }
+
+    public function testDeferredPurchaseSuccess()
+    {
+        $this->setMockHttpResponse('ServerPurchaseSuccess.txt');
+
+        /** @var ServerDeferredPurchaseRequest $request */
+        $request = $this->gateway->deferredPurchase($this->purchaseOptions);
+
+        $this->assertArrayHasKey('TxType', $request->getData(), "TxType is not included in the request");
+        $this->assertEquals('DEFERRED', $request->getData()['TxType'], 'TxType does not equal DEFERRED');
+
+        $response = $request->send();
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertTrue($response->isRedirect());
+        $this->assertSame('{"SecurityKey":"IK776BWNHN","VPSTxId":"{1E7D9C70-DBE2-4726-88EA-D369810D801D}","VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('Server transaction registered successfully.', $response->getMessage());
+        $this->assertSame('https://test.sagepay.com/Simulator/VSPServerPaymentPage.asp?TransactionID={1E7D9C70-DBE2-4726-88EA-D369810D801D}', $response->getRedirectUrl());
+    }
+
+    public function testDeferredPurchaseFailure()
+    {
+        $this->setMockHttpResponse('ServerPurchaseFailure.txt');
+
+        /** @var ServerDeferredPurchaseRequest $request */
+        $request = $this->gateway->deferredPurchase($this->purchaseOptions);
+
+        $this->assertArrayHasKey('TxType', $request->getData(), "TxType is not included in the request");
+        $this->assertEquals('DEFERRED', $request->getData()['TxType'], 'TxType does not equal DEFERRED');
+
+        $response = $request->send();
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame($this->error_3082_text, $response->getMessage());
     }
 
     /**
