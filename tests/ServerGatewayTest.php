@@ -129,8 +129,9 @@ class ServerGatewayTest extends GatewayTestCase
         /** @var ServerPurchaseRequest $request */
         $request = $this->gateway->purchase($this->purchaseOptions);
 
-        $this->assertArrayHasKey('TxType', $request->getData(), "TxType is not included in the request");
-        $this->assertEquals('PAYMENT', $request->getData()['TxType'], 'TxType does not equal PAYMENT');
+        $requestData = $request->getData();
+        $this->assertArrayHasKey('TxType', $requestData, "TxType is not included in the request");
+        $this->assertEquals('PAYMENT', $requestData['TxType'], 'TxType does not equal PAYMENT');
 
         $response = $request->send();
 
@@ -148,8 +149,9 @@ class ServerGatewayTest extends GatewayTestCase
         /** @var ServerPurchaseRequest $request */
         $request = $this->gateway->purchase($this->purchaseOptions);
 
-        $this->assertArrayHasKey('TxType', $request->getData(), "TxType is not included in the request");
-        $this->assertEquals('PAYMENT', $request->getData()['TxType'], 'TxType does not equal PAYMENT');
+        $requestData = $request->getData();
+        $this->assertArrayHasKey('TxType', $requestData, "TxType is not included in the request");
+        $this->assertEquals('PAYMENT', $requestData['TxType'], 'TxType does not equal PAYMENT');
 
         $response = $request->send();
 
@@ -194,8 +196,9 @@ class ServerGatewayTest extends GatewayTestCase
         /** @var ServerDeferredPurchaseRequest $request */
         $request = $this->gateway->deferredPurchase($this->purchaseOptions);
 
-        $this->assertArrayHasKey('TxType', $request->getData(), "TxType is not included in the request");
-        $this->assertEquals('DEFERRED', $request->getData()['TxType'], 'TxType does not equal DEFERRED');
+        $requestData = $request->getData();
+        $this->assertArrayHasKey('TxType', $requestData, "TxType is not included in the request");
+        $this->assertEquals('DEFERRED', $requestData['TxType'], 'TxType does not equal DEFERRED');
 
         $response = $request->send();
 
@@ -213,8 +216,9 @@ class ServerGatewayTest extends GatewayTestCase
         /** @var ServerDeferredPurchaseRequest $request */
         $request = $this->gateway->deferredPurchase($this->purchaseOptions);
 
-        $this->assertArrayHasKey('TxType', $request->getData(), "TxType is not included in the request");
-        $this->assertEquals('DEFERRED', $request->getData()['TxType'], 'TxType does not equal DEFERRED');
+        $requestData = $request->getData();
+        $this->assertArrayHasKey('TxType', $requestData, "TxType is not included in the request");
+        $this->assertEquals('DEFERRED', $requestData['TxType'], 'TxType does not equal DEFERRED');
 
         $response = $request->send();
 
