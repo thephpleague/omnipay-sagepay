@@ -53,8 +53,6 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['DeliveryCountry'] = $card->getShippingCountry();
         $data['DeliveryPhone'] = $card->getShippingPhone();
         $data['CustomerEMail'] = $card->getEmail();
-//merge $data array and $data['BasketXML'] array
-        $data = array_merge($data, $this->getItemData());
 
         return $data;
     }
