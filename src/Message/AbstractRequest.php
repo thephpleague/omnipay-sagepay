@@ -139,6 +139,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Add BasketXml to SagePay
+     * implementing BasketXML assigning to $data['BasketXML'] xml structure of the basket
      * @return array
      */
 
