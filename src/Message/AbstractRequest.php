@@ -137,6 +137,11 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->response = new Response($this, $data);
     }
 
+    /**
+     * Add BasketXml to SagePay
+     * @return array
+     */
+
     protected function getItemData() {
 
         $items = $this->getItems();
