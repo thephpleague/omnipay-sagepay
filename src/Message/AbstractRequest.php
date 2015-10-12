@@ -144,24 +144,38 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      * @return array
      */
 
-    protected function getItemData() {
+    protected function getItemData()
+    {
 
         $items = $this->getItems();
+
         $xml = new \SimpleXMLElement('<basket/>');
         $data = array();
-        foreach($items as $basketItem) {
+        foreach ($items as $basketItem) {
 
-            $total = ($basketItem->getQuantity() * $basketItem->getPrice());
+            if($basketItem->getPrice() < 0) {
+                $discounts = $xml->addChild('discounts');
+                $discount = $discounts->addChild('discount');
+                $discount->addChild('fixed', $basketItem->getPrice() * -1);
+                $discount->addChild('description',$basketItem->getName());
 
-            $item = $xml->addChild('item');
-            $item->addChild('description', $basketItem->getName());
-            $item->addChild('quantity', $basketItem->getQuantity());
-            $item->addChild('unitNetAmount', $basketItem->getPrice());
-            $item->addChild('unitTaxAmount', '0.0');
-            $item->addChild('unitGrossAmount', $basketItem->getPrice());
-            $item->addChild('totalGrossAmount', $total);
+            } else {
+
+                $total = ($basketItem->getQuantity() * $basketItem->getPrice());
+                $item = $xml->addChild('item');
+                $item->addChild('description', $basketItem->getName());
+                $item->addChild('quantity', $basketItem->getQuantity());
+                $item->addChild('unitNetAmount', $basketItem->getPrice());
+                $item->addChild('unitTaxAmount', '0.0');
+                $item->addChild('unitGrossAmount', $basketItem->getPrice());
+                $item->addChild('totalGrossAmount', $total);
+            }
+
+
         }
+
         $data['BasketXML'] = $xml->asXML();
+  
         return $data;
     }
 }
