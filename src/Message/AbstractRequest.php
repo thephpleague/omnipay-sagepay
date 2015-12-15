@@ -178,5 +178,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         }
         $data['BasketXML'] = $xml->asXML();
 
+        return $data;
+
     }
 }
