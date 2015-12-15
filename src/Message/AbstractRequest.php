@@ -2,7 +2,6 @@
 
 namespace Omnipay\SagePay\Message;
 
-use Omnipay\BarclaysEpdq\Item;
 use Omnipay\Common\Exception\InvalidRequestException;
 
 /**
