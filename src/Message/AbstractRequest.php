@@ -157,7 +157,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 $discounts = $xml->addChild('discounts');
                 $discount = $discounts->addChild('discount');
                 $discount->addChild('fixed', $basketItem->getPrice() * -1);
-                $discount->addChild('description',$basketItem->getName());
+                $discount->addChild('description', $basketItem->getName());
 
             } else {
 
