@@ -2,6 +2,7 @@
 
 namespace Omnipay\SagePay\Message;
 
+use Omnipay\BarclaysEpdq\Item;
 use Omnipay\Common\Exception\InvalidRequestException;
 
 /**
@@ -34,9 +35,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Set account type.
-     * 
+     *
      * This is ignored for all PAYPAL transactions.
-     * 
+     *
      * @param string $value E: Use the e-commerce merchant account. (default)
      *                      M: Use the mail/telephone order account. (if present)
      *                      C: Use the continuous authority merchant account. (if present)
@@ -66,7 +67,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Set the apply AVSCV2 checks.
-     * 
+     *
      * @param  int $value 0: If AVS/CV2 enabled then check them. If rules apply, use rules. (default)
      *                    1: Force AVS/CV2 checks even if not enabled for the account. If rules apply
      *                       use rules.
@@ -86,9 +87,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Whether or not to apply 3D secure authentication.
-     * 
+     *
      * This is ignored for PAYPAL, EUROPEAN PAYMENT transactions.
-     * 
+     *
      * @param  int $value 0: If 3D-Secure checks are possible and rules allow, perform the
      *                       checks and apply the authorisation rules. (default)
      *                    1: Force 3D-Secure checks for this transaction if possible and
@@ -117,11 +118,14 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function sendData($data)
     {
         // Issue #20 no data values should be null.
-        array_walk($data, function (&$value) {
-            if (!isset($value)) {
-                $value = '';
+        array_walk(
+            $data,
+            function (&$value) {
+                if (!isset($value)) {
+                    $value = '';
+                }
             }
-        });
+        );
 
         $httpResponse = $this->httpClient->post($this->getEndpoint(), null, $data)->send();
 
@@ -142,5 +146,37 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     protected function createResponse($data)
     {
         return $this->response = new Response($this, $data);
+    }
+
+    protected function getItemData()
+    {
+
+        $items = $this->getItems();
+
+        $xml = new \SimpleXMLElement('<basket/>');
+        $data = array();
+        foreach ($items as $basketItem) {
+
+            if ($basketItem->getPrice() < 0) {
+                $discounts = $xml->addChild('discounts');
+                $discount = $discounts->addChild('discount');
+                $discount->addChild('fixed', $basketItem->getPrice() * -1);
+                $discount->addChild('description', $basketItem->getName());
+
+            } else {
+
+                $total = ($basketItem->getQuantity() * $basketItem->getPrice());
+                $item = $xml->addChild('item');
+                $item->addChild('description', $basketItem->getName());
+                $item->addChild('quantity', $basketItem->getQuantity());
+                $item->addChild('unitNetAmount', $basketItem->getPrice());
+                $item->addChild('unitTaxAmount', '0.0');
+                $item->addChild('unitGrossAmount', $basketItem->getPrice());
+                $item->addChild('totalGrossAmount', $total);
+
+            }
+        }
+        $data['BasketXML'] = $xml->asXML();
+
     }
 }
