@@ -169,15 +169,12 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 $item->addChild('description', $basketItem->getName());
                 $item->addChild('quantity', $basketItem->getQuantity());
                 $item->addChild('unitNetAmount', $basketItem->getPrice());
-                $item->addChild('unitTaxAmount', '0.0');
+                $item->addChild('unitTaxAmount', '0.00');
                 $item->addChild('unitGrossAmount', $basketItem->getPrice());
                 $item->addChild('totalGrossAmount', $total);
 
             }
         }
-        $data['BasketXML'] = $xml->asXML();
-
-        return $data;
-
+        return $data['BasketXML'] = $xml->asXML();
     }
 }
