@@ -53,13 +53,11 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['DeliveryCountry'] = $card->getShippingCountry();
         $data['DeliveryPhone'] = $card->getShippingPhone();
         $data['CustomerEMail'] = $card->getEmail();
-
         $basketXML = $this->getItemData();
 
         if (!empty($basketXML)) {
             $data['BasketXML'] = $this->getItemData();
         }
-
 
         return $data;
     }
