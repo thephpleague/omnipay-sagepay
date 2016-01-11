@@ -154,7 +154,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      */
     protected function getItemData()
     {
-
+        $result = '';
         $items = $this->getItems();
 
         $xml = new \SimpleXMLElement('<basket/>');
@@ -177,6 +177,11 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             }
         }
 
-        return $xml->asXML();
+        $xmlString = $xml->asXML();
+        if ($xmlString) {
+            $result = $xmlString;
+        }
+
+        return $result;
     }
 }
