@@ -34,9 +34,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Set account type.
-     *
+     * 
      * This is ignored for all PAYPAL transactions.
-     *
+     * 
      * @param string $value E: Use the e-commerce merchant account. (default)
      *                      M: Use the mail/telephone order account. (if present)
      *                      C: Use the continuous authority merchant account. (if present)
@@ -66,7 +66,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Set the apply AVSCV2 checks.
-     *
+     * 
      * @param  int $value 0: If AVS/CV2 enabled then check them. If rules apply, use rules. (default)
      *                    1: Force AVS/CV2 checks even if not enabled for the account. If rules apply
      *                       use rules.
@@ -86,9 +86,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Whether or not to apply 3D secure authentication.
-     *
+     * 
      * This is ignored for PAYPAL, EUROPEAN PAYMENT transactions.
-     *
+     * 
      * @param  int $value 0: If 3D-Secure checks are possible and rules allow, perform the
      *                       checks and apply the authorisation rules. (default)
      *                    1: Force 3D-Secure checks for this transaction if possible and
@@ -117,14 +117,11 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function sendData($data)
     {
         // Issue #20 no data values should be null.
-        array_walk(
-            $data,
-            function (&$value) {
-                if (!isset($value)) {
-                    $value = '';
-                }
+        array_walk($data, function (&$value) {
+            if (!isset($value)) {
+                $value = '';
             }
-        );
+        });
 
         $httpResponse = $this->httpClient->post($this->getEndpoint(), null, $data)->send();
 
