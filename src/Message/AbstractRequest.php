@@ -147,13 +147,17 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->response = new Response($this, $data);
     }
 
+    /**
+     * Get an XML representation of the current cart items
+     *
+     * @return string The XML string
+     */
     protected function getItemData()
     {
 
         $items = $this->getItems();
 
         $xml = new \SimpleXMLElement('<basket/>');
-        $data = array();
         foreach ($items as $basketItem) {
 
             if ($basketItem->getPrice() < 0) {
@@ -161,9 +165,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 $discount = $discounts->addChild('discount');
                 $discount->addChild('fixed', $basketItem->getPrice() * -1);
                 $discount->addChild('description', $basketItem->getName());
-
             } else {
-
                 $total = ($basketItem->getQuantity() * $basketItem->getPrice());
                 $item = $xml->addChild('item');
                 $item->addChild('description', $basketItem->getName());
@@ -172,9 +174,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 $item->addChild('unitTaxAmount', '0.00');
                 $item->addChild('unitGrossAmount', $basketItem->getPrice());
                 $item->addChild('totalGrossAmount', $total);
-
             }
         }
-        return $data['BasketXML'] = $xml->asXML();
+
+        return $xml->asXML();
     }
 }
