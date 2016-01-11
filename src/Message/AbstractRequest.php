@@ -158,22 +158,24 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $items = $this->getItems();
 
         $xml = new \SimpleXMLElement('<basket/>');
-        foreach ($items as $basketItem) {
+        if ($items) {
+            foreach ($items as $basketItem) {
 
-            if ($basketItem->getPrice() < 0) {
-                $discounts = $xml->addChild('discounts');
-                $discount = $discounts->addChild('discount');
-                $discount->addChild('fixed', $basketItem->getPrice() * -1);
-                $discount->addChild('description', $basketItem->getName());
-            } else {
-                $total = ($basketItem->getQuantity() * $basketItem->getPrice());
-                $item = $xml->addChild('item');
-                $item->addChild('description', $basketItem->getName());
-                $item->addChild('quantity', $basketItem->getQuantity());
-                $item->addChild('unitNetAmount', $basketItem->getPrice());
-                $item->addChild('unitTaxAmount', '0.00');
-                $item->addChild('unitGrossAmount', $basketItem->getPrice());
-                $item->addChild('totalGrossAmount', $total);
+                if ($basketItem->getPrice() < 0) {
+                    $discounts = $xml->addChild('discounts');
+                    $discount = $discounts->addChild('discount');
+                    $discount->addChild('fixed', $basketItem->getPrice() * -1);
+                    $discount->addChild('description', $basketItem->getName());
+                } else {
+                    $total = ($basketItem->getQuantity() * $basketItem->getPrice());
+                    $item = $xml->addChild('item');
+                    $item->addChild('description', $basketItem->getName());
+                    $item->addChild('quantity', $basketItem->getQuantity());
+                    $item->addChild('unitNetAmount', $basketItem->getPrice());
+                    $item->addChild('unitTaxAmount', '0.00');
+                    $item->addChild('unitGrossAmount', $basketItem->getPrice());
+                    $item->addChild('totalGrossAmount', $total);
+                }
             }
         }
 
