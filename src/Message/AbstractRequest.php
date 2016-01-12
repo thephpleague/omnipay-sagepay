@@ -143,4 +143,48 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         return $this->response = new Response($this, $data);
     }
+
+    /**
+     * Get an XML representation of the current cart items
+     *
+     * @return string The XML string; an empty string if no basket items are present
+     */
+    protected function getItemData()
+    {
+        $result = '';
+        $items = $this->getItems();
+
+        // If there are no items, then do not construct any of the basket.
+        if (empty($items) || $items->all() === array()) {
+            return $result;
+        }
+
+        $xml = new \SimpleXMLElement('<basket/>');
+
+        foreach ($items as $basketItem) {
+            if ($basketItem->getPrice() < 0) {
+                $discounts = $xml->addChild('discounts');
+                $discount = $discounts->addChild('discount');
+                $discount->addChild('fixed', $basketItem->getPrice() * -1);
+                $discount->addChild('description', $basketItem->getName());
+            } else {
+                $total = ($basketItem->getQuantity() * $basketItem->getPrice());
+                $item = $xml->addChild('item');
+                $item->addChild('description', $basketItem->getName());
+                $item->addChild('quantity', $basketItem->getQuantity());
+                $item->addChild('unitNetAmount', $basketItem->getPrice());
+                $item->addChild('unitTaxAmount', '0.00');
+                $item->addChild('unitGrossAmount', $basketItem->getPrice());
+                $item->addChild('totalGrossAmount', $total);
+            }
+        }
+
+        $xmlString = $xml->asXML();
+
+        if ($xmlString) {
+            $result = $xmlString;
+        }
+
+        return $result;
+    }
 }
