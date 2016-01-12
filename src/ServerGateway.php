@@ -31,6 +31,11 @@ class ServerGateway extends DirectGateway
         return $this->createRequest('\Omnipay\SagePay\Message\ServerPurchaseRequest', $parameters);
     }
 
+    public function deferredPurchase(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\ServerDeferredPurchaseRequest', $parameters);
+    }
+
     public function completePurchase(array $parameters = array())
     {
         return $this->completeAuthorize($parameters);
