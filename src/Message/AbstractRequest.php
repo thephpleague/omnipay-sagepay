@@ -147,36 +147,40 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     /**
      * Get an XML representation of the current cart items
      *
-     * @return string The XML string
+     * @return string The XML string; an empty string if no basket items are present
      */
     protected function getItemData()
     {
         $result = '';
         $items = $this->getItems();
 
-        $xml = new \SimpleXMLElement('<basket/>');
-        if ($items) {
-            foreach ($items as $basketItem) {
+        // If there are no items, then do not construct any of the basket.
+        if (empty($items) || empty($items->all())) {
+            return $result;
+        }
 
-                if ($basketItem->getPrice() < 0) {
-                    $discounts = $xml->addChild('discounts');
-                    $discount = $discounts->addChild('discount');
-                    $discount->addChild('fixed', $basketItem->getPrice() * -1);
-                    $discount->addChild('description', $basketItem->getName());
-                } else {
-                    $total = ($basketItem->getQuantity() * $basketItem->getPrice());
-                    $item = $xml->addChild('item');
-                    $item->addChild('description', $basketItem->getName());
-                    $item->addChild('quantity', $basketItem->getQuantity());
-                    $item->addChild('unitNetAmount', $basketItem->getPrice());
-                    $item->addChild('unitTaxAmount', '0.00');
-                    $item->addChild('unitGrossAmount', $basketItem->getPrice());
-                    $item->addChild('totalGrossAmount', $total);
-                }
+        $xml = new \SimpleXMLElement('<basket/>');
+
+        foreach ($items as $basketItem) {
+            if ($basketItem->getPrice() < 0) {
+                $discounts = $xml->addChild('discounts');
+                $discount = $discounts->addChild('discount');
+                $discount->addChild('fixed', $basketItem->getPrice() * -1);
+                $discount->addChild('description', $basketItem->getName());
+            } else {
+                $total = ($basketItem->getQuantity() * $basketItem->getPrice());
+                $item = $xml->addChild('item');
+                $item->addChild('description', $basketItem->getName());
+                $item->addChild('quantity', $basketItem->getQuantity());
+                $item->addChild('unitNetAmount', $basketItem->getPrice());
+                $item->addChild('unitTaxAmount', '0.00');
+                $item->addChild('unitGrossAmount', $basketItem->getPrice());
+                $item->addChild('totalGrossAmount', $total);
             }
         }
 
         $xmlString = $xml->asXML();
+
         if ($xmlString) {
             $result = $xmlString;
         }
