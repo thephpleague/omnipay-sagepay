@@ -59,21 +59,21 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertArrayNotHasKey('BasketXML', $data);
 
         // Then with a basket containing no items.
-        $items = new \Omnipay\Common\ItemBag([]);
+        $items = new \Omnipay\Common\ItemBag(array());
         $data = $this->request->getData();
         $this->assertArrayNotHasKey('BasketXML', $data);
     }
 
     public function testBasket()
     {
-        $items = new \Omnipay\Common\ItemBag([
-            new \Omnipay\Common\Item([
+        $items = new \Omnipay\Common\ItemBag(array(
+            new \Omnipay\Common\Item(array(
                 'name' => 'Name',
                 'description' => 'Description',
                 'quantity' => 1,
                 'price' => 1.23,
-            ])
-        ]);
+            ))
+        ));
 
         $basketXml = '<basket><item>'
             . '<description>Name</description><quantity>1</quantity>'
