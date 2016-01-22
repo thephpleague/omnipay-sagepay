@@ -88,7 +88,7 @@ class DirectAuthorizeRequestTest extends TestCase
         // The element does exist, and must contain the basket XML, with optional XML header and
         // trailing newlines.
         $this->assertArrayHasKey('BasketXML', $data);
-        $this->assertContains($basketXml, $data);
+        $this->assertContains($basketXml, $data['BasketXML']);
     }
 
     public function testGetDataNoReferrerId()
@@ -292,7 +292,7 @@ class DirectAuthorizeRequestTest extends TestCase
                     <totalGrossAmount>5</totalGrossAmount>";
 
         $this->request->setItems($items);
-        $data = $this->request->getData(); 
+        $data = $this->request->getData();
 
 
         $this->assertNotContains($expected , $data['BasketXML'], "Should fail as name was not escaped" );
