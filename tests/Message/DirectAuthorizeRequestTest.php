@@ -303,7 +303,7 @@ class DirectAuthorizeRequestTest extends TestCase
     {
         $items = new \Omnipay\Common\ItemBag(array(
             new \Omnipay\Common\Item(array(
-                'name' => "Denise's Very Odd & Wierd name?",
+                'name' => "<Denise's Very Odd & Wierd 'name'?>",
                 'description' => 'Description',
                 'quantity' => 1,
                 'price' => 1.23,
