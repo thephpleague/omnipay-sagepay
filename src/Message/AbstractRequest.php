@@ -167,7 +167,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             } else {
                 $total = ($basketItem->getQuantity() * $basketItem->getPrice());
                 $item = $xml->addChild('item');
-                $item->addChild('description', htmlspecialchars($basketItem->getName(), ENT_QUOTES, "UTF-8"));
+                $item->addChild('description')->{0} = $basketItem->getName();
                 $item->addChild('quantity', $basketItem->getQuantity());
                 $item->addChild('unitNetAmount', $basketItem->getPrice());
                 $item->addChild('unitTaxAmount', '0.00');
@@ -181,8 +181,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 if ($discountItems->getPrice() < 0) {
                     $discount = $discounts->addChild('discount');
                     $discount->addChild('fixed', $discountItems->getPrice() * -1);
-                    $discount->
-                    addChild('description', htmlspecialchars($discountItems->getName(), ENT_QUOTES, "UTF-8"));
+                    $discount->addChild('description')->{0} = $discountItems->getName();
                 }
             }
         }
