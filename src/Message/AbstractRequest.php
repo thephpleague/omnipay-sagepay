@@ -154,23 +154,20 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $result = '';
         $items = $this->getItems();
 
-        // If there are no items, then do not construct any of the basket.
         if (empty($items) || $items->all() === array()) {
             return $result;
         }
 
         $xml = new \SimpleXMLElement('<basket/>');
+        $cartHasDiscounts = false;
 
         foreach ($items as $basketItem) {
             if ($basketItem->getPrice() < 0) {
-                $discounts = $xml->addChild('discounts');
-                $discount = $discounts->addChild('discount');
-                $discount->addChild('fixed', $basketItem->getPrice() * -1);
-                $discount->addChild('description', $basketItem->getName());
+                $cartHasDiscounts = true;
             } else {
                 $total = ($basketItem->getQuantity() * $basketItem->getPrice());
                 $item = $xml->addChild('item');
-                $item->addChild('description', $basketItem->getName());
+                $item->addChild('description', htmlspecialchars($basketItem->getName(), ENT_QUOTES, "UTF-8"));
                 $item->addChild('quantity', $basketItem->getQuantity());
                 $item->addChild('unitNetAmount', $basketItem->getPrice());
                 $item->addChild('unitTaxAmount', '0.00');
@@ -178,9 +175,17 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 $item->addChild('totalGrossAmount', $total);
             }
         }
-
+        if ($cartHasDiscounts) {
+            $discounts = $xml->addChild('discounts');
+            foreach ($items as $discountItems) {
+                if ($discountItems->getPrice() < 0) {
+                    $discount = $discounts->addChild('discount');
+                    $discount->addChild('fixed', $discountItems->getPrice() * -1);
+                    $discount->addChild('description', htmlspecialchars($discountItems->getName(), ENT_QUOTES, "UTF-8"));
+                }
+            }
+        }
         $xmlString = $xml->asXML();
-
         if ($xmlString) {
             $result = $xmlString;
         }
