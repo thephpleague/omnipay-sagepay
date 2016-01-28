@@ -145,6 +145,46 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     }
 
     /**
+     * Filters out any characters that SagePay does not support from the item name.
+     *
+     * Believe it or not, SagePay actually have separate rules for allowed characters
+     * for item names and discount names, hence the need for two separate methods.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function filterItemName($name)
+    {
+        $standardChars = "0-9a-zA-Z";
+        $allowedSpecialChars = " +'/\\&:,.-{}";
+        $pattern = '`[^'.$standardChars.preg_quote($allowedSpecialChars, '/').']`';
+        $name = trim(preg_replace($pattern, '', $name));
+
+        return $name;
+    }
+
+    /**
+     * Filters out any characters that SagePay does not support from the discount name.
+     *
+     * Believe it or not, SagePay actually have separate rules for allowed characters
+     * for item names and discount names, hence the need for two separate methods.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function filterDiscountName($name)
+    {
+        $standardChars = "0-9a-zA-Z";
+        $allowedSpecialChars = " +'/\\:,.-{};_@()^\"~[]$=!#?|";
+        $pattern = '`[^'.$standardChars.preg_quote($allowedSpecialChars, '/').']`';
+        $name = trim(preg_replace($pattern, '', $name));
+
+        return $name;
+    }
+
+    /**
      * Get an XML representation of the current cart items
      *
      * @return string The XML string; an empty string if no basket items are present
@@ -168,7 +208,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             } else {
                 $total = ($basketItem->getQuantity() * $basketItem->getPrice());
                 $item = $xml->addChild('item');
-                $item->description = $basketItem->getName();
+                $item->description = $this->filterItemName($basketItem->getName());
                 $item->addChild('quantity', $basketItem->getQuantity());
                 $item->addChild('unitNetAmount', $basketItem->getPrice());
                 $item->addChild('unitTaxAmount', '0.00');
@@ -182,7 +222,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 if ($discountItem->getPrice() < 0) {
                     $discount = $discounts->addChild('discount');
                     $discount->addChild('fixed', ($discountItem->getPrice() * $discountItem->getQuantity()) * -1);
-                    $discount->description = $discountItem->getName();
+                    $discount->description = $this->filterDiscountName($discountItem->getName());
                 }
             }
         }
