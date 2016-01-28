@@ -178,11 +178,11 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         }
         if ($cartHasDiscounts) {
             $discounts = $xml->addChild('discounts');
-            foreach ($items as $discountItems) {
-                if ($discountItems->getPrice() < 0) {
+            foreach ($items as $discountItem) {
+                if ($discountItem->getPrice() < 0) {
                     $discount = $discounts->addChild('discount');
-                    $discount->addChild('fixed', $discountItems->getPrice() * -1);
-                    $discount->description = $discountItems->getName();
+                    $discount->addChild('fixed', ($discountItem->getPrice() * $discountItem->getQuantity()) * -1);
+                    $discount->description = $discountItem->getName();
                 }
             }
         }
