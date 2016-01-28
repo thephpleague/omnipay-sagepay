@@ -159,7 +159,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $standardChars = "0-9a-zA-Z";
         $allowedSpecialChars = " +'/\\&:,.-{}";
         $pattern = '`[^'.$standardChars.preg_quote($allowedSpecialChars, '/').']`';
-        $name = trim(preg_replace($pattern, '', $name));
+        $name = trim(substr(preg_replace($pattern, '', $name), 0, 100));
 
         return $name;
     }
@@ -179,7 +179,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $standardChars = "0-9a-zA-Z";
         $allowedSpecialChars = " +'/\\:,.-{};_@()^\"~[]$=!#?|";
         $pattern = '`[^'.$standardChars.preg_quote($allowedSpecialChars, '/').']`';
-        $name = trim(preg_replace($pattern, '', $name));
+        $name = trim(substr(preg_replace($pattern, '', $name), 0, 100));
 
         return $name;
     }
