@@ -154,6 +154,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $result = '';
         $items = $this->getItems();
 
+        // If there are no items, then do not construct any of the basket.
         if (empty($items) || $items->all() === array()) {
             return $result;
         }
