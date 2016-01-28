@@ -208,131 +208,42 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertNotContains('<discount>', $data['BasketXML']);
     }
 
-    public function testBasketWithOneDiscount()
+    public function testMixedBasketWithSpecialChars()
     {
         $items = new \Omnipay\Common\ItemBag(array(
             new \Omnipay\Common\Item(array(
-                'name' => 'Name',
+                'name' => "Denisé's Odd & Wierd £name? #",
                 'description' => 'Description',
-                'quantity' => 1,
-                'price' => 10.0,
+                'quantity' => 2,
+                'price' => 4.23,
             )),
             array(
-                'name' => 'One Discount',
+                'name' => "Denisé's \"Odd\" & Wierd £discount? #",
                 'description' => 'My Offer',
-                'quantity' => 1,
-                'price' => -4,
-            )
-        ));
-
-        $this->request->setItems($items);
-        $data = $this->request->getData();
-        // The element does exist, and must contain the basket XML, with optional XML header and
-        // trailing newlines.
-        $this->assertArrayHasKey('BasketXML', $data);
-        $this->assertContains('<discounts>', $data['BasketXML']);
-    }
-
-    public function testBasketWithTwoDiscount()
-    {
-        $items = new \Omnipay\Common\ItemBag(array(
-            new \Omnipay\Common\Item(array(
-                'name' => 'Name',
-                'description' => 'Description',
-                'quantity' => 1,
-                'price' => 1.23,
-            )),
-            array(
-                'name' => 'One Discount',
-                'description' => 'My Offer',
-                'quantity' => 1,
-                'price' => -4,
+                'quantity' => 2,
+                'price' => -0.10,
             ),
             array(
                 'name' => 'Second Discount',
                 'description' => 'My 2nd Offer',
                 'quantity' => 1,
-                'price' => -5,
+                'price' => -1.60,
             )
         ));
 
         $expected = '<basket><item>'
-            . '<description>Name</description><quantity>1</quantity>'
-            . '<unitNetAmount>1.23</unitNetAmount><unitTaxAmount>0.00</unitTaxAmount>'
-            . '<unitGrossAmount>1.23</unitGrossAmount><totalGrossAmount>1.23</totalGrossAmount>'
-            . '</item><discounts><discount><fixed>4</fixed><description>One Discount</description></discount><discount><fixed>5</fixed><description>Second Discount</description></discount></discounts></basket>';
+            . '<description>Denis\'s Odd &amp; Wierd name</description><quantity>2</quantity>'
+            . '<unitNetAmount>4.23</unitNetAmount><unitTaxAmount>0.00</unitTaxAmount>'
+            . '<unitGrossAmount>4.23</unitGrossAmount><totalGrossAmount>8.46</totalGrossAmount>'
+            . '</item><discounts>'
+            . '<discount><fixed>0.2</fixed><description>Denis\'s "Odd"  Wierd discount? #</description></discount>'
+            . '<discount><fixed>1.6</fixed><description>Second Discount</description></discount>'
+            . '</discounts></basket>';
 
         $this->request->setItems($items);
         $data = $this->request->getData();
-        // The element does exist, and must contain the basket XML, with optional XML header and
-        // trailing newlines.
+
         $this->assertArrayHasKey('BasketXML', $data);
-        $this->assertContains($expected, $data['BasketXML']);
-    }
-
-    public function testBasketWithNotEscapedName()
-    {
-        $items = new \Omnipay\Common\ItemBag(array(
-            new \Omnipay\Common\Item(array(
-                'name' => "Denise's Very Odd & Wierd name?",
-                'description' => 'Description',
-                'quantity' => 1,
-                'price' => 1.23,
-            )),
-            array(
-                'name' => 'One Discount',
-                'description' => 'My Offer',
-                'quantity' => 1,
-                'price' => 4,
-            ),
-            array(
-                'name' => 'Second Discount',
-                'description' => 'My 2nd Offer',
-                'quantity' => 1,
-                'price' => 5,
-            )
-        ));
-
-        $expected = "<basket><item><description>Denise's Very Odd & Wierd name?</description><quantity>1</quantity><unitNetAmount>1.23</unitNetAmount><unitTaxAmount>0.00</unitTaxAmount><unitGrossAmount>1.23</unitGrossAmount><totalGrossAmount>1.23</totalGrossAmount></item><item>
-                    <description>One Discount</description><quantity>1</quantity><unitNetAmount>4</unitNetAmount><unitTaxAmount>0.00</unitTaxAmount><unitGrossAmount>4</unitGrossAmount><totalGrossAmount>4</totalGrossAmount></item><item><description>Second Discount</description><quantity>1</quantity><unitNetAmoubnt>5</unitNetAmoubnt>
-                    <totalGrossAmount>5</totalGrossAmount>";
-
-        $this->request->setItems($items);
-        $data = $this->request->getData();
-
-
-        $this->assertNotContains($expected , $data['BasketXML'], "Should fail as name was not escaped" );
-
-    }
-
-    public function testBasketWithEscapedName()
-    {
-        $items = new \Omnipay\Common\ItemBag(array(
-            new \Omnipay\Common\Item(array(
-                'name' => "<Denise's Very Odd & Wierd 'name'?>",
-                'description' => 'Description',
-                'quantity' => 1,
-                'price' => 1.23,
-            )),
-            array(
-                'name' => 'One Discount',
-                'description' => 'My Offer',
-                'quantity' => 1,
-                'price' => 4,
-            ),
-            array(
-                'name' => 'Second Discount',
-                'description' => 'My 2nd Offer',
-                'quantity' => 1,
-                'price' => 5,
-            )
-        ));
-
-
-        $this->request->setItems($items);
-        $data = $this->request->getData();
-
-        $this->assertArrayHasKey('BasketXML', $data, "Should create XML");
-        $this->assertContains($data['BasketXML'], $data, "Should not fail as name was escaped" );
+        $this->assertContains($expected, $data['BasketXML'], 'Basket XML does not match the expected output');
     }
 }
