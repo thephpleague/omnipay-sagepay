@@ -6,6 +6,11 @@ use Omnipay\Tests\TestCase;
 
 class DirectAuthorizeRequestTest extends TestCase
 {
+    /**
+     * @var \Omnipay\Common\Message\AbstractRequest $request
+     */
+    protected $request;
+
     public function setUp()
     {
         parent::setUp();
@@ -60,6 +65,7 @@ class DirectAuthorizeRequestTest extends TestCase
 
         // Then with a basket containing no items.
         $items = new \Omnipay\Common\ItemBag(array());
+        $this->request->setItems($items);
         $data = $this->request->getData();
         $this->assertArrayNotHasKey('BasketXML', $data);
     }
