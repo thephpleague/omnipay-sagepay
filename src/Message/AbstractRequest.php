@@ -145,6 +145,46 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     }
 
     /**
+     * Filters out any characters that SagePay does not support from the item name.
+     *
+     * Believe it or not, SagePay actually have separate rules for allowed characters
+     * for item names and discount names, hence the need for two separate methods.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function filterItemName($name)
+    {
+        $standardChars = "0-9a-zA-Z";
+        $allowedSpecialChars = " +'/\\&:,.-{}";
+        $pattern = '`[^'.$standardChars.preg_quote($allowedSpecialChars, '/').']`';
+        $name = trim(substr(preg_replace($pattern, '', $name), 0, 100));
+
+        return $name;
+    }
+
+    /**
+     * Filters out any characters that SagePay does not support from the discount name.
+     *
+     * Believe it or not, SagePay actually have separate rules for allowed characters
+     * for item names and discount names, hence the need for two separate methods.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function filterDiscountName($name)
+    {
+        $standardChars = "0-9a-zA-Z";
+        $allowedSpecialChars = " +'/\\:,.-{};_@()^\"~[]$=!#?|";
+        $pattern = '`[^'.$standardChars.preg_quote($allowedSpecialChars, '/').']`';
+        $name = trim(substr(preg_replace($pattern, '', $name), 0, 100));
+
+        return $name;
+    }
+
+    /**
      * Get an XML representation of the current cart items
      *
      * @return string The XML string; an empty string if no basket items are present
@@ -160,17 +200,15 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         }
 
         $xml = new \SimpleXMLElement('<basket/>');
+        $cartHasDiscounts = false;
 
         foreach ($items as $basketItem) {
             if ($basketItem->getPrice() < 0) {
-                $discounts = $xml->addChild('discounts');
-                $discount = $discounts->addChild('discount');
-                $discount->addChild('fixed', $basketItem->getPrice() * -1);
-                $discount->addChild('description', $basketItem->getName());
+                $cartHasDiscounts = true;
             } else {
                 $total = ($basketItem->getQuantity() * $basketItem->getPrice());
                 $item = $xml->addChild('item');
-                $item->addChild('description', $basketItem->getName());
+                $item->description = $this->filterItemName($basketItem->getName());
                 $item->addChild('quantity', $basketItem->getQuantity());
                 $item->addChild('unitNetAmount', $basketItem->getPrice());
                 $item->addChild('unitTaxAmount', '0.00');
@@ -178,9 +216,17 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 $item->addChild('totalGrossAmount', $total);
             }
         }
-
+        if ($cartHasDiscounts) {
+            $discounts = $xml->addChild('discounts');
+            foreach ($items as $discountItem) {
+                if ($discountItem->getPrice() < 0) {
+                    $discount = $discounts->addChild('discount');
+                    $discount->addChild('fixed', ($discountItem->getPrice() * $discountItem->getQuantity()) * -1);
+                    $discount->description = $this->filterDiscountName($discountItem->getName());
+                }
+            }
+        }
         $xmlString = $xml->asXML();
-
         if ($xmlString) {
             $result = $xmlString;
         }
