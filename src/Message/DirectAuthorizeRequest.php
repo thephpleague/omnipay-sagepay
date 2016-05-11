@@ -64,7 +64,7 @@ class DirectAuthorizeRequest extends AbstractRequest
     {
         $data = $this->getBaseAuthorizeData();
 
-        if ($this->getTransactionReference()) {
+        if ($this->isRepeat()) {
             $this->validate('amount', 'transactionReference');
             $reference = json_decode($this->getTransactionReference(), true);
             $data['RelatedVendorTxCode'] = $reference['VendorTxCode'];
@@ -140,6 +140,6 @@ class DirectAuthorizeRequest extends AbstractRequest
      */
     protected function isRepeat()
     {
-        return false !== $this->getTransactionReference();
+        return !empty($this->getTransactionReference());
     }
 }
