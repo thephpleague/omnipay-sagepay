@@ -24,7 +24,6 @@ class DirectAuthorizeRequestRepeatTest extends TestCase
                 'card' => $this->getValidCard(),
                 'amount' => '12.00',
                 'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
-                'testMode' => true,
             )
         );
     }
@@ -41,10 +40,12 @@ class DirectAuthorizeRequestRepeatTest extends TestCase
         $this->assertSame('4255', $data['RelatedTxAuthNo']);
     }
 
+    /**
+     * Make sure we are hitting the repeat specific endpoint
+     */
     public function testGetEndpoint()
     {
         $url = $this->request->getEndpoint();
-
-        $this->assertSame('https://test.sagepay.com/gateway/service/repeat.vsp', $url);
+        $this->assertSame('https://live.sagepay.com/gateway/service/repeat.vsp', $url);
     }
 }
