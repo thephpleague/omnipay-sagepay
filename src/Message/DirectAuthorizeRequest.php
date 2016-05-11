@@ -139,6 +139,6 @@ class DirectAuthorizeRequest extends AbstractRequest
      */
     protected function isRepeat()
     {
-        return !empty($this->getTransactionReference());
+        return false != $this->getTransactionReference();
     }
 }
