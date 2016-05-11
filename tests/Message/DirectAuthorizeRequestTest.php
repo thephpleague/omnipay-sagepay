@@ -249,12 +249,10 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertContains($expected, $data['BasketXML'], 'Basket XML does not match the expected output');
     }
 
-    /**
-     * Make sure we are hitting the repeat specific endpoint
-     */
     public function testGetEndpoint()
     {
         $url = $this->request->getEndpoint();
+
         $this->assertSame('https://live.sagepay.com/gateway/service/vspdirect-register.vsp', $url);
     }
 }

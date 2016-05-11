@@ -40,12 +40,10 @@ class DirectAuthorizeRequestRepeatTest extends TestCase
         $this->assertSame('4255', $data['RelatedTxAuthNo']);
     }
 
-    /**
-     * Make sure we are hitting the repeat specific endpoint
-     */
     public function testGetEndpoint()
     {
         $url = $this->request->getEndpoint();
+
         $this->assertSame('https://live.sagepay.com/gateway/service/repeat.vsp', $url);
     }
 }
