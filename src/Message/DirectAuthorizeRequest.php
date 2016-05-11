@@ -65,7 +65,6 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data = $this->getBaseAuthorizeData();
 
         if ($this->isRepeat()) {
-            $this->validate('amount', 'transactionReference');
             $reference = json_decode($this->getTransactionReference(), true);
             $data['RelatedVendorTxCode'] = $reference['VendorTxCode'];
             $data['RelatedVPSTxId'] = $reference['VPSTxId'];
