@@ -26,6 +26,15 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         return $this->action;
     }
+    
+    public function setUseOldBasketFormat($value){
+        $value = (bool)$value;
+        return $this->setParameter('useOldBasketFormat', $value);
+    }
+
+    public function getUseOldBasketFormat(){
+        return $this->getParameter('useOldBasketFormat')
+    }
 
     public function getAccountType()
     {
