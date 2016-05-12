@@ -233,4 +233,43 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
         return $result;
     }
+    
+    /**
+     * Generate Basket string in the old format
+     * This is called if "useOldBasketFormat" is set to true in the gateway config
+     * @return string Basket field in format of:
+     * 1:Item:2:10.00:0.00:10.00:20.00
+     * [number of lines]:[item name]:[quantity]:[unit cost]:[item tax]:[item total]:[line total]
+     */
+    protected function getItemDataNonXML(){
+
+        $result = '';
+        $items = $this->getItems();
+        $count = 0;
+
+        foreach($items as $basketItem){
+            $lineTotal = ($basketItem->getQuantity() * $basketItem->getPrice());
+
+            $description = $this->filterItemName($basketItem->getName());
+            $description = str_replace(':', ' ', $description); // Make sure there aren't any colons in the name
+            // Perhaps : should be replaced with '-' or other symbol?
+
+            $result .= ':' . $description .    // Item name
+                ':' . $basketItem->getQuantity() . // Quantity
+                ':' . number_format($basketItem->getPrice(), 2, '.', '') .    // Unit cost (without tax)
+                ':0.00' .    // Item tax
+                ':' . number_format($basketItem->getPrice(), 2, '.', '') .    // Item total
+                ':' . number_format($lineTotal);  // Line total
+            // As the getItemData() puts 0.00 into tax, same was done here
+
+            $count++;
+
+        }
+
+        // Prepend number of lines to the result string
+        $result = $count.$result;
+
+        return $result;
+
+    }
 }
