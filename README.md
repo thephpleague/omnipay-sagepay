@@ -37,6 +37,10 @@ The following gateways are provided by this package:
 For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
 repository.
 
+### Basket format
+
+By default [BasketXML](http://www.sagepay.co.uk/support/12/36/protocol-3-00-basket-xml) (Protocol 3.00) field will be sent (if item data is available) with the requests. However, a parameter "useOldBasketFormat" with value of TRUE can be passed to the config, which will in turn send old format [Basket](http://www.sagepay.co.uk/support/error-codes/3021-invalid-basket-format-invalid) field. Old format can be used to enable other Sage products better integrate with Sage Pay, as new BasketXML is not yet supported.
+
 ## Support
 
 If you are having general issues with Omnipay, we suggest posting on
