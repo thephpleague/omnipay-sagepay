@@ -36,6 +36,17 @@ class DirectGateway extends AbstractGateway
     {
         return $this->setParameter('vendor', $value);
     }
+    
+    public function setUseOldBasketFormat($value){
+        $value = (bool)$value;
+        return $this->setParameter('useOldBasketFormat', $value);
+    }
+
+    public function getUseOldBasketFormat(){
+        $var = $this->getParameter('useOldBasketFormat');
+        if(!empty($var)) return true;
+        return false;
+    }
 
     // Access to the HTTP client for debugging.
     // NOTE: this is likely to be removed or replaced with something
