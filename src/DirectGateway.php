@@ -37,12 +37,15 @@ class DirectGateway extends AbstractGateway
         return $this->setParameter('vendor', $value);
     }
     
-    public function setUseOldBasketFormat($value){
+    public function setUseOldBasketFormat($value)
+    {
         $value = (bool)$value;
+
         return $this->setParameter('useOldBasketFormat', $value);
     }
 
-    public function getUseOldBasketFormat(){
+    public function getUseOldBasketFormat()
+    {
         return $this->getParameter('useOldBasketFormat');
     }
 
