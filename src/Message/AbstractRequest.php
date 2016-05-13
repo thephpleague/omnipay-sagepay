@@ -27,12 +27,15 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->action;
     }
     
-    public function setUseOldBasketFormat($value){
+    public function setUseOldBasketFormat($value)
+    {
         $value = (bool)$value;
+
         return $this->setParameter('useOldBasketFormat', $value);
     }
 
-    public function getUseOldBasketFormat(){
+    public function getUseOldBasketFormat()
+    {
         return $this->getParameter('useOldBasketFormat');
     }
 
@@ -250,13 +253,14 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      * 1:Item:2:10.00:0.00:10.00:20.00
      * [number of lines]:[item name]:[quantity]:[unit cost]:[item tax]:[item total]:[line total]
      */
-    protected function getItemDataNonXML(){
+    protected function getItemDataNonXML()
+    {
 
         $result = '';
         $items = $this->getItems();
         $count = 0;
 
-        foreach($items as $basketItem){
+        foreach ($items as $basketItem) {
             $lineTotal = ($basketItem->getQuantity() * $basketItem->getPrice());
 
             $description = $this->filterItemName($basketItem->getName());
@@ -276,7 +280,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         }
 
         // Prepend number of lines to the result string
-        $result = $count.$result;
+        $result = $count . $result;
 
         return $result;
 
