@@ -33,6 +33,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertSame('E', $data['AccountType']);
         $this->assertSame(0, $data['ApplyAVSCV2']);
         $this->assertSame(0, $data['Apply3DSecure']);
+        $this->assertSame(0, $data['CreateToken']);
     }
 
     public function testGetData()
@@ -247,5 +248,90 @@ class DirectAuthorizeRequestTest extends TestCase
 
         $this->assertArrayHasKey('BasketXML', $data);
         $this->assertContains($expected, $data['BasketXML'], 'Basket XML does not match the expected output');
+    }
+
+    public function testCreateTokenCanBeSetInRequest()
+    {
+        $this->request->setCreateToken(true);
+        $data = $this->request->getData();
+
+        $this->assertSame(1, $data['CreateToken']);
+    }
+
+    /**
+     * @dataProvider tokenSetterProvider
+     */
+    public function testCreateTokenCanOnlyBeOneOrZeroInRequest($parameter, $expectation)
+    {
+        $this->request->setCreateToken($parameter);
+        $data = $this->request->getData();
+
+        $this->assertSame($expectation, $data['CreateToken']);
+    }
+
+    public function testExistingTokenCanBeSet()
+    {
+        $token = '{ABCDEF}';
+        $this->request->setToken($token);
+
+        $data = $this->request->getData();
+        $this->assertSame($token, $data['Token']);
+    }
+
+    public function testExistingTokenCannotBeSetIfCreateTokenIsTrue()
+    {
+        $this->request->setCreateToken(true);
+        $this->request->setToken('{ABCDEF}');
+
+        $data = $this->request->getData();
+
+        $this->assertArrayNotHasKey('Token', $data);
+        $this->assertSame(1, $data['CreateToken']);
+    }
+
+    public function testStoreTokenCanOnlyBeSetIfExistingTokenIsSetInRequest()
+    {
+        $this->request->setToken('{ABCDEF}');
+        $this->request->setStoreToken(true);
+        $data = $this->request->getData();
+        
+        $this->assertSame(1, $data['StoreToken']);
+    }
+
+    public function testStoreTokenIsUnsetIfThereIsNoExistingTokenSetInRequest()
+    {
+        $this->request->setStoreToken(true);
+        $data = $this->request->getData();
+
+        $this->assertArrayNotHasKey('StoreToken', $data);
+    }
+
+    /**
+     * @dataProvider tokenSetterProvider
+     */
+    public function testStoreTokenCanOnlyBeOneOrZeroIfSetInRequest($parameter, $expectation)
+    {
+        $this->request->setToken('{ABCDEF}');
+        $this->request->setStoreToken($parameter);
+        $data = $this->request->getData();
+
+        $this->assertSame($expectation, $data['StoreToken']);
+    }
+
+    public function tokenSetterProvider()
+    {
+        return array(
+            array(1, 1),
+            array('1', 1),
+            array(true, 1),
+            array('some string', 1),
+            array(array('something'), 1),
+            array(0, 0),
+            array('0', 0),
+            array(false, 0),
+            array('', 0),
+            array(null, 0),
+            array(array(), 0)
+        );
     }
 }
