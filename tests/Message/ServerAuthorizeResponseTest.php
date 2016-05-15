@@ -44,4 +44,14 @@ class ServerAuthorizeResponseTest extends TestCase
         $this->assertSame('{"VendorTxCode":"123456"}', $response->getTransactionReference());
         $this->assertSame('3082 : The Description value is too long.', $response->getMessage());
     }
+
+    public function testServerPurchaseWithToken()
+    {
+        $httpResponse = $this->getMockHttpResponse('ServerPurchaseWithToken.txt');
+        $response = new ServerAuthorizeResponse($this->getMockRequest(), $httpResponse->getBody());
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertTrue($response->isRedirect());
+        $this->assertSame('{ABCDEFGH-ABCD-ABCD-ABCD-ABCDEFGHIJKL}', $response->getToken());
+    }
 }
