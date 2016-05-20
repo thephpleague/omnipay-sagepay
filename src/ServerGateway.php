@@ -35,4 +35,14 @@ class ServerGateway extends DirectGateway
     {
         return $this->completeAuthorize($parameters);
     }
+
+    public function registerToken(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\ServerTokenRegistrationRequest', $parameters);
+    }
+
+    public function completeRegistration(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\ServerTokenRegistrationCompleteRequest', $parameters);
+    }
 }
