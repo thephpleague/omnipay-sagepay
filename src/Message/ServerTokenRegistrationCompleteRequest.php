@@ -14,7 +14,7 @@ class ServerTokenRegistrationCompleteRequest extends AbstractRequest
 
         // Strip out leading/trailing curly brackets as these are not required in the
         // MD5 signature for some reason (unlike in the standard Server request).
-        $vpsTxId = str_replace(['{', '}'], '', $reference['VPSTxId']);
+        $vpsTxId = str_replace(array('{', '}'), '', $reference['VPSTxId']);
 
         // Re-create the VPSSignature
         $signature_string =

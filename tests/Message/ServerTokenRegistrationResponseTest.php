@@ -27,7 +27,7 @@ class ServerTokenRegistrationResponseTest extends TestCase
 
     public function testTokenRegistrationFailure()
     {
-        $httpResponse = $this->getMockHttpResponse('ServeRTokenRegistrationFailure.txt');
+        $httpResponse = $this->getMockHttpResponse('ServerTokenRegistrationFailure.txt');
         $response = new ServerTokenRegistrationResponse($this->getMockRequest(), $httpResponse->getBody());
 
         $this->assertFalse($response->isSuccessful());
