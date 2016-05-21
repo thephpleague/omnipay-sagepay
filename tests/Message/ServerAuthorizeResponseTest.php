@@ -25,7 +25,6 @@ class ServerAuthorizeResponseTest extends TestCase
         $this->assertNull($response->getRedirectData());
     }
 
-
     public function testServerPurchaseRepeated()
     {
         $response = new ServerAuthorizeResponse($this->getMockRequest(), 'Status=OK REPEATED');

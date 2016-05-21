@@ -6,9 +6,6 @@ class ServerTokenRegistrationCompleteResponse extends ServerCompleteAuthorizeRes
 {
     public function getTransactionReference()
     {
-        $reference = json_decode($this->getRequest()->getTransactionReference(), true);
-        $reference['VendorTxCode'] = $this->getRequest()->getTransactionId();
-
-        return json_encode($reference);
+        return $this->request->getTransactionReference();
     }
 }
