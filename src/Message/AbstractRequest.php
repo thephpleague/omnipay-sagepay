@@ -272,7 +272,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 ':' . number_format($basketItem->getPrice(), 2, '.', '') .    // Unit cost (without tax)
                 ':0.00' .    // Item tax
                 ':' . number_format($basketItem->getPrice(), 2, '.', '') .    // Item total
-                ':' . number_format($lineTotal);  // Line total
+                ':' . number_format($lineTotal, 2, '.', '');  // Line total
             // As the getItemData() puts 0.00 into tax, same was done here
 
             $count++;
