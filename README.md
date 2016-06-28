@@ -39,7 +39,11 @@ repository.
 
 ### Basket format
 
-By default [BasketXML](http://www.sagepay.co.uk/support/12/36/protocol-3-00-basket-xml) (Protocol 3.00) field will be sent (if item data is available) with the requests. However, a parameter "useOldBasketFormat" with value of TRUE can be passed to the config, which will in turn send old format [Basket](http://www.sagepay.co.uk/support/error-codes/3021-invalid-basket-format-invalid) field. Old format can be used to enable other Sage products better integrate with Sage Pay, as new BasketXML is not yet supported.
+Sagepay currently supports two different formats for sending cart/item information to them:  
+ - [BasketXML](http://www.sagepay.co.uk/support/12/36/protocol-3-00-basket-xml)
+ - [Basket](http://www.sagepay.co.uk/support/error-codes/3021-invalid-basket-format-invalid)
+
+These are incompatible with each other, and cannot be both sent in the same transaction. *BasketXML* is the most modern format, and is the default used by this driver. *Basket* is an older format which may be deprecated one day, but is also the only format currently supported by some of the Sage accounting products (Line 50, etc) which can pull transaction data directly from Sagepay. Therefore for users who require this type of integration, an optional parameter `useOldBasketFormat` with a value of `true` can be passed in the driver's `initialize()` method.
 
 ## Support
 
