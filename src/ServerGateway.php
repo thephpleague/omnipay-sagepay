@@ -22,6 +22,9 @@ class ServerGateway extends DirectGateway
         return $this->createRequest('\Omnipay\SagePay\Message\ServerAuthorizeRequest', $parameters);
     }
 
+    /**
+     * Please now use notify()
+     */
     public function completeAuthorize(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\SagePay\Message\ServerCompleteAuthorizeRequest', $parameters);
@@ -32,11 +35,17 @@ class ServerGateway extends DirectGateway
         return $this->createRequest('\Omnipay\SagePay\Message\ServerPurchaseRequest', $parameters);
     }
 
+    /**
+     * Please now use notify()
+     */
     public function completePurchase(array $parameters = array())
     {
         return $this->completeAuthorize($parameters);
     }
 
+    /**
+     * Replaces completeAuthorize() and completePurchase()
+     */
     public function notify(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\SagePay\Message\ServerNotifyRequest', $parameters);

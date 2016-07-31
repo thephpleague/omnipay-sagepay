@@ -39,6 +39,11 @@ repository.
 
 ## Notification Handler
 
+> **NOTE:** The notification handler was handled by the SagePay_Server `completeAuthorize` and
+  `completePurchase` messages. These have been left - for the lifetime of OmniPay 2.x at least -
+  for use by legacy applications. The recomendation is to us the new `notify` handler now, which
+  is simpler and will be more consistent with other gateways.
+
 The `SagePay_Server` gateway uses a notification callback to receive the results of a payment or authorisation.
 The URL for the notification handler is set in the authorize or payment message:
 
@@ -88,6 +93,8 @@ $transactionId = $request->getTransactionId();
 Now the signature can be checked:
 
 ~~~php
+// The transactionReference contains a one-time token known as the `securitykey` that is
+// used in the signature hash. You can alternatively `setSecurityKey('...')` if you saved that.
 $request->setTransactionReference($transactionReference);
 
 // Get the response ready for returning.
@@ -97,7 +104,7 @@ if (!$request->checkSignature()) {
     // Respond to Sage Pay indicating we are not accepting anything about this message.
     // You might want to log `$request->getData()` first, for later analysis.
 
-    $response->invalid($nextUrl, 'Signature not valid');
+    $response->invalid($nextUrl, 'Signature not valid - goodbye');
 }
 ~~~
 
