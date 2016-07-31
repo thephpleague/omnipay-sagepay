@@ -9,7 +9,7 @@ use Omnipay\Common\Message\NotificationInterface;
  * Sage Pay Server Notification.
  * The gateway will send the results of Server transactions here.
  */
-class ServerNotifyAuthorizeRequest extends AbstractRequest implements NotificationInterface
+class ServerNotifyRequest extends AbstractRequest implements NotificationInterface
 {
     /**
      * Raw Status values.
@@ -247,17 +247,18 @@ class ServerNotifyAuthorizeRequest extends AbstractRequest implements Notificati
      */
     public function getTransactionStatus()
     {
-        $status = $this->getStatus();
-
+        // If the signature check fails, then all bets are off.
         if (!$this->checkSignature()) {
             return static::STATUS_ERROR;
         }
+
+        $status = $this->getStatus();
 
         if ($status == static::SAGEPAY_STATUS_OK) {
             return static::STATUS_COMPLETED;
         }
 
-        if ($status == static::SAGEPAY_STATUS_PENDINF) {
+        if ($status == static::SAGEPAY_STATUS_PENDING) {
             return static::STATUS_PENDING;
         }
 
@@ -272,5 +273,15 @@ class ServerNotifyAuthorizeRequest extends AbstractRequest implements Notificati
     public function getMessage()
     {
         return $this->getDataItem('StatusDetail');
+    }
+
+    /**
+     * Get the Sage Pay Responder.
+     *
+     * @return string A response message from the payment gateway
+     */
+    public function sendData($data)
+    {
+        return $this->response = new ServerNotifyResponse($this, $data);
     }
 }
