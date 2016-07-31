@@ -101,29 +101,8 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     }
 
     /**
-     * The raw status code.
-     */
-    public function getStatus()
-    {
-        return $this->getDataItem('Status');
-    }
-
-    public function getCode()
-    {
-        return $this->getStatus();
-    }
-
-    /**
-     * The signature supplied with the data.
-     */
-    public function getSignature()
-    {
-        return strtolower($this->getDataItem('VPSSignature'));
-    }
-
-    /**
      * Create the signature calculated from the POST data and the saved SecurityKey
-     * (the SagePay one-use token).
+     * (the SagePay one-use signature).
      */
     public function buildSignature()
     {
@@ -135,7 +114,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
             $this->getTxAuthNo(),
             $this->getVendor(),
             $this->getDataItem('AVSCV2'),
-            $this->getSecurityKey(), // Saved
+            $this->getSecurityKey(), // As saved
             $this->getDataItem('AddressResult'),
             $this->getDataItem('PostCodeResult'),
             $this->getDataItem('CV2Result'),
@@ -196,12 +175,45 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
         $reference['VendorTxCode'] = $this->getTransactionId();
 
         foreach (array('SecurityKey', 'TxAuthNo', 'VPSTxId') as $key) {
-            $reference[$key] = $this->getDataItem$key);
+            $reference[$key] = $this->getDataItem($key);
         }
 
         ksort($reference);
 
         return json_encode($reference);
+    }
+
+    /**
+     * The raw status code.
+     */
+    public function getStatus()
+    {
+        return $this->getDataItem('Status');
+    }
+
+    /**
+     * This should probably be the numeric code embedded in the StatusDetail,
+     * but this is a good approximation.
+     */
+    public function getCode()
+    {
+        return $this->getStatus();
+    }
+
+    /**
+     * A token is returned if one has been requested.
+     */
+    public function getToken()
+    {
+        return $this->getDataItem('Token');
+    }
+
+    /**
+     * The signature supplied with the data.
+     */
+    public function getSignature()
+    {
+        return strtolower($this->getDataItem('VPSSignature'));
     }
 
     /**
@@ -228,7 +240,6 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
         return $this->getParameter('SecurityKey');
     }
 
-    // This comes from the POSTed data, not anything we have set.
     public function getVPSTxId()
     {
         return $this->getDataItem('VPSTxId');
@@ -247,9 +258,9 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
      */
     public function getTransactionStatus()
     {
-        // If the signature check fails, then all bets are off.
+        // If the signature check fails, then all bets are off - the POST cannot be trusted.
         if (!$this->checkSignature()) {
-            return static::STATUS_ERROR;
+            return static::STATUS_FAILED;
         }
 
         $status = $this->getStatus();

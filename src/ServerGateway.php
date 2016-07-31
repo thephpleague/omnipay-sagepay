@@ -39,6 +39,6 @@ class ServerGateway extends DirectGateway
 
     public function notify(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\ServerNotifyAuthorizeRequest', $parameters);
+        return $this->createRequest('\Omnipay\SagePay\Message\ServerNotifyRequest', $parameters);
     }
 }
