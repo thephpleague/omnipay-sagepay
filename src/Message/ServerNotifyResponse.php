@@ -66,9 +66,20 @@ class ServerNotifyResponse extends Response
         $this->sendResponse(static::RESPONSE_STATUS_ERROR, $nextUrl, $detail);
     }
 
+    /**
+     * Convenience method.
+     */
     public function getData()
     {
         return $this->request->getData();
+    }
+
+    /**
+     * Convenience method.
+     */
+    public function getTransactionStatus()
+    {
+        return $this->request->getTransactionStatus();
     }
 
     /**
