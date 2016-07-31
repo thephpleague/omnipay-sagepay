@@ -2,6 +2,7 @@
 
 namespace Omnipay\SagePay;
 
+// CHECKME: do we really need these?
 use Omnipay\SagePay\Message\ServerAuthorizeRequest;
 use Omnipay\SagePay\Message\ServerCompleteAuthorizeRequest;
 use Omnipay\SagePay\Message\ServerPurchaseRequest;
@@ -34,5 +35,10 @@ class ServerGateway extends DirectGateway
     public function completePurchase(array $parameters = array())
     {
         return $this->completeAuthorize($parameters);
+    }
+
+    public function notify(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\ServerNotifyAuthorizeRequest', $parameters);
     }
 }
