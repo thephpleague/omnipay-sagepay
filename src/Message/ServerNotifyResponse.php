@@ -66,6 +66,11 @@ class ServerNotifyResponse extends Response
         $this->sendResponse(static::RESPONSE_STATUS_ERROR, $nextUrl, $detail);
     }
 
+    public function getData()
+    {
+        return $this->request->getData();
+    }
+
     /**
      * Invalid
      *
@@ -103,16 +108,16 @@ class ServerNotifyResponse extends Response
     {
         $message = array(
             'Status=' . $status,
-            'RedirectUrl=' . $nextUrl
+            'RedirectUrl=' . $nextUrl,
         );
 
-        if (null !== $detail) {
+        if ($detail !== null) {
             $message[] = 'StatusDetail=' . $detail;
         }
 
         echo implode(static::LINE_SEP, $message);
 
-        if ($this->$exit_on_response) {
+        if ($this->exit_on_response) {
             exit;
         }
     }
