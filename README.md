@@ -41,7 +41,7 @@ repository.
 
 > **NOTE:** The notification handler was handled by the SagePay_Server `completeAuthorize` and
   `completePurchase` messages. These have been left - for the lifetime of OmniPay 2.x at least -
-  for use by legacy applications. The recomendation is to us the new `notify` handler now, which
+  for use by legacy applications. The recomendation is to use the new `notify` handler now, which
   is simpler and will be more consistent with other gateways.
 
 The `SagePay_Server` gateway uses a notification callback to receive the results of a payment or authorisation.
@@ -54,7 +54,7 @@ $response = $gateway->purchase(array(
     'amount' => '9.99',
     'currency' => 'GBP',
     'card' => $card,
-    'notifyUrl' => route('notify'), // Your application's route to your notication handler.
+    'notifyUrl' => route('notify'), // The route to your application's notification handler.
     'transactionId' => $transactionId,
     'description' => 'test',
     'items' => $items,
@@ -74,7 +74,7 @@ Your notification handler needs to do four things:
 
 This is a back-channel, so has no access to the end user's session.
 
-The notify gateway is set up simply:
+The notify gateway is set up simply. The `$request` will capture the POST data sent by Sage Pay:
 
 ~~~php
 $gateway = OmniPay\OmniPay::create('SagePay_Server');
@@ -94,13 +94,14 @@ Now the signature can be checked:
 
 ~~~php
 // The transactionReference contains a one-time token known as the `securitykey` that is
-// used in the signature hash. You can alternatively `setSecurityKey('...')` if you saved that.
+// used in the signature hash. You can alternatively `setSecurityKey('...')` if you saved
+// that as a separate field.
 $request->setTransactionReference($transactionReference);
 
-// Get the response ready for returning.
+// Get the response message ready for returning.
 $response = $request->send();
 
-if (!$request->checkSignature()) {
+if (! $request->checkSignature()) {
     // Respond to Sage Pay indicating we are not accepting anything about this message.
     // You might want to log `$request->getData()` first, for later analysis.
 
@@ -109,7 +110,7 @@ if (!$request->checkSignature()) {
 ~~~
 
 If you were not able to look up the transaction or the transaction is in the wrong state,
-then indicate this with an error. Note an "error" is to indicate that although the notication
+then indicate this with an error. Note an "error" is to indicate that although the notification
 appears to be legitimate, you do not accept it or cannot handle it for any reason:
 
 ~~~php
@@ -126,9 +127,10 @@ $request->getData();
 // Result is $request::STATUS_COMPLETED, $request::STATUS_PENDING or $request::STATUS_FAILED
 $request->getTransactionStatus();
 
-// If you want more detail, look at the raw data.
+// If you want more detail, look at the raw data. An error message may be found in:
+$request->getMessage();
 
-// Not let Sage Pay know you have got it:
+// Now let Sage Pay know you have got it:
 $response->confirm($nextUrl);
 ~~~
 
