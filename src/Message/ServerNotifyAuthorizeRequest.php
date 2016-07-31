@@ -122,16 +122,8 @@ class ServerNotifyAuthorizeRequest extends AbstractRequest implements Notificati
     }
 
     /**
-     * Create the signature calculated from the three pieces of saved local
-     * information:
-     * - VendorTxCode - merchant site ID (aka transactionId).
-     * - VPSTxId - SagePay ID (aka transactionReference)
-     * - SecurityKey - SagePay one-use token.
-     * and the POSTed transaction results.
-     *
-     * Note that the three items above are passed in as a single JSON structure
-     * as the transactionReference. Would be nice if that were just the fallback,
-     * if not passed in as three separate items to the relevant fields.
+     * Create the signature calculated from the POST data and the saved SecurityKey
+     * (the SagePay one-use token).
      */
     public function buildSignature()
     {
@@ -281,5 +273,4 @@ class ServerNotifyAuthorizeRequest extends AbstractRequest implements Notificati
     {
         return $this->getDataItem('StatusDetail');
     }
-
 }
