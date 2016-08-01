@@ -101,7 +101,7 @@ $request->setTransactionReference($transactionReference);
 // Get the response message ready for returning.
 $response = $request->send();
 
-if (! $request->checkSignature()) {
+if (! $request->isValid()) {
     // Respond to Sage Pay indicating we are not accepting anything about this message.
     // You might want to log `$request->getData()` first, for later analysis.
 

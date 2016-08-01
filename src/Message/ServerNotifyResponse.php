@@ -40,11 +40,19 @@ class ServerNotifyResponse extends Response
     public function confirm($nextUrl, $detail = null)
     {
         // If the signature is invalid, then do not allow the confirm.
-        if (!$this->request->checkSignature()) {
+        if (!$this->request->isValid()) {
             throw new InvalidResponseException('Attempted to confirm an invalid notification');
         }
 
         $this->sendResponse(static::RESPONSE_STATUS_OK, $nextUrl, $detail);
+    }
+
+    /**
+     * Alias for confirm(), trying to define some more general conventions.
+     */
+    public function accept($nextUrl, $detail = null)
+    {
+        return $this->confirm($nextUrl, $detail);
     }
 
     /**
@@ -59,11 +67,19 @@ class ServerNotifyResponse extends Response
     public function error($nextUrl, $detail = null)
     {
         // If the signature is invalid, then do not allow the confirm.
-        if (!$this->request->checkSignature()) {
+        if (!$this->request->isValid()) {
             throw new InvalidResponseException('Attempted to reject an invalid notification');
         }
 
         $this->sendResponse(static::RESPONSE_STATUS_ERROR, $nextUrl, $detail);
+    }
+
+    /**
+     * Alias for error(), trying to define some more general conventions.
+     */
+    public function reject($nextUrl, $detail = null)
+    {
+        return $this->error($nextUrl, $detail);
     }
 
     /**

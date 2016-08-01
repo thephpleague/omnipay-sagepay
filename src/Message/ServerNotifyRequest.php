@@ -138,7 +138,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     /**
      * Check whether the ignature is valid.
      */
-    public function checkSignature()
+    public function isValid()
     {
         return $this->getSignature() == $this->buildSignature();
     }
@@ -259,7 +259,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     public function getTransactionStatus()
     {
         // If the signature check fails, then all bets are off - the POST cannot be trusted.
-        if (!$this->checkSignature()) {
+        if (!$this->isValid()) {
             return static::STATUS_FAILED;
         }
 
