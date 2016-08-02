@@ -41,8 +41,8 @@ repository.
 
 > **NOTE:** The notification handler was handled by the SagePay_Server `completeAuthorize` and
   `completePurchase` messages. These have been left - for the lifetime of OmniPay 2.x at least -
-  for use by legacy applications. The recomendation is to use the new `notify` handler now, which
-  is simpler and will be more consistent with other gateways.
+  for use by legacy applications. The recomendation is to use the new `acceptNotification` handler
+  now, which is simpler and will be more consistent with other gateways.
 
 The `SagePay_Server` gateway uses a notification callback to receive the results of a payment or authorisation.
 The URL for the notification handler is set in the authorize or payment message:
@@ -54,7 +54,7 @@ $response = $gateway->purchase(array(
     'amount' => '9.99',
     'currency' => 'GBP',
     'card' => $card,
-    'notifyUrl' => route('notify'), // The route to your application's notification handler.
+    'notifyUrl' => route('sagepay.server.notify'), // The route to your application's notification handler.
     'transactionId' => $transactionId,
     'description' => 'test',
     'items' => $items,
@@ -74,13 +74,13 @@ Your notification handler needs to do four things:
 
 This is a back-channel, so has no access to the end user's session.
 
-The notify gateway is set up simply. The `$request` will capture the POST data sent by Sage Pay:
+The acceptNotification gateway is set up simply. The `$request` will capture the POST data sent by Sage Pay:
 
 ~~~php
 $gateway = OmniPay\OmniPay::create('SagePay_Server');
 $gateway->setVendor('your-vendor-name');
 $gateway->setTestMode(true); // If testing
-$request = $gateway->notify();
+$request = $gateway->acceptNotification();
 ~~~
 
 Your original `transactionId` is available to look up the transaction in the database:

@@ -23,7 +23,8 @@ class ServerGateway extends DirectGateway
     }
 
     /**
-     * Please now use notify()
+     * Please now use acceptNotification()
+     * @deprecated
      */
     public function completeAuthorize(array $parameters = array())
     {
@@ -36,7 +37,8 @@ class ServerGateway extends DirectGateway
     }
 
     /**
-     * Please now use notify()
+     * Please now use acceptNotification()
+     * @deprecated
      */
     public function completePurchase(array $parameters = array())
     {
@@ -46,7 +48,7 @@ class ServerGateway extends DirectGateway
     /**
      * Replaces completeAuthorize() and completePurchase()
      */
-    public function notify(array $parameters = array())
+    public function acceptNotification(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\SagePay\Message\ServerNotifyRequest', $parameters);
     }
