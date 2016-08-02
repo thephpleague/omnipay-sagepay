@@ -7,7 +7,7 @@ use Mockery as m;
 
 class ServerNotifyResponseTest extends TestCase
 {
-    public function testServerNotifyResponseSuccess()
+    public function DISABLED_testServerNotifyResponseSuccess()
     {
         $response = new ServerNotifyResponse(
             $this->getMockRequest(),
