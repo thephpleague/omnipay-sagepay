@@ -11,6 +11,9 @@ use Omnipay\Common\Message\RequestInterface;
  */
 class Response extends AbstractResponse implements RedirectResponseInterface
 {
+    /**
+     * FIXME: something not right about this - the data should not be a string here.
+     */
     public function __construct(RequestInterface $request, $data)
     {
         $this->request = $request;
@@ -95,6 +98,10 @@ class Response extends AbstractResponse implements RedirectResponseInterface
      */
     protected function decode($response)
     {
+        if (is_array($response)) {
+            return $response;
+        }
+
         $lines = explode("\n", $response);
         $data = array();
 

@@ -277,7 +277,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     }
 
     /**
-     * Response Message
+     * Response Textual Message
      *
      * @return string A response message from the payment gateway
      */
@@ -289,7 +289,8 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     /**
      * Get the Sage Pay Responder.
      *
-     * @return string A response message from the payment gateway
+     * @param string $data message body.
+     * @return ServerNotifyResponse
      */
     public function sendData($data)
     {
