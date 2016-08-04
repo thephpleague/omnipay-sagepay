@@ -12,12 +12,31 @@ use Omnipay\Common\Message\RequestInterface;
 class Response extends AbstractResponse implements RedirectResponseInterface
 {
     /**
-     * FIXME: something not right about this - the data should not be a string here.
+     * FIXME: this is very wrong. The response should never be directly passed the
+     * raw HTTP body. The body should be parsed to data before instantiation.
+     * However, the tests do not do that. I believe it is the tests that are borken,
+     * but the tests are how the interface has been implemented so we cannot break
+     * that for people who may rely on it.
      */
     public function __construct(RequestInterface $request, $data)
     {
         $this->request = $request;
-        $this->data = $this->decode($data);
+
+        if (!is_array($data)) {
+            // Split the data (string or guzzle body object) into lines.
+            $lines = preg_split('/[\n\r]+/', (string)$data);
+
+            $data = array();
+
+            foreach ($lines as $line) {
+                $line = explode('=', $line, 2);
+                if (!empty($line[0])) {
+                    $data[trim($line[0])] = isset($line[1]) ? trim($line[1]) : '';
+                }
+            }
+        }
+
+        $this->data = $data;
     }
 
     public function isSuccessful()
@@ -88,30 +107,5 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                 'MD' => $this->data['MD'],
             );
         }
-    }
-
-    /**
-     * Decode raw ini-style response body
-     *
-     * @param string The raw response body
-     * @return array
-     */
-    protected function decode($response)
-    {
-        if (is_array($response)) {
-            return $response;
-        }
-
-        $lines = explode("\n", $response);
-        $data = array();
-
-        foreach ($lines as $line) {
-            $line = explode('=', $line, 2);
-            if (!empty($line[0])) {
-                $data[trim($line[0])] = isset($line[1]) ? trim($line[1]) : '';
-            }
-        }
-
-        return $data;
     }
 }

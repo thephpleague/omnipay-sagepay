@@ -80,7 +80,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     public function getData()
     {
         // Grab the data from the request if we don't already have it.
-        // This would be a doog place to convert the encoding if required
+        // This would be a good place to convert the encoding if required
         // e.g. ISO-8859-1 to UTF-8.
 
         if (!isset($this->data)) {
@@ -91,7 +91,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     }
 
     /**
-     * Get a POST data item, or '' if not set.
+     * Get a POST data item, or '' if not present.
      */
     protected function getDataItem($name)
     {
@@ -114,7 +114,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
             $this->getTxAuthNo(),
             $this->getVendor(),
             $this->getDataItem('AVSCV2'),
-            $this->getSecurityKey(), // As saved
+            $this->getSecurityKey(), // As saved previously
             $this->getDataItem('AddressResult'),
             $this->getDataItem('PostCodeResult'),
             $this->getDataItem('CV2Result'),
