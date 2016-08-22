@@ -11,10 +11,6 @@ class DirectRepeatPaymentRequest extends AbstractRequest
 {
     protected $action = 'REPEAT';
 
-    // --------------
-    // Public getters
-    // --------------
-
     public function getData()
     {
         $data = $this->getBaseData();
@@ -45,10 +41,6 @@ class DirectRepeatPaymentRequest extends AbstractRequest
         return 'repeat';
     }
 
-    // --------------
-    // Public setters
-    // --------------
-
     public function setDescription($value)
     {
         return $this->setParameter('description', $value);
@@ -70,10 +62,6 @@ class DirectRepeatPaymentRequest extends AbstractRequest
         }
     }
 
-    // ----------------
-    // Internal getters
-    // ----------------
-
     protected function getRelatedVPSTxId()
     {
         return $this->getParameter('relatedVPSTxId');
@@ -93,10 +81,6 @@ class DirectRepeatPaymentRequest extends AbstractRequest
     {
         return $this->getParameter('relatedTxAuthNo');
     }
-
-    // ----------------
-    // Internal setters
-    // ----------------
 
     protected function setRelatedSecurityKey($value)
     {
