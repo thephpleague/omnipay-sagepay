@@ -36,6 +36,18 @@ class DirectGateway extends AbstractGateway
     {
         return $this->setParameter('vendor', $value);
     }
+    
+    public function setUseOldBasketFormat($value)
+    {
+        $value = (bool)$value;
+
+        return $this->setParameter('useOldBasketFormat', $value);
+    }
+
+    public function getUseOldBasketFormat()
+    {
+        return $this->getParameter('useOldBasketFormat');
+    }
 
     // Access to the HTTP client for debugging.
     // NOTE: this is likely to be removed or replaced with something
@@ -85,5 +97,10 @@ class DirectGateway extends AbstractGateway
     public function refund(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\SagePay\Message\RefundRequest', $parameters);
+    }
+
+    public function repeatPayment(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\DirectRepeatPaymentRequest', $parameters);
     }
 }
