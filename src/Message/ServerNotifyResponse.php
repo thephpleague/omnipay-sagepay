@@ -17,6 +17,9 @@ class ServerNotifyResponse extends Response
     const RESPONSE_STATUS_ERROR = 'ERROR';
     const RESPONSE_STATUS_INVALID = 'INVALID';
 
+    /**
+     * Live separator for return message to Sage Pay.
+     */
     const LINE_SEP = "\r\n";
 
     /**
@@ -67,7 +70,7 @@ class ServerNotifyResponse extends Response
     public function error($nextUrl, $detail = null)
     {
         // If the signature is invalid, then do not allow the confirm.
-        if (!$this->request->isValid()) {
+        if (! $this->request->isValid()) {
             throw new InvalidResponseException('Attempted to reject an invalid notification');
         }
 
