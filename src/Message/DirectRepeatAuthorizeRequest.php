@@ -28,6 +28,36 @@ class DirectRepeatAuthorizeRequest extends AbstractRequest
         $data['RelatedSecurityKey'] = $this->getRelatedSecurityKey();
         $data['RelatedTxAuthNo'] = $this->getRelatedTxAuthNo();
 
+        // Some details in the card can be changed for the repeat purchase.
+        $card = $this->getCard();
+
+        // If a card is provided, then assume all billing details are being updated.
+        if ($card) {
+            $data['BillingFirstnames'] = $card->getBillingFirstName();
+            $data['BillingSurname'] = $card->getBillingLastName();
+            $data['BillingAddress1'] = $card->getBillingAddress1();
+            $data['BillingAddress2'] = $card->getBillingAddress2();
+            $data['BillingCity'] = $card->getBillingCity();
+            $data['BillingPostCode'] = $card->getBillingPostcode();
+            $data['BillingState'] = $card->getBillingCountry() === 'US' ? $card->getBillingState() : '';
+            $data['BillingCountry'] = $card->getBillingCountry();
+            $data['BillingPhone'] = $card->getBillingPhone();
+
+            // If the customer is present, then the CV2 can be supplied again for extra security.
+            $cvv = $card->getCvv();
+            if (isset($cvv) && $cvv != '') {
+                $data['CV2'] = $cvv;
+            }
+        }
+
+        // The documentation lists only BasketXML as supported for repeat transactions, and not Basklet.
+        // CHECKME: is this a documentation error?
+
+        $basketXML = $this->getItemData();
+        if (! empty($basketXML)) {
+            $data['BasketXML'] = $basketXML;
+        }
+
         return $data;
     }
 
