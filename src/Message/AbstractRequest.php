@@ -26,7 +26,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         return $this->action;
     }
-    
+
     public function setUseOldBasketFormat($value)
     {
         $value = (bool)$value;
@@ -228,6 +228,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 $item->addChild('totalGrossAmount', $total);
             }
         }
+
         if ($cartHasDiscounts) {
             $discounts = $xml->addChild('discounts');
             foreach ($items as $discountItem) {
@@ -238,14 +239,16 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 }
             }
         }
+
         $xmlString = $xml->asXML();
+
         if ($xmlString) {
             $result = $xmlString;
         }
 
         return $result;
     }
-    
+
     /**
      * Generate Basket string in the old format
      * This is called if "useOldBasketFormat" is set to true in the gateway config
@@ -255,7 +258,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      */
     protected function getItemDataNonXML()
     {
-
         $result = '';
         $items = $this->getItems();
         $count = 0;
@@ -264,16 +266,20 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             $lineTotal = ($basketItem->getQuantity() * $basketItem->getPrice());
 
             $description = $this->filterItemName($basketItem->getName());
-            $description = str_replace(':', ' ', $description); // Make sure there aren't any colons in the name
-            // Perhaps : should be replaced with '-' or other symbol?
+
+            // Make sure there aren't any colons in the name
+            // Perhaps ":" should be replaced with '-' or other symbol?
+            $description = str_replace(':', ' ', $description);
 
             $result .= ':' . $description .    // Item name
                 ':' . $basketItem->getQuantity() . // Quantity
-                ':' . number_format($basketItem->getPrice(), 2, '.', '') .    // Unit cost (without tax)
+                // Unit cost (without tax)
+                ':' . number_format($basketItem->getPrice(), 2, '.', '') .
                 ':0.00' .    // Item tax
-                ':' . number_format($basketItem->getPrice(), 2, '.', '') .    // Item total
+                // Item total
+                ':' . number_format($basketItem->getPrice(), 2, '.', '') .
+                // As the getItemData() puts 0.00 into tax, same was done here
                 ':' . number_format($lineTotal, 2, '.', '');  // Line total
-            // As the getItemData() puts 0.00 into tax, same was done here
 
             $count++;
 
@@ -283,6 +289,5 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $result = $count . $result;
 
         return $result;
-
     }
 }
