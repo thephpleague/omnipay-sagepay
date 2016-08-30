@@ -24,8 +24,6 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['Currency'] = $this->getCurrency();
         $data['VendorTxCode'] = $this->getTransactionId();
         $data['ClientIPAddress'] = $this->getClientIp();
-        $data['ApplyAVSCV2'] = $this->getApplyAVSCV2() ?: 0;
-        $data['Apply3DSecure'] = $this->getApply3DSecure() ?: 0;
 
         if ($this->getReferrerId()) {
             $data['ReferrerID'] = $this->getReferrerId();
@@ -72,28 +70,61 @@ class DirectAuthorizeRequest extends AbstractRequest
     public function getData()
     {
         $data = $this->getBaseAuthorizeData();
-        $this->getCard()->validate();
 
-        $data['CardHolder'] = $this->getCard()->getName();
-        $data['CardNumber'] = $this->getCard()->getNumber();
-        $data['CV2'] = $this->getCard()->getCvv();
-        $data['ExpiryDate'] = $this->getCard()->getExpiryDate('my');
-        $data['CardType'] = $this->getCardBrand();
+        if ($this->isRepeat()) {
+            $reference = json_decode($this->getTransactionReference(), true);
+            $data['RelatedVendorTxCode'] = $reference['VendorTxCode'];
+            $data['RelatedVPSTxId'] = $reference['VPSTxId'];
+            $data['RelatedSecurityKey'] = $reference['SecurityKey'];
+            $data['RelatedTxAuthNo'] = $reference['TxAuthNo'];
+        } else {
+            $this->getCard()->validate();
+            $data['Apply3DSecure'] = $this->getApply3DSecure() ?: 0;
+            $data['ApplyAVSCV2'] = $this->getApplyAVSCV2() ?: 0;
+            $data['CardHolder'] = $this->getCard()->getName();
+            $data['CardNumber'] = $this->getCard()->getNumber();
+            $data['CV2'] = $this->getCard()->getCvv();
+            $data['ExpiryDate'] = $this->getCard()->getExpiryDate('my');
+            $data['CardType'] = $this->getCardBrand();
 
-        if ($this->getCard()->getStartMonth() and $this->getCard()->getStartYear()) {
-            $data['StartDate'] = $this->getCard()->getStartDate('my');
-        }
+            if ($this->getCard()->getStartMonth() and $this->getCard()->getStartYear()) {
+                $data['StartDate'] = $this->getCard()->getStartDate('my');
+            }
 
-        if ($this->getCard()->getIssueNumber()) {
-            $data['IssueNumber'] = $this->getCard()->getIssueNumber();
+            if ($this->getCard()->getIssueNumber()) {
+                $data['IssueNumber'] = $this->getCard()->getIssueNumber();
+            }
         }
 
         return $data;
     }
 
+    /**
+     * If we are making a repeat transaction, we need the repeat endpoint
+     *
+     * @return string
+     * @author Dom Morgan <dom@d3r.com>
+     */
     public function getService()
     {
+        if ($this->isRepeat()) {
+            return 'repeat';
+        }
         return 'vspdirect-register';
+    }
+
+    /**
+     * We need to send a different type when we repeat a payment
+     *
+     * @return string
+     * @author Dom Morgan <dom@d3r.com>
+     */
+    public function getTxType()
+    {
+        if ($this->isRepeat()) {
+            return 'REPEAT' . $this->action;
+        }
+        return $this->action;
     }
 
     protected function getCardBrand()
@@ -105,5 +136,16 @@ class DirectAuthorizeRequest extends AbstractRequest
         }
 
         return $brand;
+    }
+
+    /**
+     * Is this a repeat transaction?
+     *
+     * @return boolean
+     * @author Dom Morgan <dom@d3r.com>
+     */
+    protected function isRepeat()
+    {
+        return false != $this->getTransactionReference();
     }
 }

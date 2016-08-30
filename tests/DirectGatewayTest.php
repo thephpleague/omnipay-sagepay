@@ -24,6 +24,13 @@ class DirectGatewayTest extends GatewayTestCase
             'transactionId' => '123',
             'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
         );
+
+        $this->repeatOptions = array(
+            'amount' => '10.00',
+            'transactionId' => '123',
+            'card' => $this->getAddressOnlyCard(),
+            'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
+        );
     }
 
     public function testAuthorizeFailureSuccess()
@@ -68,6 +75,18 @@ class DirectGatewayTest extends GatewayTestCase
         $this->assertSame('https://www.example.com/return', $redirectData['TermUrl']);
     }
 
+    public function testAuthorizeRepeat()
+    {
+        $this->setMockHttpResponse('DirectPurchaseSuccess.txt');
+
+        $response = $this->gateway->authorize($this->repeatOptions)->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+        $this->assertSame('{"SecurityKey":"OUWLNYQTVT","TxAuthNo":"9962","VPSTxId":"{5A1BC414-5409-48DD-9B8B-DCDF096CE0BE}","VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('Direct transaction from Simulator.', $response->getMessage());
+    }
+
     public function testPurchaseSuccess()
     {
         $this->setMockHttpResponse('DirectPurchaseSuccess.txt');
@@ -108,6 +127,18 @@ class DirectGatewayTest extends GatewayTestCase
         $this->assertSame('065379457749061954', $redirectData['MD']);
         $this->assertSame('BSkaFwYFFTYAGyFbAB0LFRYWBwsBZw0EGwECEX9YRGFWc08pJCVVKgAANS0KADoZCCAMBnIeOxcWRg0LERdOOTQRDFRdVHNYUgwTMBsBCxABJw4DJHE+ERgPCi8MVC0HIAROCAAfBUk4ER89DD0IWDkvMQ1VdFwoUFgwXVYvbHgvMkdBXXNbQGIjdl1ZUEc1XSwqAAgUUicYBDYcB3I2AjYjIzsn', $redirectData['PaReq']);
         $this->assertSame('https://www.example.com/return', $redirectData['TermUrl']);
+    }
+
+    public function testPurchaseRepeat()
+    {
+        $this->setMockHttpResponse('DirectPurchaseSuccess.txt');
+
+        $response = $this->gateway->authorize($this->repeatOptions)->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+        $this->assertSame('{"SecurityKey":"OUWLNYQTVT","TxAuthNo":"9962","VPSTxId":"{5A1BC414-5409-48DD-9B8B-DCDF096CE0BE}","VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('Direct transaction from Simulator.', $response->getMessage());
     }
 
     public function testCaptureSuccess()
@@ -152,5 +183,25 @@ class DirectGatewayTest extends GatewayTestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('You are trying to RELEASE a transaction that has already been RELEASEd or ABORTed.', $response->getMessage());
+    }
+
+    public function getAddressOnlyCard()
+    {
+        return array(
+            'billingAddress1' => '123 Billing St',
+            'billingAddress2' => 'Billsville',
+            'billingCity' => 'Billstown',
+            'billingPostcode' => '12345',
+            'billingState' => 'CA',
+            'billingCountry' => 'US',
+            'billingPhone' => '(555) 123-4567',
+            'shippingAddress1' => '123 Shipping St',
+            'shippingAddress2' => 'Shipsville',
+            'shippingCity' => 'Shipstown',
+            'shippingPostcode' => '54321',
+            'shippingState' => 'NY',
+            'shippingCountry' => 'US',
+            'shippingPhone' => '(555) 987-6543',
+        );
     }
 }
