@@ -153,4 +153,44 @@ class DirectGatewayTest extends GatewayTestCase
         $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('You are trying to RELEASE a transaction that has already been RELEASEd or ABORTed.', $response->getMessage());
     }
+
+    public function testRepeatAuthorizeSuccess()
+    {
+        $this->setMockHttpResponse('RepeatAuthorize.txt');
+
+        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertSame('Successful repeat.', $response->getMessage());
+    }
+
+    public function testRepeatAuthorizeFailure()
+    {
+        $this->setMockHttpResponse('RepeatAuthorizeFailure.txt');
+
+        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send();
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertSame('Not authorized.', $response->getMessage());
+    }
+
+    public function testRepeatPurchaseSuccess()
+    {
+        $this->setMockHttpResponse('RepeatAuthorize.txt');
+
+        $response = $this->gateway->repeatPurchase($this->captureOptions)->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertSame('Successful repeat.', $response->getMessage());
+    }
+
+    public function testRepeatPurchaseFailure()
+    {
+        $this->setMockHttpResponse('RepeatAuthorizeFailure.txt');
+
+        $response = $this->gateway->repeatPurchase($this->captureOptions)->send();
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertSame('Not authorized.', $response->getMessage());
+    }
 }

@@ -69,6 +69,22 @@ class DirectAuthorizeRequest extends AbstractRequest
         return $data;
     }
 
+    /**
+     * SagePay throws an error if passed an IPv6 address.
+     * Filter out addresses that are not IPv4 format.
+     */
+    public function getClientIp()
+    {
+        $ip = parent::getClientIp();
+
+        // OmniPay core could do with a helper for this.
+        if (! preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $ip)) {
+            $ip = null;
+        }
+
+        return $ip;
+    }
+
     public function getData()
     {
         $data = $this->getBaseAuthorizeData();
