@@ -4,19 +4,19 @@ namespace Omnipay\SagePay\Message;
 
 /**
  * Sage Pay Direct Capture Request
- * TODO: add "Direct" prefix for clarity.
  */
-class CaptureRequest extends AbstractRequest
+class DirectVoidRequest extends AbstractRequest
 {
-    protected $action = 'RELEASE';
+    protected $action = 'VOID';
 
     public function getData()
     {
-        $this->validate('amount', 'transactionReference');
+        $this->validate('transactionReference');
         $reference = json_decode($this->getTransactionReference(), true);
 
         $data = $this->getBaseData();
-        $data['ReleaseAmount'] = $this->getAmount();
+
+        // Reference to the transaction to void.
         $data['VendorTxCode'] = $reference['VendorTxCode'];
         $data['VPSTxId'] = $reference['VPSTxId'];
         $data['SecurityKey'] = $reference['SecurityKey'];

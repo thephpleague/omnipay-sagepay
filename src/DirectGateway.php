@@ -81,7 +81,12 @@ class DirectGateway extends AbstractGateway
 
     public function capture(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\CaptureRequest', $parameters);
+        return $this->createRequest('\Omnipay\SagePay\Message\DirectCaptureRequest', $parameters);
+    }
+
+    public function void(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\DirectVoidRequest', $parameters);
     }
 
     public function purchase(array $parameters = array())
@@ -96,7 +101,7 @@ class DirectGateway extends AbstractGateway
 
     public function refund(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\RefundRequest', $parameters);
+        return $this->createRequest('\Omnipay\SagePay\Message\DirectRefundRequest', $parameters);
     }
 
     /**

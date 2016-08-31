@@ -4,13 +4,13 @@ namespace Omnipay\SagePay\Message;
 
 use Omnipay\Tests\TestCase;
 
-class RefundRequestTest extends TestCase
+class DirectRefundRequestTest extends TestCase
 {
     public function setUp()
     {
         parent::setUp();
 
-        $this->request = new RefundRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new DirectRefundRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
             array(
                 'amount' => '12.00',

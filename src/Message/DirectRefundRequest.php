@@ -6,7 +6,7 @@ namespace Omnipay\SagePay\Message;
  * Sage Pay Direct Refund Request
  * TODO: add "Direct" prefix for clarity.
  */
-class RefundRequest extends AbstractRequest
+class DirectRefundRequest extends AbstractRequest
 {
     protected $action = 'REFUND';
 
@@ -16,15 +16,19 @@ class RefundRequest extends AbstractRequest
         $reference = json_decode($this->getTransactionReference(), true);
 
         $data = $this->getBaseData();
+
         $data['Amount'] = $this->getAmount();
         $data['Currency'] = $this->getCurrency();
+
         $data['Description'] = $this->getDescription();
+
+        // Reference to the transaction to refund.
         $data['RelatedVendorTxCode'] = $reference['VendorTxCode'];
         $data['RelatedVPSTxId'] = $reference['VPSTxId'];
         $data['RelatedSecurityKey'] = $reference['SecurityKey'];
         $data['RelatedTxAuthNo'] = $reference['TxAuthNo'];
 
-        // VendorTxCode must be unique for the refund (different from original)
+        // The VendorTxCode for THIS refund transaction (different from original)
         $data['VendorTxCode'] = $this->getTransactionId();
 
         return $data;

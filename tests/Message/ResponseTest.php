@@ -54,7 +54,7 @@ class ResponseTest extends TestCase
 
     public function testCaptureSuccess()
     {
-        $httpResponse = $this->getMockHttpResponse('CaptureSuccess.txt');
+        $httpResponse = $this->getMockHttpResponse('DirectCaptureSuccess.txt');
         $response = new Response($this->getMockRequest(), $httpResponse->getBody());
 
         $this->assertTrue($response->isSuccessful());
@@ -64,7 +64,7 @@ class ResponseTest extends TestCase
 
     public function testCaptureFailure()
     {
-        $httpResponse = $this->getMockHttpResponse('CaptureFailure.txt');
+        $httpResponse = $this->getMockHttpResponse('DirectCaptureFailure.txt');
         $response = new Response($this->getMockRequest(), $httpResponse->getBody());
 
         $this->assertFalse($response->isSuccessful());
