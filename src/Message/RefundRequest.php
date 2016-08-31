@@ -3,7 +3,8 @@
 namespace Omnipay\SagePay\Message;
 
 /**
- * Sage Pay Refund Request
+ * Sage Pay Direct Refund Request
+ * TODO: add "Direct" prefix for clarity.
  */
 class RefundRequest extends AbstractRequest
 {
