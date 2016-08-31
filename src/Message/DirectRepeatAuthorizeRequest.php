@@ -2,6 +2,7 @@
 
 namespace Omnipay\SagePay\Message;
 
+use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Helper;
 
 /**
@@ -13,13 +14,16 @@ class DirectRepeatAuthorizeRequest extends AbstractRequest
 
     public function getData()
     {
+        // API version and account details.
         $data = $this->getBaseData();
 
-        // Merchant's unique reference to THIS payment
+        // Merchant's unique reference to THIS new authorization or payment
         $data['VendorTxCode'] = $this->getTransactionId();
 
+        // Major currency units.
         $data['Amount'] = $this->getAmount();
         $data['Currency'] = $this->getCurrency();
+
         $data['Description'] = $this->getDescription();
 
         // SagePay's unique reference for the PREVIOUS transaction
@@ -32,6 +36,7 @@ class DirectRepeatAuthorizeRequest extends AbstractRequest
         $card = $this->getCard();
 
         // If a card is provided, then assume all billing details are being updated.
+        // TODO: move this construct to a separate method, as it is used several times.
         if ($card) {
             $data['BillingFirstnames'] = $card->getBillingFirstName();
             $data['BillingSurname'] = $card->getBillingLastName();
@@ -79,11 +84,18 @@ class DirectRepeatAuthorizeRequest extends AbstractRequest
     /**
      * This is a direct map to Omnipay\SagePay\Message\Response::getTransactionReference()
      *
-     * @param string $jsonEncodedReference JSON-encoded reference to the original transaction
+     * @param string|array $jsonEncodedReference JSON-encoded reference to the original transaction
      */
-    public function setRelatedTransactionReference($jsonEncodedReference)
+    public function setTransactionReference($jsonEncodedReference)
     {
-        $unpackedReference = json_decode($jsonEncodedReference, true);
+        if (is_string($jsonEncodedReference)) {
+            $unpackedReference = json_decode($jsonEncodedReference, true);
+        } elseif (is_array($jsonEncodedReference)) {
+            $unpackedReference = $jsonEncodedReference;
+        } else {
+            throw new InvalidRequestException('transactionReference must be an array or JSON array');
+        }
+
         foreach ($unpackedReference as $parameter => $value) {
             $methodName = 'setRelated'.$parameter;
             if (method_exists($this, $methodName)) {
@@ -92,9 +104,36 @@ class DirectRepeatAuthorizeRequest extends AbstractRequest
         }
     }
 
+    /**
+     * @deprecated Use setTransactionReference()
+     */
+    public function setRelatedTransactionReference($jsonEncodedReference)
+    {
+        return $this->setTransactionReference($jsonEncodedReference);
+    }
+
+
+
+
+    /**
+     * The original transaction remote gateway ID.
+     */
+    protected function setRelatedVPSTxId($value)
+    {
+        return $this->setParameter('relatedVPSTxId', $value);
+    }
+
     protected function getRelatedVPSTxId()
     {
         return $this->getParameter('relatedVPSTxId');
+    }
+
+    /**
+     * The original transaction local ID (transactionId).
+     */
+    protected function setRelatedVendorTxCode($value)
+    {
+        return $this->setParameter('relatedVendorTxCode', $value);
     }
 
     protected function getRelatedVendorTxCode()
@@ -102,33 +141,30 @@ class DirectRepeatAuthorizeRequest extends AbstractRequest
         return $this->getParameter('relatedVendorTxCode');
     }
 
-    protected function getRelatedSecurityKey()
-    {
-        return $this->getParameter('relatedSecurityKey');
-    }
-
-    protected function getRelatedTxAuthNo()
-    {
-        return $this->getParameter('relatedTxAuthNo');
-    }
-
+    /**
+     * The original transaction random security key for hashing,
+     * never exposed to end users.
+     */
     protected function setRelatedSecurityKey($value)
     {
         return $this->setParameter('relatedSecurityKey', $value);
     }
 
+    protected function getRelatedSecurityKey()
+    {
+        return $this->getParameter('relatedSecurityKey');
+    }
+
+    /**
+     * The original transaction bank authorisation number.
+     */
     protected function setRelatedTxAuthNo($value)
     {
         return $this->setParameter('relatedTxAuthNo', $value);
     }
 
-    protected function setRelatedVendorTxCode($value)
+    protected function getRelatedTxAuthNo()
     {
-        return $this->setParameter('relatedVendorTxCode', $value);
-    }
-
-    protected function setRelatedVPSTxId($value)
-    {
-        return $this->setParameter('relatedVPSTxId', $value);
+        return $this->getParameter('relatedTxAuthNo');
     }
 }
