@@ -107,6 +107,21 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertArrayNotHasKey('ReferrerID', $data);
     }
 
+    public function testFilterClientIp()
+    {
+        // Valid IPv4 (no filter)
+        $this->request->setClientIp('1.2.3.4');
+        $this->assertSame($this->request->getClientIp(), '1.2.3.4');
+
+        // Invalid IPv4 (filtered)
+        $this->request->setClientIp('a.b.c.d');
+        $this->assertNull($this->request->getClientIp());
+
+        // Valid IPv6 (filtered)
+        $this->request->setClientIp('2001:0db8:85a3:0000:0000:8a2e:0370:7334');
+        $this->assertNull($this->request->getClientIp());
+    }
+
     public function testGetDataCustomerDetails()
     {
         $card = $this->request->getCard();

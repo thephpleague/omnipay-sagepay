@@ -37,6 +37,23 @@ The following gateways are provided by this package:
 For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
 repository.
 
+### Supported Methods
+
+Sage Pay Direct Methods:
+
+* Authorize (with completeAuthorize for 3D Secure)
+* Purchase (with completeAuthorize for 3D Secure)
+* Capture
+* Refund
+* Repeat
+* Void (to be implemented)
+
+Sage Pay Server Methods:
+
+* Authorize
+* Purchase
+* Notification Handler (completeAuthorize)
+
 ### Basket format
 
 Sagepay currently supports two different formats for sending cart/item information to them:  

@@ -52,7 +52,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     /**
      * Gateway Reference
      *
-     * Unfortunately Sage Pay requires the original VendorTxCode as well as 3 separate
+     * Sage Pay requires the original VendorTxCode as well as 3 separate
      * fields from the response object to capture or refund transactions at a later date.
      *
      * Active Merchant solves this dilemma by returning the gateway reference in the following

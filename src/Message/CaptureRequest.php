@@ -3,7 +3,8 @@
 namespace Omnipay\SagePay\Message;
 
 /**
- * Sage Pay Capture Request
+ * Sage Pay Direct Capture Request
+ * TODO: add "Direct" prefix for clarity.
  */
 class CaptureRequest extends AbstractRequest
 {
