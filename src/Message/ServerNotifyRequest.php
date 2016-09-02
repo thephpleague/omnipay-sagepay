@@ -112,7 +112,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
             $this->getTransactionId(), // VendorTxCode
             $this->getStatus(),
             $this->getTxAuthNo(),
-            $this->getVendor(),
+            strtolower($this->getVendor()),
             $this->getDataItem('AVSCV2'),
             $this->getSecurityKey(), // As saved previously
             $this->getDataItem('AddressResult'),
