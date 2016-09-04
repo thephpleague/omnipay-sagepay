@@ -9,6 +9,11 @@ use Omnipay\Common\Exception\InvalidRequestException;
  */
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
+    const APPLY_3DSECURE_APPLY = 0;
+    const APPLY_3DSECURE_FORCE = 1;
+    const APPLY_3DSECURE_NONE = 2;
+    const APPLY_3DSECURE_AUTH = 3;
+
     protected $liveEndpoint = 'https://live.sagepay.com/gateway/service';
     protected $testEndpoint = 'https://test.sagepay.com/gateway/service';
 

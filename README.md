@@ -52,7 +52,8 @@ Sage Pay Server Methods:
 
 * Authorize
 * Purchase
-* Notification Handler (completeAuthorize)
+* Notification Handler (for authorize, purchase and standalone token registration)
+* Register Card Token
 
 ### Basket format
 

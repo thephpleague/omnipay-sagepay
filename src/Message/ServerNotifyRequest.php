@@ -22,6 +22,11 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     const SAGEPAY_STATUS_ABORT = 'ABORT';
     const SAGEPAY_STATUS_ERROR = 'ERROR';
 
+    const TXTYPE_PAYMENT = 'PAYMENT';
+    const TXTYPE_DEFERRED = 'DEFERRED';
+    const TXTYPE_AUTHENTICATE = 'AUTHENTICATE';
+    const TXTYPE_TOKEN = 'TOKEN';
+
     const ADDRESS_RESULT_NOTPROVIDED = 'NOTPROVIDED';
     const ADDRESS_RESULT_NOTCHECKED = 'NOTCHECKED';
     const ADDRESS_RESULT_MATCHED = 'MATCHED';
@@ -109,8 +114,11 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
         // Re-create the VPSSignature
         if ($this->getTxType() == 'TOKEN') {
             $signature_data = array(
+                // For some bizarre reason, the VPSTxId is hashed at the Sage Pay gateway
+                // without its curly crackets, so we must do the same to validate the hash.
                 str_replace(array('{', '}'), '', $this->getVPSTxId()),
-                $this->getTransactionId(), // VendorTxCode
+                // VendorTxCode
+                $this->getTransactionId(),
                 $this->getStatus(),
                 strtolower($this->getVendor()),
                 // Only returned for card tokenisation requests.
@@ -121,7 +129,8 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
         } else {
             $signature_data = array(
                 $this->getVPSTxId(),
-                $this->getTransactionId(), // VendorTxCode
+                // VendorTxCode
+                $this->getTransactionId(),
                 $this->getStatus(),
                 $this->getTxAuthNo(),
                 strtolower($this->getVendor()),
@@ -138,10 +147,10 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
                 $this->getDataItem('AddressStatus'),
                 $this->getDataItem('PayerStatus'),
                 $this->getDataItem('CardType'),
-                $this->getDataItem('Last4Digits'),
+                $this->getLast4Digits(),
                 // New for protocol v3.00
                 $this->getDataItem('DeclineCode'),
-                $this->getDataItem('ExpiryDate'), // Format: MMYY
+                $this->getExpiryDate(),
                 $this->getDataItem('FraudResponse'),
                 $this->getDataItem('BankAuthCode'),
             );
@@ -170,6 +179,8 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
         // Is this a JSON string?
         if (strpos($reference, 'SecurityKey') !== false) {
             // Yes. Decode it then extact the security key.
+            // We only need the security key here for the signature; all other
+            // items from the reference will be in the server request.
 
             $parts = json_decode($reference, true);
 
@@ -187,9 +198,9 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     public function getTransactionReference()
     {
         $reference = array();
-        $reference['VendorTxCode'] = $this->getTransactionId();
+        $reference['SecurityKey'] = $this->getSecurityKey();
 
-        foreach (array('SecurityKey', 'TxAuthNo', 'VPSTxId') as $key) {
+        foreach (array('VendorTxCode', 'TxAuthNo', 'VPSTxId') as $key) {
             $reference[$key] = $this->getDataItem($key);
         }
 
@@ -264,6 +275,22 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     public function getTxAuthNo()
     {
         return $this->getDataItem('TxAuthNo');
+    }
+
+    /**
+     * Last four digits of the card used.
+     */
+    public function getLast4Digits()
+    {
+        return $this->getDataItem('Last4Digits');
+    }
+
+    /**
+     * Raw expiry date for the card, "MMYY" format.
+     */
+    public function getExpiryDate()
+    {
+        return $this->getDataItem('ExpiryDate');
     }
 
     /**
