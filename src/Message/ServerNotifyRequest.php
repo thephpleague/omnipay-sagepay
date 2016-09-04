@@ -107,30 +107,45 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     public function buildSignature()
     {
         // Re-create the VPSSignature
-        $signature_data = array(
-            $this->getVPSTxId(),
-            $this->getTransactionId(), // VendorTxCode
-            $this->getStatus(),
-            $this->getTxAuthNo(),
-            strtolower($this->getVendor()),
-            $this->getDataItem('AVSCV2'),
-            $this->getSecurityKey(), // As saved previously
-            $this->getDataItem('AddressResult'),
-            $this->getDataItem('PostCodeResult'),
-            $this->getDataItem('CV2Result'),
-            $this->getDataItem('GiftAid'),
-            $this->getDataItem('3DSecureStatus'),
-            $this->getDataItem('CAVV'),
-            $this->getDataItem('AddressStatus'),
-            $this->getDataItem('PayerStatus'),
-            $this->getDataItem('CardType'),
-            $this->getDataItem('Last4Digits'),
-            // New for protocol v3.00
-            $this->getDataItem('DeclineCode'),
-            $this->getDataItem('ExpiryDate'), // Format: MMYY
-            $this->getDataItem('FraudResponse'),
-            $this->getDataItem('BankAuthCode'),
-        );
+        if ($this->getTxType() == 'TOKEN') {
+            $signature_data = array(
+                str_replace(array('{', '}'), '', $this->getVPSTxId()),
+                $this->getTransactionId(), // VendorTxCode
+                $this->getStatus(),
+                strtolower($this->getVendor()),
+                // Only returned for card tokenisation requests.
+                $this->getToken(),
+                // As saved in the merchant application.
+                $this->getSecurityKey(),
+            );
+        } else {
+            $signature_data = array(
+                $this->getVPSTxId(),
+                $this->getTransactionId(), // VendorTxCode
+                $this->getStatus(),
+                $this->getTxAuthNo(),
+                strtolower($this->getVendor()),
+                $this->getDataItem('AVSCV2'),
+                // As saved in the merchant application.
+                $this->getSecurityKey(),
+                // Optional.
+                $this->getDataItem('AddressResult'),
+                $this->getDataItem('PostCodeResult'),
+                $this->getDataItem('CV2Result'),
+                $this->getDataItem('GiftAid'),
+                $this->getDataItem('3DSecureStatus'),
+                $this->getDataItem('CAVV'),
+                $this->getDataItem('AddressStatus'),
+                $this->getDataItem('PayerStatus'),
+                $this->getDataItem('CardType'),
+                $this->getDataItem('Last4Digits'),
+                // New for protocol v3.00
+                $this->getDataItem('DeclineCode'),
+                $this->getDataItem('ExpiryDate'), // Format: MMYY
+                $this->getDataItem('FraudResponse'),
+                $this->getDataItem('BankAuthCode'),
+            );
+        }
 
         return md5(implode('', $signature_data));
     }
@@ -201,7 +216,8 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     }
 
     /**
-     * A token is returned if one has been requested.
+     * A card token is returned if one has been requested.
+     * Name may change to getCardReference
      */
     public function getToken()
     {
@@ -248,6 +264,14 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     public function getTxAuthNo()
     {
         return $this->getDataItem('TxAuthNo');
+    }
+
+    /**
+     * The transaction type.
+     */
+    public function getTxType()
+    {
+        return $this->getDataItem('TxType');
     }
 
     /**
