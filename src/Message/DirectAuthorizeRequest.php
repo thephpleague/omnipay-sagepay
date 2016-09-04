@@ -26,7 +26,15 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['ClientIPAddress'] = $this->getClientIp();
         $data['ApplyAVSCV2'] = $this->getApplyAVSCV2() ?: 0;
         $data['Apply3DSecure'] = $this->getApply3DSecure() ?: 0;
+        $data['CreateToken'] = $this->getCreateToken();
 
+        // Creating a token should not be permissible at
+        // the same time as using a token.
+        if (!$data['CreateToken'] && $this->getToken()) {
+            $data['Token'] = $this->getToken();
+            $data['StoreToken'] = $this->getStoreToken();
+        }
+        
         if ($this->getReferrerId()) {
             $data['ReferrerID'] = $this->getReferrerId();
         }
@@ -91,7 +99,12 @@ class DirectAuthorizeRequest extends AbstractRequest
         $this->getCard()->validate();
 
         $data['CardHolder'] = $this->getCard()->getName();
-        $data['CardNumber'] = $this->getCard()->getNumber();
+
+        // Card number should not be provided if token is being provided instead
+        if (!$this->getToken()) {
+            $data['CardNumber'] = $this->getCard()->getNumber();
+        }
+
         $data['CV2'] = $this->getCard()->getCvv();
         $data['ExpiryDate'] = $this->getCard()->getExpiryDate('my');
         $data['CardType'] = $this->getCardBrand();

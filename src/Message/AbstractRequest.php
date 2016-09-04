@@ -46,9 +46,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Set account type.
-     * 
+     *
      * This is ignored for all PAYPAL transactions.
-     * 
+     *
      * @param string $value E: Use the e-commerce merchant account. (default)
      *                      M: Use the mail/telephone order account. (if present)
      *                      C: Use the continuous authority merchant account. (if present)
@@ -78,7 +78,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Set the apply AVSCV2 checks.
-     * 
+     *
      * @param  int $value 0: If AVS/CV2 enabled then check them. If rules apply, use rules. (default)
      *                    1: Force AVS/CV2 checks even if not enabled for the account. If rules apply
      *                       use rules.
@@ -98,9 +98,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Whether or not to apply 3D secure authentication.
-     * 
+     *
      * This is ignored for PAYPAL, EUROPEAN PAYMENT transactions.
-     * 
+     *
      * @param  int $value 0: If 3D-Secure checks are possible and rules allow, perform the
      *                       checks and apply the authorisation rules. (default)
      *                    1: Force 3D-Secure checks for this transaction if possible and
@@ -149,6 +149,46 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         }
 
         return $this->liveEndpoint."/$service.vsp";
+    }
+
+    /**
+     * Use this flag to indicate you wish to have a token generated and stored in the SagePay database and
+     * returned to you for future use.
+     *
+     * @param bool|int $createToken 0 = This will not create a token from the payment (default).
+     *                              1 = This will create a token from the payment if
+     *                                  successful and return a Token.
+     */
+    public function setCreateToken($createToken)
+    {
+        $createToken = (bool)$createToken;
+
+        $this->setParameter('createToken', (int)$createToken);
+    }
+
+    public function getCreateToken()
+    {
+        return $this->parameters->get('createToken', 0);
+    }
+
+    /**
+     * An optional flag to indicate if you wish to continue to store the Token in the SagePay
+     * token database for future use.
+     *
+     * @param bool|int $storeToken  0 = The Token will be deleted from the SagePay database if
+     *                                  authorised by the bank (default).
+     *                              1 = Continue to store the Token in the SagePay database for future use.
+     */
+    public function setStoreToken($storeToken)
+    {
+        $storeToken = (bool)$storeToken;
+
+        $this->setParameter('storeToken', (int)$storeToken);
+    }
+
+    public function getStoreToken()
+    {
+        return $this->parameters->get('storeToken', 0);
     }
 
     protected function createResponse($data)

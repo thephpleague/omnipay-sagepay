@@ -71,4 +71,13 @@ class ResponseTest extends TestCase
         $this->assertSame('{"VendorTxCode":"123456"}', $response->getTransactionReference());
         $this->assertSame('You are trying to RELEASE a transaction that has already been RELEASEd or ABORTed.', $response->getMessage());
     }
+
+    public function testDirectPurchaseWithToken()
+    {
+        $httpResponse = $this->getMockHttpResponse('DirectPurchaseWithToken.txt');
+        $response = new Response($this->getMockRequest(), $httpResponse->getBody());
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertSame('{ABCDEFGH-ABCD-ABCD-ABCD-ABCDEFGHIJKL}', $response->getToken());
+    }
 }
