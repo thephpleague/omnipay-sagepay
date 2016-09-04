@@ -17,12 +17,24 @@ class ServerGateway extends DirectGateway
         return 'Sage Pay Server';
     }
 
+    /**
+     * Authorize a payment.
+     */
     public function authorize(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\SagePay\Message\ServerAuthorizeRequest', $parameters);
     }
 
     /**
+     * Authorize and capture a payment.
+     */
+    public function purchase(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\ServerPurchaseRequest', $parameters);
+    }
+
+    /**
+     * Handle authorize notification callback.
      * Please now use acceptNotification()
      * @deprecated
      */
@@ -31,12 +43,8 @@ class ServerGateway extends DirectGateway
         return $this->createRequest('\Omnipay\SagePay\Message\ServerCompleteAuthorizeRequest', $parameters);
     }
 
-    public function purchase(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\SagePay\Message\ServerPurchaseRequest', $parameters);
-    }
-
     /**
+     * Handle purchase notification callback.
      * Please now use acceptNotification()
      * @deprecated
      */
@@ -51,5 +59,24 @@ class ServerGateway extends DirectGateway
     public function acceptNotification(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\SagePay\Message\ServerNotifyRequest', $parameters);
+    }
+
+    /**
+     * Accept card details from a user and return a token, without any
+     * authorization against that card.
+     */
+    public function registerToken(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\ServerTokenRegistrationRequest', $parameters);
+    }
+
+    /**
+     * Handle token registration notification callback.
+     * Please now use acceptNotification()
+     * @deprecated
+     */
+    public function completeRegistration(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\ServerTokenRegistrationCompleteRequest', $parameters);
     }
 }

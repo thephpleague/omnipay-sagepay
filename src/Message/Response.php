@@ -44,6 +44,10 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         return isset($this->data['Status']) && 'OK' === $this->data['Status'];
     }
 
+    /**
+     * The only reason supported for a redirect from a Server transaction
+     * will be 3D Secure. PayPal may come into this at some point.
+     */
     public function isRedirect()
     {
         return isset($this->data['Status']) && '3DAUTH' === $this->data['Status'];
@@ -107,5 +111,10 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                 'MD' => $this->data['MD'],
             );
         }
+    }
+
+    public function getToken()
+    {
+        return isset($this->data['Token']) ? $this->data['Token'] : null;
     }
 }
