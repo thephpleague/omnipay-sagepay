@@ -87,6 +87,11 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         }
     }
 
+    public function getToken()
+    {
+        return isset($this->data['Token']) ? $this->data['Token'] : null;
+    }
+
     /**
      * Decode raw ini-style response body
      *
