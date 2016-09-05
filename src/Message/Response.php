@@ -12,8 +12,8 @@ use Omnipay\Common\Message\RequestInterface;
 class Response extends AbstractResponse implements RedirectResponseInterface
 {
     /**
-     * FIXME: this is very wrong. The response should never be directly passed the
-     * raw HTTP body. The body should be parsed to data before instantiation.
+     * FIXME: The response should never be directly passed the raw HTTP
+     * body like this. The body should be parsed to data before instantiation.
      * However, the tests do not do that. I believe it is the tests that are broken,
      * but the tests are how the interface has been implemented so we cannot break
      * that for people who may rely on it.

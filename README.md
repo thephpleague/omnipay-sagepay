@@ -65,9 +65,11 @@ These are incompatible with each other, and cannot be both sent in the same tran
 
 ## Notification Handler
 
-> **NOTE:** The notification handler was handled by the SagePay_Server `completeAuthorize` and
-  `completePurchase` messages. These have been left - for the lifetime of OmniPay 2.x at least -
-  for use by legacy applications. The recomendation is to use the new `acceptNotification` handler
+> **NOTE:** The notification handler was previously handled by the SagePay_Server `completeAuthorize`,
+  `completePurchase` and `completeRegistration` methods. The notification handler replaces all of these.
+  The old methods have been left - for the remaining life of OmniPay 2.x -
+  for use in legacy applications.
+  The recomendation is to use the newer `acceptNotification` handler
   now, which is simpler and will be more consistent with other gateways.
 
 The `SagePay_Server` gateway uses a notification callback to receive the results of a payment or authorisation.

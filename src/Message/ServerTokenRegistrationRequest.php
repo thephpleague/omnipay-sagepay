@@ -12,8 +12,9 @@ class ServerTokenRegistrationRequest extends AbstractRequest
     public function getData()
     {
         $data = $this->getBaseData();
+
         $data['Currency'] = $this->getCurrency();
-        $data['NotificationURL'] = $this->getReturnUrl();
+        $data['NotificationURL'] = $this->getNotifyUrl() ?: $this->getReturnUrl();
         $data['VendorTxCode'] = $this->getTransactionId();
 
         unset($data['AccountType']);
