@@ -79,4 +79,22 @@ class ServerGateway extends DirectGateway
     {
         return $this->createRequest('\Omnipay\SagePay\Message\ServerTokenRegistrationCompleteRequest', $parameters);
     }
+
+    /**
+     * Does not support refund
+     * @return bool
+     */
+    public function supportsRefund()
+    {
+        return false;
+    }
+
+    /**
+     * Does not support capture
+     * @return bool
+     */
+    public function supportsCapture()
+    {
+        return false;
+    }
 }
