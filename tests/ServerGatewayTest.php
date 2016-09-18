@@ -22,6 +22,12 @@ class ServerGatewayTest extends GatewayTestCase
             'returnUrl' => 'https://www.example.com/return',
         );
 
+        $this->captureOptions = array(
+            'amount' => '10.00',
+            'transactionId' => '123',
+            'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
+        );
+
         $this->completePurchaseOptions = array(
             'amount' => '10.00',
             'transactionId' => '123',
@@ -164,5 +170,49 @@ class ServerGatewayTest extends GatewayTestCase
     public function testCompletePurchaseInvalid()
     {
         $response = $this->gateway->completePurchase($this->completePurchaseOptions)->send();
+    }
+
+    // Repeat Authorize
+
+    public function testRepeatAuthorizeSuccess()
+    {
+        $this->setMockHttpResponse('SharedRepeatAuthorize.txt');
+
+        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertSame('Successful repeat.', $response->getMessage());
+    }
+
+    public function testRepeatAuthorizeFailure()
+    {
+        $this->setMockHttpResponse('SharedRepeatAuthorizeFailure.txt');
+
+        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send();
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertSame('Not authorized.', $response->getMessage());
+    }
+
+    // Repeat Purchase
+
+    public function testRepeatPurchaseSuccess()
+    {
+        $this->setMockHttpResponse('SharedRepeatAuthorize.txt');
+
+        $response = $this->gateway->repeatPurchase($this->captureOptions)->send(); // FIXME: "capture"
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertSame('Successful repeat.', $response->getMessage());
+    }
+
+    public function testRepeatPurchaseFailure()
+    {
+        $this->setMockHttpResponse('SharedRepeatAuthorizeFailure.txt');
+
+        $response = $this->gateway->repeatPurchase($this->captureOptions)->send(); // FIXME: "capture"
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertSame('Not authorized.', $response->getMessage());
     }
 }

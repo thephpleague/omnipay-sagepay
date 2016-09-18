@@ -167,7 +167,7 @@ class DirectGatewayTest extends GatewayTestCase
 
     public function testRepeatAuthorizeSuccess()
     {
-        $this->setMockHttpResponse('DirectRepeatAuthorize.txt');
+        $this->setMockHttpResponse('SharedRepeatAuthorize.txt');
 
         $response = $this->gateway->repeatAuthorize($this->captureOptions)->send();
 
@@ -177,7 +177,7 @@ class DirectGatewayTest extends GatewayTestCase
 
     public function testRepeatAuthorizeFailure()
     {
-        $this->setMockHttpResponse('DirectRepeatAuthorizeFailure.txt');
+        $this->setMockHttpResponse('SharedRepeatAuthorizeFailure.txt');
 
         $response = $this->gateway->repeatAuthorize($this->captureOptions)->send();
 
@@ -189,7 +189,7 @@ class DirectGatewayTest extends GatewayTestCase
 
     public function testRepeatPurchaseSuccess()
     {
-        $this->setMockHttpResponse('DirectRepeatAuthorize.txt');
+        $this->setMockHttpResponse('SharedRepeatAuthorize.txt');
 
         $response = $this->gateway->repeatPurchase($this->captureOptions)->send(); // FIXME: "capture"
 
@@ -199,7 +199,7 @@ class DirectGatewayTest extends GatewayTestCase
 
     public function testRepeatPurchaseFailure()
     {
-        $this->setMockHttpResponse('DirectRepeatAuthorizeFailure.txt');
+        $this->setMockHttpResponse('SharedRepeatAuthorizeFailure.txt');
 
         $response = $this->gateway->repeatPurchase($this->captureOptions)->send(); // FIXME: "capture"
 

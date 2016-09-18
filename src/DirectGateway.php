@@ -112,13 +112,19 @@ class DirectGateway extends AbstractGateway
         return $this->createRequest('\Omnipay\SagePay\Message\DirectRepeatPaymentRequest', $parameters);
     }
 
+    /**
+     * Create a new authorization against a previous payment.
+     */
     public function repeatAuthorize(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectRepeatAuthorizeRequest', $parameters);
+        return $this->createRequest('\Omnipay\SagePay\Message\SharedRepeatAuthorizeRequest', $parameters);
     }
 
+    /**
+     * Create a new purchase against a previous payment.
+     */
     public function repeatPurchase(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectRepeatPurchaseRequest', $parameters);
+        return $this->createRequest('\Omnipay\SagePay\Message\SharedRepeatPurchaseRequest', $parameters);
     }
 }

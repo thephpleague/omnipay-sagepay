@@ -34,7 +34,7 @@ class ServerTokenRegistrationCompleteRequest extends AbstractRequest
     public function getData()
     {
         $signature = $this->getSignature();
-        
+
         if (strtolower($this->httpRequest->request->get('VPSSignature')) !== $signature) {
             throw new InvalidResponseException();
         }

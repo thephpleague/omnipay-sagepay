@@ -43,10 +43,6 @@ Sage Pay Direct Methods:
 
 * Authorize (with completeAuthorize for 3D Secure)
 * Purchase (with completeAuthorize for 3D Secure)
-* Capture
-* Refund
-* Repeat
-* Void (to be implemented)
 
 Sage Pay Server Methods:
 
@@ -54,6 +50,13 @@ Sage Pay Server Methods:
 * Purchase
 * Notification Handler (for authorize, purchase and standalone token registration)
 * Register Card Token
+
+Sage Pay Shared Methods:
+
+* Capture
+* Refund
+* Repeat
+* Void (to be implemented)
 
 ### Basket format
 

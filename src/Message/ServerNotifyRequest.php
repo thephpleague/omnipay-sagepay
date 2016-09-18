@@ -127,6 +127,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
                 $this->getSecurityKey(),
             );
         } else {
+            // Transaction types PAYMENT, DEFERRED and AUTHENTICATE (when suppoted)
             $signature_data = array(
                 $this->getVPSTxId(),
                 // VendorTxCode
@@ -345,6 +346,11 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
      */
     public function sendData($data)
     {
+        // Pass the valid notification status to the response as data, to help
+        // with testing against mocked notification requests that do not have
+        // the isValid() method.
+        $data['isValid'] = $this->isValid();
+
         return $this->response = new ServerNotifyResponse($this, $data);
     }
 }
