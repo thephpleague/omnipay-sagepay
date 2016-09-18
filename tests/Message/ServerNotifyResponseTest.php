@@ -66,7 +66,7 @@ class ServerNotifyResponseTest extends TestCase
         $response->shouldReceive('sendResponse')->once()->with('OK', 'https://www.example.com/', 'detail');
 
         $response->confirm('https://www.example.com/', 'detail');
-        $response->sendResponse('OK', 'https://www.example.com/', 'detail');
+        //$response->sendResponse('OK', 'https://www.example.com/', 'detail');
     }
 
     public function testError()
@@ -75,7 +75,7 @@ class ServerNotifyResponseTest extends TestCase
         $response->shouldReceive('sendResponse')->once()->with('ERROR', 'https://www.example.com/', 'detail');
 
         $response->error('https://www.example.com/', 'detail');
-        $response->sendResponse('ERROR', 'https://www.example.com/', 'detail');
+        //$response->sendResponse('ERROR', 'https://www.example.com/', 'detail');
     }
 
     public function testInvalid()
@@ -84,7 +84,7 @@ class ServerNotifyResponseTest extends TestCase
         $response->shouldReceive('sendResponse')->once()->with('INVALID', 'https://www.example.com/', 'detail');
 
         $response->invalid('https://www.example.com/', 'detail');
-        $response->sendResponse('INVALID', 'https://www.example.com/', 'detail');
+        //$response->sendResponse('INVALID', 'https://www.example.com/', 'detail');
     }
 
     public function testSendResponse()

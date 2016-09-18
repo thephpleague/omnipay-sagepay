@@ -43,6 +43,7 @@ Sage Pay Direct Methods:
 
 * authorize() - with completeAuthorize for 3D Secure and PayPal redirect
 * purchase() - with completeAuthorize for 3D Secure and PayPal redirect
+* *registerToken() - standalone register of a card token (NOT YET IMPLEMENTED)*
 
 Sage Pay Server Methods:
 
@@ -55,7 +56,7 @@ Sage Pay Shared Methods (for both Direct and Server):
 
 * capture()
 * refund()
-* abort() - abort an authorization before it is captured
+* *abort() - abort an authorization before it is captured (NOT YET IMPLEMENTED)*
 * repeatAuthorize() - new authorization based on past transaction
 * repeatPurchase() - new purchase based on past transaction
 * void() - void a purchase
