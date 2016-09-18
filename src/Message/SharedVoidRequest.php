@@ -3,7 +3,7 @@
 namespace Omnipay\SagePay\Message;
 
 /**
- * Sage Pay Direct Capture Request
+ * Sage Pay Shared Void Request
  */
 class SharedVoidRequest extends AbstractRequest
 {

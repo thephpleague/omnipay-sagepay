@@ -56,7 +56,7 @@ Sage Pay Shared Methods (for both Direct and Server):
 
 * capture()
 * refund()
-* *abort() - abort an authorization before it is captured (NOT YET IMPLEMENTED)*
+* abort() - abort an authorization before it is captured
 * repeatAuthorize() - new authorization based on past transaction
 * repeatPurchase() - new purchase based on past transaction
 * void() - void a purchase

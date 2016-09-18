@@ -38,6 +38,11 @@ class ServerGatewayTest extends GatewayTestCase
             'transactionId' => '123',
             'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
         );
+
+        $this->abortOptions = array(
+            'transactionId' => '123',
+            'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
+        );
     }
 
     public function testInheritsDirectGateway()
@@ -238,7 +243,31 @@ class ServerGatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('SharedVoidFailure.txt');
 
-        $response = $this->gateway->refund($this->captureOptions)->send();
+        $response = $this->gateway->void($this->captureOptions)->send();
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('4041 : The Transaction type does not support the requested operation.', $response->getMessage());
+    }
+
+    // Abort
+
+    public function testAbortSuccess()
+    {
+        $this->setMockHttpResponse('SharedAbortSuccess.txt');
+
+        $response = $this->gateway->abort($this->abortOptions)->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('2005 : The Abort was Successful.', $response->getMessage());
+    }
+
+    public function testAbortFailure()
+    {
+        $this->setMockHttpResponse('SharedAbortFailure.txt');
+
+        $response = $this->gateway->abort($this->abortOptions)->send();
 
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());

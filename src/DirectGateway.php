@@ -115,11 +115,19 @@ class DirectGateway extends AbstractGateway
     }
 
     /**
-     * Shared methods (identical for Direct and Server).
+     * Void a paid transaction.
      */
     public function void(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\SagePay\Message\SharedVoidRequest', $parameters);
+    }
+
+    /**
+     * Abort an authorization.
+     */
+    public function abort(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\SharedAbortRequest', $parameters);
     }
 
     /**
