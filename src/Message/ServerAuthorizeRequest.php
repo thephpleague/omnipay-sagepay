@@ -17,12 +17,17 @@ class ServerAuthorizeRequest extends DirectAuthorizeRequest
         return $this->setParameter('profile', $value);
     }
 
+    /**
+     * The returnUrl is supported for legacy applications.
+     */
     public function getData()
     {
-        $this->validate('returnUrl');
+        if (!$this->getReturnUrl()) {
+            $this->validate('notifyUrl');
+        }
 
         $data = $this->getBaseAuthorizeData();
-        $data['NotificationURL'] = $this->getReturnUrl();
+        $data['NotificationURL'] = $this->getNotifyUrl() ?: $this->getReturnUrl();
         $data['Profile'] = $this->getProfile();
 
         return $data;

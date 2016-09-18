@@ -9,6 +9,11 @@ use Omnipay\Common\Exception\InvalidRequestException;
  */
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
+    const APPLY_3DSECURE_APPLY = 0;
+    const APPLY_3DSECURE_FORCE = 1;
+    const APPLY_3DSECURE_NONE = 2;
+    const APPLY_3DSECURE_AUTH = 3;
+
     protected $liveEndpoint = 'https://live.sagepay.com/gateway/service';
     protected $testEndpoint = 'https://test.sagepay.com/gateway/service';
 
@@ -126,6 +131,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $data;
     }
 
+    /**
+     * Send data to the remote gateway, parse the result into an array,
+     * then use that to instantiate the response object.
+     */
     public function sendData($data)
     {
         // Issue #20 no data values should be null.
@@ -137,7 +146,22 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
         $httpResponse = $this->httpClient->post($this->getEndpoint(), null, $data)->send();
 
-        return $this->createResponse($httpResponse->getBody());
+        // The body is a string.
+        $body = $httpResponse->getBody();
+
+        // Split into lines.
+        $lines = preg_split('/[\n\r]+/', $body);
+
+        $response_data = array();
+
+        foreach ($lines as $line) {
+            $line = explode('=', $line, 2);
+            if (!empty($line[0])) {
+                $response_data[trim($line[0])] = isset($line[1]) ? trim($line[1]) : '';
+            }
+        }
+
+        return $this->createResponse($response_data);
     }
 
     public function getEndpoint()

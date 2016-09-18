@@ -52,7 +52,8 @@ Sage Pay Server Methods:
 
 * Authorize
 * Purchase
-* Notification Handler (completeAuthorize)
+* Notification Handler (for authorize, purchase and standalone token registration)
+* Register Card Token
 
 ### Basket format
 
@@ -61,6 +62,109 @@ Sagepay currently supports two different formats for sending cart/item informati
  - [Basket](http://www.sagepay.co.uk/support/error-codes/3021-invalid-basket-format-invalid)
 
 These are incompatible with each other, and cannot be both sent in the same transaction. *BasketXML* is the most modern format, and is the default used by this driver. *Basket* is an older format which may be deprecated one day, but is also the only format currently supported by some of the Sage accounting products (Line 50, etc) which can pull transaction data directly from Sagepay. Therefore for users who require this type of integration, an optional parameter `useOldBasketFormat` with a value of `true` can be passed in the driver's `initialize()` method.
+
+## Notification Handler
+
+> **NOTE:** The notification handler was previously handled by the SagePay_Server `completeAuthorize`,
+  `completePurchase` and `completeRegistration` methods. The notification handler replaces all of these.
+  The old methods have been left - for the remaining life of OmniPay 2.x -
+  for use in legacy applications.
+  The recomendation is to use the newer `acceptNotification` handler
+  now, which is simpler and will be more consistent with other gateways.
+
+The `SagePay_Server` gateway uses a notification callback to receive the results of a payment or authorisation.
+The URL for the notification handler is set in the authorize or payment message:
+
+~~~php
+// The response will be a redirect to the Sage Pay CC form.
+
+$response = $gateway->purchase(array(
+    'amount' => '9.99',
+    'currency' => 'GBP',
+    'card' => $card,
+    'notifyUrl' => route('sagepay.server.notify'), // The route to your application's notification handler.
+    'transactionId' => $transactionId,
+    'description' => 'test',
+    'items' => $items,
+))->send();
+
+// Before redirecting, save `$response->transactionReference()` in the database, indexed
+// by `$transactionId`.
+~~~
+
+Your notification handler needs to do four things:
+
+1. Look up the saved transaction in the database to retrieve the `transactionReference`.
+2. Validate the signature of the recieved notification to protect against tampering.
+3. Update your saved transaction with the results.
+4. Respond to Sage Pay to indicate that you accept the result, reject the result or don't
+   believe the notifcation was valid. Also tell Sage Pay where to send the user next.
+
+This is a back-channel, so has no access to the end user's session.
+
+The acceptNotification gateway is set up simply. The `$request` will capture the POST data sent by Sage Pay:
+
+~~~php
+$gateway = OmniPay\OmniPay::create('SagePay_Server');
+$gateway->setVendor('your-vendor-name');
+$gateway->setTestMode(true); // If testing
+$request = $gateway->acceptNotification();
+~~~
+
+Your original `transactionId` is available to look up the transaction in the database:
+
+~~~php
+// Use this to look up the `$transactionReference` you saved:
+$transactionId = $request->getTransactionId();
+~~~
+
+Now the signature can be checked:
+
+~~~php
+// The transactionReference contains a one-time token known as the `securitykey` that is
+// used in the signature hash. You can alternatively `setSecurityKey('...')` if you saved
+// that as a separate field.
+$request->setTransactionReference($transactionReference);
+
+// Get the response message ready for returning.
+$response = $request->send();
+
+if (! $request->isValid()) {
+    // Respond to Sage Pay indicating we are not accepting anything about this message.
+    // You might want to log `$request->getData()` first, for later analysis.
+
+    $response->invalid($nextUrl, 'Signature not valid - goodbye');
+}
+~~~
+
+If you were not able to look up the transaction or the transaction is in the wrong state,
+then indicate this with an error. Note an "error" is to indicate that although the notification
+appears to be legitimate, you do not accept it or cannot handle it for any reason:
+
+~~~php
+$response->error($nextUrl, 'This transaction has already been paid');
+~~~
+
+If you accept the notification, then you can update your local records and let Sage Pay know:
+
+~~~php
+// All raw data - just log it for later analysis:
+$request->getData();
+
+// The payment or authorisation result:
+// Result is $request::STATUS_COMPLETED, $request::STATUS_PENDING or $request::STATUS_FAILED
+$request->getTransactionStatus();
+
+// If you want more detail, look at the raw data. An error message may be found in:
+$request->getMessage();
+
+// Now let Sage Pay know you have got it:
+$response->confirm($nextUrl);
+~~~
+
+That's it. The `$nextUrl` is where you want Sage Pay to send the user to next.
+It will often be the same URL whether the transaction was approved or not,
+since the result will be safely saved in the database.
 
 ## Support
 

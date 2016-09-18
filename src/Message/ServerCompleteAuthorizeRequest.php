@@ -62,9 +62,11 @@ class ServerCompleteAuthorizeRequest extends AbstractRequest
      */
     public function getData()
     {
+        // The two signatures to compare.
         $signature = $this->getSignature();
+        $VPSSignature = strtolower($this->httpRequest->request->get('VPSSignature'));
 
-        if (strtolower($this->httpRequest->request->get('VPSSignature')) !== $signature) {
+        if ($VPSSignature !== $signature) {
             throw new InvalidResponseException;
         }
 
