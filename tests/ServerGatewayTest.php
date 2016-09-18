@@ -33,6 +33,11 @@ class ServerGatewayTest extends GatewayTestCase
             'transactionId' => '123',
             'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
         );
+
+        $this->voidOptions = array(
+            'transactionId' => '123',
+            'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
+        );
     }
 
     public function testInheritsDirectGateway()
@@ -214,5 +219,29 @@ class ServerGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('Not authorized.', $response->getMessage());
+    }
+
+    // Void
+
+    public function testVoidSuccess()
+    {
+        $this->setMockHttpResponse('SharedVoidSuccess.txt');
+
+        $response = $this->gateway->void($this->voidOptions)->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('2005 : The Void was Successful.', $response->getMessage());
+    }
+
+    public function testVoidFailure()
+    {
+        $this->setMockHttpResponse('SharedVoidFailure.txt');
+
+        $response = $this->gateway->refund($this->captureOptions)->send();
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('4041 : The Transaction type does not support the requested operation.', $response->getMessage());
     }
 }

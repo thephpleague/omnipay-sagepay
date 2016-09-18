@@ -5,7 +5,7 @@ namespace Omnipay\SagePay\Message;
 /**
  * Sage Pay Direct Capture Request
  */
-class DirectVoidRequest extends AbstractRequest
+class SharedVoidRequest extends AbstractRequest
 {
     protected $action = 'VOID';
 

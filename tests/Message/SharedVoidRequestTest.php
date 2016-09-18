@@ -4,13 +4,13 @@ namespace Omnipay\SagePay\Message;
 
 use Omnipay\Tests\TestCase;
 
-class DirectVoidRequestTest extends TestCase
+class SharedVoidRequestTest extends TestCase
 {
     public function setUp()
     {
         parent::setUp();
 
-        $this->request = new DirectVoidRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new SharedVoidRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
             array(
                 'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',

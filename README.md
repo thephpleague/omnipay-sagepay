@@ -41,22 +41,25 @@ repository.
 
 Sage Pay Direct Methods:
 
-* Authorize (with completeAuthorize for 3D Secure)
-* Purchase (with completeAuthorize for 3D Secure)
+* authorize() - with completeAuthorize for 3D Secure and PayPal redirect
+* purchase() - with completeAuthorize for 3D Secure and PayPal redirect
 
 Sage Pay Server Methods:
 
-* Authorize
-* Purchase
-* Notification Handler (for authorize, purchase and standalone token registration)
-* Register Card Token
+* authorize()
+* purchase()
+* acceptNotification() - Notification Handler for authorize, purchase and standalone token registration
+* registerToken() - standalone register of a card token
 
-Sage Pay Shared Methods:
+Sage Pay Shared Methods (for both Direct and Server):
 
-* Capture
-* Refund
-* Repeat
-* Void (to be implemented)
+* capture()
+* refund()
+* abort() - abort an authorization before it is captured
+* repeatAuthorize() - new authorization based on past transaction
+* repeatPurchase() - new purchase based on past transaction
+* void() - void a purchase
+* removeToken() - remove a card token
 
 ### Basket format
 

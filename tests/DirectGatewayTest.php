@@ -211,7 +211,7 @@ class DirectGatewayTest extends GatewayTestCase
 
     public function testVoidSuccess()
     {
-        $this->setMockHttpResponse('DirectVoidSuccess.txt');
+        $this->setMockHttpResponse('SharedVoidSuccess.txt');
 
         $response = $this->gateway->void($this->voidOptions)->send();
 
@@ -222,7 +222,7 @@ class DirectGatewayTest extends GatewayTestCase
 
     public function testVoidFailure()
     {
-        $this->setMockHttpResponse('DirectVoidFailure.txt');
+        $this->setMockHttpResponse('SharedVoidFailure.txt');
 
         $response = $this->gateway->refund($this->captureOptions)->send();
 
@@ -230,5 +230,4 @@ class DirectGatewayTest extends GatewayTestCase
         $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('4041 : The Transaction type does not support the requested operation.', $response->getMessage());
     }
-
 }

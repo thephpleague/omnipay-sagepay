@@ -25,8 +25,9 @@ class DirectGateway extends AbstractGateway
         );
     }
 
-    // Vendor identification.
-
+    /**
+     * Vendor identification.
+     */
     public function getVendor()
     {
         return $this->getParameter('vendor');
@@ -36,7 +37,20 @@ class DirectGateway extends AbstractGateway
     {
         return $this->setParameter('vendor', $value);
     }
-    
+
+    public function getReferrerId()
+    {
+        return $this->getParameter('referrerId');
+    }
+
+    public function setReferrerId($value)
+    {
+        return $this->setParameter('referrerId', $value);
+    }
+
+    /**
+     * Basket type control.
+     */
     public function setUseOldBasketFormat($value)
     {
         $value = (bool)$value;
@@ -58,17 +72,13 @@ class DirectGateway extends AbstractGateway
         return $this->httpClient;
     }
 
-    // Available services.
-    public function getReferrerId()
-    {
-        return $this->getParameter('referrerId');
-    }
+    /**
+     * Direct methods.
+     */
 
-    public function setReferrerId($value)
-    {
-        return $this->setParameter('referrerId', $value);
-    }
-
+    /**
+     * Authorize and handling of return from 3D Secure or PayPal redirection.
+     */
     public function authorize(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\SagePay\Message\DirectAuthorizeRequest', $parameters);
@@ -79,16 +89,9 @@ class DirectGateway extends AbstractGateway
         return $this->createRequest('\Omnipay\SagePay\Message\DirectCompleteAuthorizeRequest', $parameters);
     }
 
-    public function capture(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectCaptureRequest', $parameters);
-    }
-
-    public function void(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectVoidRequest', $parameters);
-    }
-
+    /**
+     * Purchase and handling of return from 3D Secure or PayPal redirection.
+     */
     public function purchase(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\SagePay\Message\DirectPurchaseRequest', $parameters);
@@ -99,17 +102,32 @@ class DirectGateway extends AbstractGateway
         return $this->completeAuthorize($parameters);
     }
 
-    public function refund(array $parameters = array())
+    /**
+     * Shared methods (identical for Direct and Server).
+     */
+
+    /**
+     * Capture an authorization.
+     */
+    public function capture(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectRefundRequest', $parameters);
+        return $this->createRequest('\Omnipay\SagePay\Message\DirectCaptureRequest', $parameters);
     }
 
     /**
-     * @deprecated use repeatAuthorize() or repeatPurchase()
+     * Shared methods (identical for Direct and Server).
      */
-    public function repeatPayment(array $parameters = array())
+    public function void(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectRepeatPaymentRequest', $parameters);
+        return $this->createRequest('\Omnipay\SagePay\Message\SharedVoidRequest', $parameters);
+    }
+
+    /**
+     * Void a completed (captured) transation.
+     */
+    public function refund(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\DirectRefundRequest', $parameters);
     }
 
     /**
@@ -126,5 +144,21 @@ class DirectGateway extends AbstractGateway
     public function repeatPurchase(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\SagePay\Message\SharedRepeatPurchaseRequest', $parameters);
+    }
+
+    /**
+     * Remove a card token from the account.
+     */
+    public function removeToken(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\SharedTokenRemovalRequest', $parameters);
+    }
+
+    /**
+     * @deprecated use repeatAuthorize() or repeatPurchase()
+     */
+    public function repeatPayment(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\DirectRepeatPaymentRequest', $parameters);
     }
 }
