@@ -2,6 +2,10 @@
 
 namespace Omnipay\SagePay\Message;
 
+/**
+ * @deprecated Use ServerNotifyRequest via $gateway->acceptNotification()
+ */
+
 use Omnipay\Common\Exception\InvalidResponseException;
 
 class ServerTokenRegistrationCompleteRequest extends AbstractRequest

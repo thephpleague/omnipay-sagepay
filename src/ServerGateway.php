@@ -46,6 +46,17 @@ class ServerGateway extends DirectGateway
      * Accept card details from a user and return a token, without any
      * authorization against that card.
      * i.e. standalone token creation.
+     * Alias fof registerToken()
+     */
+    public function createCard(array $parameters = array())
+    {
+        return $this->registerToken($parameters);
+    }
+
+    /**
+     * Accept card details from a user and return a token, without any
+     * authorization against that card.
+     * i.e. standalone token creation.
      */
     public function registerToken(array $parameters = array())
     {

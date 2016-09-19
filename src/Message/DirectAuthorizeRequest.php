@@ -26,15 +26,19 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['ClientIPAddress'] = $this->getClientIp();
         $data['ApplyAVSCV2'] = $this->getApplyAVSCV2() ?: 0;
         $data['Apply3DSecure'] = $this->getApply3DSecure() ?: 0;
+
         $data['CreateToken'] = $this->getCreateToken();
 
         // Creating a token should not be permissible at
         // the same time as using a token.
-        if (!$data['CreateToken'] && $this->getToken()) {
+        if (! $data['CreateToken'] && $this->getToken()) {
+            // If a token has been supplied, and we are NOT asking to generate
+            // a new token here, then use this token and optionally store it
+            // again for further use.
             $data['Token'] = $this->getToken();
             $data['StoreToken'] = $this->getStoreToken();
         }
-        
+
         if ($this->getReferrerId()) {
             $data['ReferrerID'] = $this->getReferrerId();
         }

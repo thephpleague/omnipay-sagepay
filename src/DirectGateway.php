@@ -111,7 +111,7 @@ class DirectGateway extends AbstractGateway
      */
     public function capture(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectCaptureRequest', $parameters);
+        return $this->createRequest('\Omnipay\SagePay\Message\SharedCaptureRequest', $parameters);
     }
 
     /**
@@ -135,7 +135,7 @@ class DirectGateway extends AbstractGateway
      */
     public function refund(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectRefundRequest', $parameters);
+        return $this->createRequest('\Omnipay\SagePay\Message\SharedRefundRequest', $parameters);
     }
 
     /**
@@ -152,6 +152,15 @@ class DirectGateway extends AbstractGateway
     public function repeatPurchase(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\SagePay\Message\SharedRepeatPurchaseRequest', $parameters);
+    }
+
+    /**
+     * Remove a card token from the account.
+     * Alias for removeToken()
+     */
+    public function deleteCard(array $parameters = array())
+    {
+        return $this->removeToken($parameters);
     }
 
     /**

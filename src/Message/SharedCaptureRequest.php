@@ -5,7 +5,7 @@ namespace Omnipay\SagePay\Message;
 /**
  * Sage Pay Direct Capture Request
  */
-class DirectCaptureRequest extends AbstractRequest
+class SharedCaptureRequest extends AbstractRequest
 {
     protected $action = 'RELEASE';
 

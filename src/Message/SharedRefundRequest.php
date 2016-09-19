@@ -3,10 +3,9 @@
 namespace Omnipay\SagePay\Message;
 
 /**
- * Sage Pay Direct Refund Request
- * TODO: add "Direct" prefix for clarity.
+ * Sage Pay Shared Refund Request
  */
-class DirectRefundRequest extends AbstractRequest
+class SharedRefundRequest extends AbstractRequest
 {
     protected $action = 'REFUND';
 

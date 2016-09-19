@@ -25,6 +25,22 @@ class DirectGatewayTest extends GatewayTestCase
             'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
         );
 
+        $this->repeatOptions = array(
+            'amount' => '10.00',
+            'currency' => 'GBP',
+            'transactionId' => '123',
+            'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
+            'description' => 'Some kind of repeat payment',
+        );
+
+        $this->refundOptions = array(
+            'amount' => '10.00',
+            'currency' => 'GBP',
+            'transactionId' => '123',
+            'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
+            'description' => 'Some kind of refund',
+        );
+
         $this->voidOptions = array(
             'transactionId' => '123',
             'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
@@ -124,7 +140,7 @@ class DirectGatewayTest extends GatewayTestCase
 
     public function testCaptureSuccess()
     {
-        $this->setMockHttpResponse('DirectCaptureSuccess.txt');
+        $this->setMockHttpResponse('SharedCaptureSuccess.txt');
 
         $response = $this->gateway->capture($this->captureOptions)->send();
 
@@ -135,7 +151,7 @@ class DirectGatewayTest extends GatewayTestCase
 
     public function testCaptureFailure()
     {
-        $this->setMockHttpResponse('DirectCaptureFailure.txt');
+        $this->setMockHttpResponse('SharedCaptureFailure.txt');
 
         $response = $this->gateway->capture($this->captureOptions)->send();
 
@@ -148,24 +164,24 @@ class DirectGatewayTest extends GatewayTestCase
 
     public function testRefundSuccess()
     {
-        $this->setMockHttpResponse('DirectCaptureSuccess.txt');
+        $this->setMockHttpResponse('SharedRefundSuccess.txt');
 
-        $response = $this->gateway->refund($this->captureOptions)->send(); // FIXME: "capture"
+        $response = $this->gateway->refund($this->refundOptions)->send();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
-        $this->assertSame('The transaction was RELEASEed successfully.', $response->getMessage());
+        $this->assertSame('{"SecurityKey":"CLSMJYURGO","TxAuthNo":"9962","VPSTxId":"{5A1BC414-5409-48DD-9B8B-DCDF096CE0BE}","VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('0000 : The Authorisation was Successful.', $response->getMessage());
     }
 
     public function testRefundFailure()
     {
-        $this->setMockHttpResponse('DirectCaptureFailure.txt');
+        $this->setMockHttpResponse('SharedRefundFailure.txt');
 
-        $response = $this->gateway->refund($this->captureOptions)->send(); // FIXME: "capture"
+        $response = $this->gateway->refund($this->refundOptions)->send();
 
         $this->assertFalse($response->isSuccessful());
-        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
-        $this->assertSame('You are trying to RELEASE a transaction that has already been RELEASEd or ABORTed.', $response->getMessage());
+        $this->assertSame('{"VPSTxId":"{869BC439-1904-DF8A-DDC6-D13E3599FB98}","VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('3013 : The Description is missing.', $response->getMessage());
     }
 
     // Repeat Authorize
@@ -174,7 +190,7 @@ class DirectGatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('SharedRepeatAuthorize.txt');
 
-        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send();
+        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send(); // FIXME: repeat
 
         $this->assertTrue($response->isSuccessful());
         $this->assertSame('Successful repeat.', $response->getMessage());
@@ -184,7 +200,7 @@ class DirectGatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('SharedRepeatAuthorizeFailure.txt');
 
-        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send();
+        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send(); // FIXME: repeat
 
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('Not authorized.', $response->getMessage());
