@@ -43,7 +43,7 @@ Sage Pay Direct Methods:
 
 * authorize() - with completeAuthorize for 3D Secure and PayPal redirect
 * purchase() - with completeAuthorize for 3D Secure and PayPal redirect
-* *registerToken() - standalone register of a card token (NOT YET IMPLEMENTED)*
+* registerToken() - standalone register of a card token
 
 Sage Pay Server Methods:
 

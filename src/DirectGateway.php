@@ -155,6 +155,27 @@ class DirectGateway extends AbstractGateway
     }
 
     /**
+     * Accept card details from a user and return a token, without any
+     * authorization against that card.
+     * i.e. standalone token creation.
+     * Alias fof registerToken()
+     */
+    public function createCard(array $parameters = array())
+    {
+        return $this->registerToken($parameters);
+    }
+
+    /**
+     * Accept card details from a user and return a token, without any
+     * authorization against that card.
+     * i.e. standalone token creation.
+     */
+    public function registerToken(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\DirectTokenRegistrationRequest', $parameters);
+    }
+
+    /**
      * Remove a card token from the account.
      * Alias for removeToken()
      */
