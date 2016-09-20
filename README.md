@@ -155,10 +155,11 @@ appears to be legitimate, you do not accept it or cannot handle it for any reaso
 $response->error($nextUrl, 'This transaction does not exist on the system');
 ~~~
 
-> **Note:** it has been observed that the same notification message may be sent multiple
-  times. If this happens, then send the same response you send last time. So if you have
-  confirmed a successful payment, then if you get another identical response for the
-  transaction, then return `confirm()` again.
+> **Note:** it has been observed that the same notification message may be sent
+  by Sage Pay multiple times.
+  If this happens, then return the same response you sent the first time.
+  So if you have confirmed a successful payment, then if you get another
+  identical response for the transaction, then return `confirm()` again.
 
 If you accept the notification, then you can update your local records and let Sage Pay know:
 
