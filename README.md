@@ -83,7 +83,7 @@ The `SagePay_Server` gateway uses a notification callback to receive the results
 The URL for the notification handler is set in the authorize or payment message:
 
 ~~~php
-// The response will be a redirect to the Sage Pay CC form.
+// The Server response will be a redirect to the Sage Pay CC form.
 
 $response = $gateway->purchase(array(
     'amount' => '9.99',
@@ -97,13 +97,16 @@ $response = $gateway->purchase(array(
 
 // Before redirecting, save `$response->transactionReference()` in the database, indexed
 // by `$transactionId`.
+// Note that at this point `transactionReference` is not yet complete for the Server transaction,
+// but must be saved in the database for the notification handler to use.
 ~~~
 
 Your notification handler needs to do four things:
 
 1. Look up the saved transaction in the database to retrieve the `transactionReference`.
 2. Validate the signature of the recieved notification to protect against tampering.
-3. Update your saved transaction with the results.
+3. Update your saved transaction with the results, including the updated - i.e. more complete -
+   `transactionReference` if successful.
 4. Respond to Sage Pay to indicate that you accept the result, reject the result or don't
    believe the notifcation was valid. Also tell Sage Pay where to send the user next.
 
@@ -149,14 +152,24 @@ then indicate this with an error. Note an "error" is to indicate that although t
 appears to be legitimate, you do not accept it or cannot handle it for any reason:
 
 ~~~php
-$response->error($nextUrl, 'This transaction has already been paid');
+$response->error($nextUrl, 'This transaction does not exist on the system');
 ~~~
+
+*Note: it has been observed that the same notification message may be sent multiple
+times. If this happens, then send the same response you send last time. So if you have
+confirmed a successful payment, then if you get another identical response for the
+transaction, then return `confirm()` again.
 
 If you accept the notification, then you can update your local records and let Sage Pay know:
 
 ~~~php
 // All raw data - just log it for later analysis:
 $request->getData();
+
+// Save the final transactionReference against the transaction in the database. It will
+// be needed if you want to capture the payment (for an authorize) or void or refund the
+// payment later.
+$finalTransactionReference = $response->getTransactionReference();
 
 // The payment or authorisation result:
 // Result is $request::STATUS_COMPLETED, $request::STATUS_PENDING or $request::STATUS_FAILED
@@ -165,7 +178,7 @@ $request->getTransactionStatus();
 // If you want more detail, look at the raw data. An error message may be found in:
 $request->getMessage();
 
-// Now let Sage Pay know you have got it:
+// Now let Sage Pay know you have got it and saved the details away safely:
 $response->confirm($nextUrl);
 ~~~
 
