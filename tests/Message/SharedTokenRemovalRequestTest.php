@@ -4,7 +4,7 @@ namespace Omnipay\SagePay\Message;
 
 use Omnipay\Tests\TestCase;
 
-class TokenRemovalRequestTest extends TestCase
+class SharedTokenRemovalRequestTest extends TestCase
 {
     /**
      * @var TokenRemovalRequest
@@ -13,7 +13,7 @@ class TokenRemovalRequestTest extends TestCase
 
     public function setUp()
     {
-        $this->request = new TokenRemovalRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new SharedTokenRemovalRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(array(
             'vendor' => 'testvendor',
             'token' => '{ABCDE-ABCD-ABCD-ABCD-ABCDE}'

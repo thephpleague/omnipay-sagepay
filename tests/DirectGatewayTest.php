@@ -24,6 +24,32 @@ class DirectGatewayTest extends GatewayTestCase
             'transactionId' => '123',
             'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
         );
+
+        $this->repeatOptions = array(
+            'amount' => '10.00',
+            'currency' => 'GBP',
+            'transactionId' => '123',
+            'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
+            'description' => 'Some kind of repeat payment',
+        );
+
+        $this->refundOptions = array(
+            'amount' => '10.00',
+            'currency' => 'GBP',
+            'transactionId' => '123',
+            'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
+            'description' => 'Some kind of refund',
+        );
+
+        $this->voidOptions = array(
+            'transactionId' => '123',
+            'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
+        );
+
+        $this->abortOptions = array(
+            'transactionId' => '123',
+            'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
+        );
     }
 
     public function testAuthorizeFailureSuccess()
@@ -110,9 +136,11 @@ class DirectGatewayTest extends GatewayTestCase
         $this->assertSame('https://www.example.com/return', $redirectData['TermUrl']);
     }
 
+    // Capture
+
     public function testCaptureSuccess()
     {
-        $this->setMockHttpResponse('CaptureSuccess.txt');
+        $this->setMockHttpResponse('SharedCaptureSuccess.txt');
 
         $response = $this->gateway->capture($this->captureOptions)->send();
 
@@ -123,7 +151,7 @@ class DirectGatewayTest extends GatewayTestCase
 
     public function testCaptureFailure()
     {
-        $this->setMockHttpResponse('CaptureFailure.txt');
+        $this->setMockHttpResponse('SharedCaptureFailure.txt');
 
         $response = $this->gateway->capture($this->captureOptions)->send();
 
@@ -132,33 +160,37 @@ class DirectGatewayTest extends GatewayTestCase
         $this->assertSame('You are trying to RELEASE a transaction that has already been RELEASEd or ABORTed.', $response->getMessage());
     }
 
+    // Refund
+
     public function testRefundSuccess()
     {
-        $this->setMockHttpResponse('CaptureSuccess.txt');
+        $this->setMockHttpResponse('SharedRefundSuccess.txt');
 
-        $response = $this->gateway->refund($this->captureOptions)->send();
+        $response = $this->gateway->refund($this->refundOptions)->send();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
-        $this->assertSame('The transaction was RELEASEed successfully.', $response->getMessage());
+        $this->assertSame('{"SecurityKey":"CLSMJYURGO","TxAuthNo":"9962","VPSTxId":"{5A1BC414-5409-48DD-9B8B-DCDF096CE0BE}","VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('0000 : The Authorisation was Successful.', $response->getMessage());
     }
 
     public function testRefundFailure()
     {
-        $this->setMockHttpResponse('CaptureFailure.txt');
+        $this->setMockHttpResponse('SharedRefundFailure.txt');
 
-        $response = $this->gateway->refund($this->captureOptions)->send();
+        $response = $this->gateway->refund($this->refundOptions)->send();
 
         $this->assertFalse($response->isSuccessful());
-        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
-        $this->assertSame('You are trying to RELEASE a transaction that has already been RELEASEd or ABORTed.', $response->getMessage());
+        $this->assertSame('{"VPSTxId":"{869BC439-1904-DF8A-DDC6-D13E3599FB98}","VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('3013 : The Description is missing.', $response->getMessage());
     }
+
+    // Repeat Authorize
 
     public function testRepeatAuthorizeSuccess()
     {
-        $this->setMockHttpResponse('RepeatAuthorize.txt');
+        $this->setMockHttpResponse('SharedRepeatAuthorize.txt');
 
-        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send();
+        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send(); // FIXME: repeat
 
         $this->assertTrue($response->isSuccessful());
         $this->assertSame('Successful repeat.', $response->getMessage());
@@ -166,19 +198,21 @@ class DirectGatewayTest extends GatewayTestCase
 
     public function testRepeatAuthorizeFailure()
     {
-        $this->setMockHttpResponse('RepeatAuthorizeFailure.txt');
+        $this->setMockHttpResponse('SharedRepeatAuthorizeFailure.txt');
 
-        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send();
+        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send(); // FIXME: repeat
 
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('Not authorized.', $response->getMessage());
     }
 
+    // Repeat Purchase
+
     public function testRepeatPurchaseSuccess()
     {
-        $this->setMockHttpResponse('RepeatAuthorize.txt');
+        $this->setMockHttpResponse('SharedRepeatAuthorize.txt');
 
-        $response = $this->gateway->repeatPurchase($this->captureOptions)->send();
+        $response = $this->gateway->repeatPurchase($this->captureOptions)->send(); // FIXME: "capture"
 
         $this->assertTrue($response->isSuccessful());
         $this->assertSame('Successful repeat.', $response->getMessage());
@@ -186,11 +220,59 @@ class DirectGatewayTest extends GatewayTestCase
 
     public function testRepeatPurchaseFailure()
     {
-        $this->setMockHttpResponse('RepeatAuthorizeFailure.txt');
+        $this->setMockHttpResponse('SharedRepeatAuthorizeFailure.txt');
 
-        $response = $this->gateway->repeatPurchase($this->captureOptions)->send();
+        $response = $this->gateway->repeatPurchase($this->captureOptions)->send(); // FIXME: "capture"
 
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('Not authorized.', $response->getMessage());
+    }
+
+    // Void
+
+    public function testVoidSuccess()
+    {
+        $this->setMockHttpResponse('SharedVoidSuccess.txt');
+
+        $response = $this->gateway->void($this->voidOptions)->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('2005 : The Void was Successful.', $response->getMessage());
+    }
+
+    public function testVoidFailure()
+    {
+        $this->setMockHttpResponse('SharedVoidFailure.txt');
+
+        $response = $this->gateway->void($this->voidOptions)->send();
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('4041 : The Transaction type does not support the requested operation.', $response->getMessage());
+    }
+
+    // Abort
+
+    public function testAbortSuccess()
+    {
+        $this->setMockHttpResponse('SharedAbortSuccess.txt');
+
+        $response = $this->gateway->abort($this->abortOptions)->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('2005 : The Abort was Successful.', $response->getMessage());
+    }
+
+    public function testAbortFailure()
+    {
+        $this->setMockHttpResponse('SharedAbortFailure.txt');
+
+        $response = $this->gateway->abort($this->abortOptions)->send();
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertSame('4041 : The Transaction type does not support the requested operation.', $response->getMessage());
     }
 }

@@ -9,6 +9,6 @@ use Omnipay\Common\Helper;
  *
  * @deprecated
  */
-class DirectRepeatPaymentRequest extends DirectRepeatPurchaseRequest
+class DirectRepeatPaymentRequest extends SharedRepeatPurchaseRequest
 {
 }

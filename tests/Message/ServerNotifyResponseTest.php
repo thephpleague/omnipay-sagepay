@@ -28,6 +28,7 @@ class ServerNotifyResponseTest extends TestCase
                 'DeclineCode' => '00',
                 'ExpiryDate' => '0722',
                 'BankAuthCode' => '999777',
+                'isValid' => 1,
             )
         );
 
@@ -61,35 +62,29 @@ class ServerNotifyResponseTest extends TestCase
 
     public function testConfirm()
     {
-        $response = m::mock('\Omnipay\SagePay\Message\ServerNotifyResponse')->makePartial();
+        $response = m::mock('\Omnipay\SagePay\Message\ServerNotifyResponse', array('isValid' => 1))->makePartial();
         $response->shouldReceive('sendResponse')->once()->with('OK', 'https://www.example.com/', 'detail');
 
-        // Cannot run this with the supplied mock response that does not contain a suitable
-        // most request.
-        //$response->confirm('https://www.example.com/', 'detail');
-        $response->sendResponse('OK', 'https://www.example.com/', 'detail');
+        $response->confirm('https://www.example.com/', 'detail');
+        //$response->sendResponse('OK', 'https://www.example.com/', 'detail');
     }
 
     public function testError()
     {
-        $response = m::mock('\Omnipay\SagePay\Message\ServerNotifyResponse')->makePartial();
+        $response = m::mock('\Omnipay\SagePay\Message\ServerNotifyResponse', array('isValid' => 1))->makePartial();
         $response->shouldReceive('sendResponse')->once()->with('ERROR', 'https://www.example.com/', 'detail');
 
-        // Cannot run this with the supplied mock response that does not contain a suitable
-        // most request.
-        //$response->error('https://www.example.com/', 'detail');
-        $response->sendResponse('ERROR', 'https://www.example.com/', 'detail');
+        $response->error('https://www.example.com/', 'detail');
+        //$response->sendResponse('ERROR', 'https://www.example.com/', 'detail');
     }
 
     public function testInvalid()
     {
-        $response = m::mock('\Omnipay\SagePay\Message\ServerNotifyResponse')->makePartial();
+        $response = m::mock('\Omnipay\SagePay\Message\ServerNotifyResponse', array('isValid' => 0))->makePartial();
         $response->shouldReceive('sendResponse')->once()->with('INVALID', 'https://www.example.com/', 'detail');
 
-        // Cannot run this with the supplied mock response that does not contain a suitable
-        // most request.
-        //$response->invalid('https://www.example.com/', 'detail');
-        $response->sendResponse('INVALID', 'https://www.example.com/', 'detail');
+        $response->invalid('https://www.example.com/', 'detail');
+        //$response->sendResponse('INVALID', 'https://www.example.com/', 'detail');
     }
 
     public function testSendResponse()

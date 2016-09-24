@@ -2,7 +2,7 @@
 
 namespace Omnipay\SagePay\Message;
 
-class TokenRemovalRequest extends AbstractRequest
+class SharedTokenRemovalRequest extends AbstractRequest
 {
     protected $action = 'REMOVETOKEN';
 

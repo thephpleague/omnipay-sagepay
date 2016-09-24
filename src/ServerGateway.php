@@ -34,6 +34,46 @@ class ServerGateway extends DirectGateway
     }
 
     /**
+     * Handle notification callback.
+     * Replaces completeAuthorize() and completePurchase()
+     */
+    public function acceptNotification(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\ServerNotifyRequest', $parameters);
+    }
+
+    /**
+     * Accept card details from a user and return a token, without any
+     * authorization against that card.
+     * i.e. standalone token creation.
+     * Alias fof registerToken()
+     */
+    public function createCard(array $parameters = array())
+    {
+        return $this->registerToken($parameters);
+    }
+
+    /**
+     * Accept card details from a user and return a token, without any
+     * authorization against that card.
+     * i.e. standalone token creation.
+     */
+    public function registerToken(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\ServerTokenRegistrationRequest', $parameters);
+    }
+
+    /**
+     * Handle token registration notification callback.
+     * Please now use acceptNotification()
+     * @deprecated
+     */
+    public function completeRegistration(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\ServerTokenRegistrationCompleteRequest', $parameters);
+    }
+
+    /**
      * Handle authorize notification callback.
      * Please now use acceptNotification()
      * @deprecated
@@ -51,32 +91,5 @@ class ServerGateway extends DirectGateway
     public function completePurchase(array $parameters = array())
     {
         return $this->completeAuthorize($parameters);
-    }
-
-    /**
-     * Replaces completeAuthorize() and completePurchase()
-     */
-    public function acceptNotification(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\SagePay\Message\ServerNotifyRequest', $parameters);
-    }
-
-    /**
-     * Accept card details from a user and return a token, without any
-     * authorization against that card.
-     */
-    public function registerToken(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\SagePay\Message\ServerTokenRegistrationRequest', $parameters);
-    }
-
-    /**
-     * Handle token registration notification callback.
-     * Please now use acceptNotification()
-     * @deprecated
-     */
-    public function completeRegistration(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\SagePay\Message\ServerTokenRegistrationCompleteRequest', $parameters);
     }
 }

@@ -4,10 +4,10 @@ namespace Omnipay\SagePay\Message;
 
 use Omnipay\Tests\TestCase;
 
-class DirectRepeatPurchaseRequestTest extends TestCase
+class SharedRepeatAuthorizeRequestTest extends TestCase
 {
     /**
-     * @var \Omnipay\SagePay\Message\DirectRepeatPurchaseRequest $request
+     * @var \Omnipay\SagePay\Message\DirectRepeatAuthorizeRequest $request
      */
     protected $request;
 
@@ -15,7 +15,7 @@ class DirectRepeatPurchaseRequestTest extends TestCase
     {
         parent::setUp();
 
-        $this->request = new DirectRepeatPurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new SharedRepeatAuthorizeRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
             array(
                 'amount' => '12.00',

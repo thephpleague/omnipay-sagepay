@@ -27,9 +27,22 @@ class ServerNotifyResponse extends Response
      */
     protected $exit_on_response = true;
 
+    public function isValid()
+    {
+        // Get the status from the request, which will work only if not using
+        // mocked requests during testing.
+        if (method_exists($this->getRequest(), 'isValid')) {
+            $valid = $this->getRequest()->isValid();
+        } else {
+            $valid = !empty($this->data['isValid']);
+        }
+
+        return $valid;
+    }
+
     public function getTransactionReference()
     {
-        return $this->request->getTransactionReference();
+        return $this->getRequest()->getTransactionReference();
     }
 
     /**
@@ -43,7 +56,7 @@ class ServerNotifyResponse extends Response
     public function confirm($nextUrl, $detail = null)
     {
         // If the signature is invalid, then do not allow the confirm.
-        if (!$this->request->isValid()) {
+        if (! $this->isValid()) {
             throw new InvalidResponseException('Attempted to confirm an invalid notification');
         }
 
@@ -70,7 +83,7 @@ class ServerNotifyResponse extends Response
     public function error($nextUrl, $detail = null)
     {
         // If the signature is invalid, then do not allow the confirm.
-        if (! $this->request->isValid()) {
+        if (! $this->isValid()) {
             throw new InvalidResponseException('Attempted to reject an invalid notification');
         }
 

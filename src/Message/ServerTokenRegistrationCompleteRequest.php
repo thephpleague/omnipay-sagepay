@@ -2,6 +2,10 @@
 
 namespace Omnipay\SagePay\Message;
 
+/**
+ * @deprecated Use ServerNotifyRequest via $gateway->acceptNotification()
+ */
+
 use Omnipay\Common\Exception\InvalidResponseException;
 
 class ServerTokenRegistrationCompleteRequest extends AbstractRequest
@@ -34,7 +38,7 @@ class ServerTokenRegistrationCompleteRequest extends AbstractRequest
     public function getData()
     {
         $signature = $this->getSignature();
-        
+
         if (strtolower($this->httpRequest->request->get('VPSSignature')) !== $signature) {
             throw new InvalidResponseException();
         }

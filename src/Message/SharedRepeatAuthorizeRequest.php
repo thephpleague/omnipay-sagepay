@@ -8,7 +8,7 @@ use Omnipay\Common\Helper;
 /**
  * Sage Pay Direct Repeat Authorize Request
  */
-class DirectRepeatAuthorizeRequest extends AbstractRequest
+class SharedRepeatAuthorizeRequest extends AbstractRequest
 {
     protected $action = 'REPEATDEFERRED';
 
