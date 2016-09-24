@@ -6,6 +6,7 @@ use Omnipay\Common\Exception\InvalidResponseException;
 
 /**
  * Sage Pay Server Complete Authorize Request
+ * @deprecated for v3.0; Use ServerNotifyRequest through acceptNotification()
  */
 class ServerCompleteAuthorizeRequest extends AbstractRequest
 {

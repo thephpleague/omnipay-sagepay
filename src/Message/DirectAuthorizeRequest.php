@@ -27,16 +27,16 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['ApplyAVSCV2'] = $this->getApplyAVSCV2() ?: 0;
         $data['Apply3DSecure'] = $this->getApply3DSecure() ?: 0;
 
-        $data['CreateToken'] = $this->getCreateToken();
+        $data['CreateToken'] = $this->getCreateCardReference();
 
         // Creating a token should not be permissible at
         // the same time as using a token.
-        if (! $data['CreateToken'] && $this->getToken()) {
+        if (! $data['CreateToken'] && $this->getCardReference()) {
             // If a token has been supplied, and we are NOT asking to generate
             // a new token here, then use this token and optionally store it
             // again for further use.
-            $data['Token'] = $this->getToken();
-            $data['StoreToken'] = $this->getStoreToken();
+            $data['Token'] = $this->getCardReference();
+            $data['StoreToken'] = $this->getStoreCardReference();
         }
 
         if ($this->getReferrerId()) {
@@ -105,7 +105,7 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['CardHolder'] = $this->getCard()->getName();
 
         // Card number should not be provided if token is being provided instead
-        if (!$this->getToken()) {
+        if (!$this->getCardReference()) {
             $data['CardNumber'] = $this->getCard()->getNumber();
         }
 

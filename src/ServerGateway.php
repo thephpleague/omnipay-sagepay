@@ -46,27 +46,28 @@ class ServerGateway extends DirectGateway
      * Accept card details from a user and return a token, without any
      * authorization against that card.
      * i.e. standalone token creation.
-     * Alias fof registerToken()
      */
-    public function createCard(array $parameters = array())
+    public function createCardReference(array $parameters = array())
     {
-        return $this->registerToken($parameters);
+        return $this->createRequest('\Omnipay\SagePay\Message\ServerTokenRegistrationRequest', $parameters);
     }
 
     /**
      * Accept card details from a user and return a token, without any
      * authorization against that card.
      * i.e. standalone token creation.
+     *
+     * @deprecated for 3.0; use createCardReference()
      */
     public function registerToken(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\ServerTokenRegistrationRequest', $parameters);
+        return $this->createCardReference($parameters);
     }
 
     /**
      * Handle token registration notification callback.
-     * Please now use acceptNotification()
-     * @deprecated
+     *
+     * @deprecated for 3.0; use acceptNotification()
      */
     public function completeRegistration(array $parameters = array())
     {

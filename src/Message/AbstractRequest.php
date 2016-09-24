@@ -179,40 +179,88 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      * Use this flag to indicate you wish to have a token generated and stored in the SagePay database and
      * returned to you for future use.
      *
-     * @param bool|int $createToken 0 = This will not create a token from the payment (default).
+     * @param bool|int $createCardReference 0 = This will not create a token from the payment (default).
      *                              1 = This will create a token from the payment if
      *                                  successful and return a Token.
      */
-    public function setCreateToken($createToken)
+    public function setCreateCardReference($createToken)
     {
         $createToken = (bool)$createToken;
 
         $this->setParameter('createToken', (int)$createToken);
     }
 
-    public function getCreateToken()
+    public function getCreateCardReference()
     {
         return $this->parameters->get('createToken', 0);
+    }
+
+    /**
+     * @deprecated for 3.0; use getCreateCardReference
+     */
+    public function setCreateToken($createToken)
+    {
+        return $this->setCreateCardReference($createToken);
+    }
+
+    /**
+     * @deprecated for 3.0; use getCreateCardReference
+     */
+    public function getCreateToken()
+    {
+        return $this->getCreateCardReference();
+    }
+
+    /**
+     * Issue #75 legacy support in switch from "token" to "cardReference".
+     */
+    public function setToken($value)
+    {
+        return $this->setCardReference($value);
+    }
+
+    /**
+     * Issue #75 legacy support in switch from "token" to "cardReference".
+     */
+    public function getToken()
+    {
+        return $this->getCardReference();
     }
 
     /**
      * An optional flag to indicate if you wish to continue to store the Token in the SagePay
      * token database for future use.
      *
-     * @param bool|int $storeToken  0 = The Token will be deleted from the SagePay database if
+     * @param bool|int $storeCardReference  0 = The Token will be deleted from the SagePay database if
      *                                  authorised by the bank (default).
      *                              1 = Continue to store the Token in the SagePay database for future use.
      */
-    public function setStoreToken($storeToken)
+    public function setStoreCardReference($storeToken)
     {
         $storeToken = (bool)$storeToken;
 
         $this->setParameter('storeToken', (int)$storeToken);
     }
 
-    public function getStoreToken()
+    public function getStoreCardReference()
     {
         return $this->parameters->get('storeToken', 0);
+    }
+
+    /**
+     * @deprecated for 3.0; use setStoreCardReference
+     */
+    public function setStoreToken($storeToken)
+    {
+        return $this->setStoreCardReference($storeToken);
+    }
+
+    /**
+     * @deprecated for 3.0; use getStoreCardReference
+     */
+    public function getStoreToken()
+    {
+        return $this->getStoreCardReference();
     }
 
     protected function createResponse($data)
