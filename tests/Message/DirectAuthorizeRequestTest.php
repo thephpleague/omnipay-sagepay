@@ -168,7 +168,8 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->getCard()->setNumber('4929000000006');
         $data = $this->request->getData();
 
-        $this->assertSame('visa', $data['CardType']);
+        // Sage Pay expects the CardType to be uppor case.
+        $this->assertSame('VISA', $data['CardType']);
     }
 
     public function testGetDataMastercard()
@@ -176,7 +177,8 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->getCard()->setNumber('5404000000000001');
         $data = $this->request->getData();
 
-        $this->assertSame('mc', $data['CardType']);
+        // Sage Pay expects the CardType to be uppor case.
+        $this->assertSame('MC', $data['CardType']);
     }
 
     public function testGetDataDinersClub()
@@ -184,7 +186,8 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->getCard()->setNumber('30569309025904');
         $data = $this->request->getData();
 
-        $this->assertSame('dc', $data['CardType']);
+        // Sage Pay expects the CardType to be uppor case.
+        $this->assertSame('DC', $data['CardType']);
     }
 
     public function testGetDataNullBillingAddress2()

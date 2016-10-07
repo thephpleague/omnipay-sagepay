@@ -8,6 +8,10 @@ namespace Omnipay\SagePay\Message;
 class DirectAuthorizeRequest extends AbstractRequest
 {
     protected $action = 'DEFERRED';
+
+    /**
+     * @var map some OmniPay card brand names to Sage Pay card brand names.
+     */
     protected $cardBrandMap = array(
         'mastercard' => 'mc',
         'diners_club' => 'dc'
@@ -129,14 +133,18 @@ class DirectAuthorizeRequest extends AbstractRequest
         return 'vspdirect-register';
     }
 
+    /**
+     * Sage Pay uses the same card name as OmniPay, with a few exceptions.
+     * FIXME: the Sage Pay docs specify this must be upper case.
+     */
     protected function getCardBrand()
     {
         $brand = $this->getCard()->getBrand();
 
-        if (isset($this->cardBrandMap[$brand])) {
-            return $this->cardBrandMap[$brand];
+        if (isset($this->cardBrandMap[strtolower($brand)])) {
+            $brand = $this->cardBrandMap[$brand];
         }
 
-        return $brand;
+        return strtoupper($brand);
     }
 }
