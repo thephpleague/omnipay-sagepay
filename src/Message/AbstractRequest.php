@@ -27,6 +27,16 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('vendor', $value);
     }
 
+    public function getVendorData()
+    {
+        return $this->getParameter('vendorData');
+    }
+
+    public function setVendorData($value)
+    {
+        return $this->setParameter('vendorData', $value);
+    }
+
     public function getService()
     {
         return $this->action;
