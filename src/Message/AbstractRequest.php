@@ -32,6 +32,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->getParameter('vendorData');
     }
 
+    /**
+     * @param string $value ASCII alphanumeric and spaces, max 200 characters.
+     */
     public function setVendorData($value)
     {
         return $this->setParameter('vendorData', $value);
