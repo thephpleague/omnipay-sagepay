@@ -80,15 +80,17 @@ These are incompatible with each other, and cannot be both sent in the same tran
   now, which is simpler and will be more consistent with other gateways.
 
 The `SagePay_Server` gateway uses a notification callback to receive the results of a payment or authorisation.
+(Sage Pay Direct does not use the notification handler.)
 The URL for the notification handler is set in the authorize or payment message:
 
-~~~php
+```php
 // The Server response will be a redirect to the Sage Pay CC form.
+// This is a Sage Pay Server Purchase request.
 
 $response = $gateway->purchase(array(
     'amount' => '9.99',
     'currency' => 'GBP',
-    'card' => $card,
+    'card' => $card, // Just the name and address, NOT CC details.
     'notifyUrl' => route('sagepay.server.notify'), // The route to your application's notification handler.
     'transactionId' => $transactionId,
     'description' => 'test',
@@ -99,7 +101,13 @@ $response = $gateway->purchase(array(
 // by `$transactionId`.
 // Note that at this point `transactionReference` is not yet complete for the Server transaction,
 // but must be saved in the database for the notification handler to use.
-~~~
+
+if ($response->isRedirect()) {
+    // Go to Sage Pay to enter CC details.
+    // While your user is there, the notification handler will be called.
+    $response->redirect();
+}
+```
 
 Your notification handler needs to do four things:
 
@@ -114,23 +122,23 @@ This is a back-channel, so has no access to the end user's session.
 
 The acceptNotification gateway is set up simply. The `$request` will capture the POST data sent by Sage Pay:
 
-~~~php
+```php
 $gateway = OmniPay\OmniPay::create('SagePay_Server');
 $gateway->setVendor('your-vendor-name');
 $gateway->setTestMode(true); // If testing
 $request = $gateway->acceptNotification();
-~~~
+```
 
 Your original `transactionId` is available to look up the transaction in the database:
 
-~~~php
+```php
 // Use this to look up the `$transactionReference` you saved:
 $transactionId = $request->getTransactionId();
-~~~
+```
 
 Now the signature can be checked:
 
-~~~php
+```php
 // The transactionReference contains a one-time token known as the `securitykey` that is
 // used in the signature hash. You can alternatively `setSecurityKey('...')` if you saved
 // that as a separate field.
@@ -145,15 +153,15 @@ if (! $request->isValid()) {
 
     $response->invalid($nextUrl, 'Signature not valid - goodbye');
 }
-~~~
+```
 
 If you were not able to look up the transaction or the transaction is in the wrong state,
 then indicate this with an error. Note an "error" is to indicate that although the notification
 appears to be legitimate, you do not accept it or cannot handle it for any reason:
 
-~~~php
+```php
 $response->error($nextUrl, 'This transaction does not exist on the system');
-~~~
+```
 
 > **Note:** it has been observed that the same notification message may be sent
   by Sage Pay multiple times.
@@ -163,7 +171,7 @@ $response->error($nextUrl, 'This transaction does not exist on the system');
 
 If you accept the notification, then you can update your local records and let Sage Pay know:
 
-~~~php
+```php
 // All raw data - just log it for later analysis:
 $request->getData();
 
@@ -181,7 +189,7 @@ $request->getMessage();
 
 // Now let Sage Pay know you have got it and saved the details away safely:
 $response->confirm($nextUrl);
-~~~
+```
 
 That's it. The `$nextUrl` is where you want Sage Pay to send the user to next.
 It will often be the same URL whether the transaction was approved or not,
