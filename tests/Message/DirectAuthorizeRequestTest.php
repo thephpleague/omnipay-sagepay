@@ -45,6 +45,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->setClientIp('127.0.0.1');
         $this->request->setReferrerId('3F7A4119-8671-464F-A091-9E59EB47B80C');
         $this->request->setVendorData('Vendor secret codes');
+        $this->request->setCardholderName('Mr E User');
 
         $data = $this->request->getData();
 
@@ -58,6 +59,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertSame(3, $data['Apply3DSecure']);
         $this->assertSame('3F7A4119-8671-464F-A091-9E59EB47B80C', $data['ReferrerID']);
         $this->assertSame('Vendor secret codes', $data['VendorData']);
+        $this->assertSame('Mr E User', $data['CardHolder']);
     }
 
     public function testNoBasket()
