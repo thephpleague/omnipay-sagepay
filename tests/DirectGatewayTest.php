@@ -50,6 +50,11 @@ class DirectGatewayTest extends GatewayTestCase
             'transactionId' => '123',
             'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
         );
+
+        $this->createCardReferenceOptions = array(
+            'transactionId' => '123',
+            'card' => $this->getValidCard(),
+        );
     }
 
     public function testAuthorizeFailureSuccess()
@@ -228,7 +233,7 @@ class DirectGatewayTest extends GatewayTestCase
         $this->assertSame('Not authorized.', $response->getMessage());
     }
 
-    // Void
+    // Void - can void a payment up until midnight of the day it was made.
 
     public function testVoidSuccess()
     {
@@ -252,7 +257,7 @@ class DirectGatewayTest extends GatewayTestCase
         $this->assertSame('4041 : The Transaction type does not support the requested operation.', $response->getMessage());
     }
 
-    // Abort
+    // Abort - discard an existing authorization that has not been captured yet.
 
     public function testAbortSuccess()
     {
@@ -274,5 +279,22 @@ class DirectGatewayTest extends GatewayTestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('4041 : The Transaction type does not support the requested operation.', $response->getMessage());
+    }
+
+    // Create a standalone card reference
+    public function testCreateCardReferenceSuccess()
+    {
+        $this->setMockHttpResponse('DirectTokenRegistrationSuccess.txt');
+
+        $response = $this->gateway->createCardReference($this->createCardReferenceOptions)->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertSame('123451234512345', $response->getCardReference());
+        $this->assertSame('', $response->getMessage());
+    }
+
+    // Delete a standalone card reference
+    public function XXXtestDeleteCardReferenceSuccess()
+    {
     }
 }
