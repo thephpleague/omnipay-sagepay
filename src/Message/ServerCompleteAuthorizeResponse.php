@@ -35,10 +35,12 @@ class ServerCompleteAuthorizeResponse extends Response
      * @param string URL to forward the customer to. Note this is different to your standard
      *               return controller action URL.
      * @param string Optional human readable reasons for accepting the transaction.
+     * @param bool   Return the response as a string rather than sending it and exiting the
+     *               program.
      */
-    public function confirm($nextUrl, $detail = null)
+    public function confirm($nextUrl, $detail = null, $return = false)
     {
-        $this->sendResponse('OK', $nextUrl, $detail);
+        return $this->sendResponse('OK', $nextUrl, $detail, $return);
     }
 
     /**
@@ -51,10 +53,12 @@ class ServerCompleteAuthorizeResponse extends Response
      * @param string URL to foward the customer to. Note this is different to your standard
      *               return controller action URL.
      * @param string Optional human readable reasons for not accepting the transaction.
+     * @param bool   Return the response as a string rather than sending it and exiting the
+     *               program.
      */
-    public function error($nextUrl, $detail = null)
+    public function error($nextUrl, $detail = null, $return = false)
     {
-        $this->sendResponse('ERROR', $nextUrl, $detail);
+        return $this->sendResponse('ERROR', $nextUrl, $detail, $return);
     }
 
     /**
@@ -68,10 +72,12 @@ class ServerCompleteAuthorizeResponse extends Response
      * @param string URL to foward the customer to. Note this is different to your standard
      *               return controller action URL.
      * @param string Optional human readable reasons for not accepting the transaction.
+     * @param bool   Return the response as a string rather than sending it and exiting the
+     *               program.
      */
-    public function invalid($nextUrl, $detail = null)
+    public function invalid($nextUrl, $detail = null, $return = false)
     {
-        $this->sendResponse('INVALID', $nextUrl, $detail);
+        return $this->sendResponse('INVALID', $nextUrl, $detail, $return);
     }
 
     /**
@@ -93,13 +99,19 @@ class ServerCompleteAuthorizeResponse extends Response
      * @param string URL to forward the customer to. Note this is different to your standard
      *               return controller action URL.
      * @param string Optional human readable reasons for accepting the transaction.
+     * @param bool   If set to true, this method will return the response as a string and not
+     *               exit the program.
      */
-    public function sendResponse($status, $nextUrl, $detail = null)
+    public function sendResponse($status, $nextUrl, $detail = null, $return = false)
     {
         $message = "Status=$status\r\nRedirectUrl=$nextUrl";
 
         if (null !== $detail) {
             $message .= "\r\nStatusDetail=".$detail;
+        }
+
+        if ($return) {
+            return $message;
         }
 
         $this->exitWith($message);
