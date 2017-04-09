@@ -133,7 +133,7 @@ class DirectAuthorizeRequest extends AbstractRequest
 
         $data['CV2'] = $this->getCard()->getCvv();
         $data['ExpiryDate'] = $this->getCard()->getExpiryDate('my');
-        $data['CardType'] = strtoupper($this->getCardBrand());
+        $data['CardType'] = $this->getCardBrand();
 
         if ($this->getCard()->getStartMonth() and $this->getCard()->getStartYear()) {
             $data['StartDate'] = $this->getCard()->getStartDate('my');
@@ -153,7 +153,7 @@ class DirectAuthorizeRequest extends AbstractRequest
 
     /**
      * Sage Pay uses the same card name as OmniPay, with a few exceptions.
-     * FIXME: the Sage Pay docs specify this must be upper case.
+     * The Sage Pay docs specify this must be upper case.
      */
     protected function getCardBrand()
     {
