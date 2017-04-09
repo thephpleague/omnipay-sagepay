@@ -102,12 +102,29 @@ class DirectAuthorizeRequest extends AbstractRequest
         return $ip;
     }
 
+    /*
+     * Set cardholder name directly, overriding the billing name and surname of the card.
+     */
+    public function setCardholderName($value)
+    {
+        return $this->setParameter('cardholderName', $value);
+    }
+
+    public function getCardholderName()
+    {
+        return $this->getParameter('cardholderName');
+    }
+
     public function getData()
     {
         $data = $this->getBaseAuthorizeData();
         $this->getCard()->validate();
 
-        $data['CardHolder'] = $this->getCard()->getName();
+        if ($this->getCardholderName()) {
+            $data['CardHolder'] = $this->getCardholderName();
+        } else {
+            $data['CardHolder'] = $this->getCard()->getName();
+        }
 
         // Card number should not be provided if token is being provided instead
         if (!$this->getCardReference()) {
