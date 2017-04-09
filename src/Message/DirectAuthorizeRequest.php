@@ -8,6 +8,10 @@ namespace Omnipay\SagePay\Message;
 class DirectAuthorizeRequest extends AbstractRequest
 {
     protected $action = 'DEFERRED';
+
+    /**
+     * @var map some OmniPay card brand names to Sage Pay card brand names.
+     */
     protected $cardBrandMap = array(
         'mastercard' => 'mc',
         'diners_club' => 'dc'
@@ -28,16 +32,16 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['ApplyAVSCV2'] = $this->getApplyAVSCV2() ?: 0;
         $data['Apply3DSecure'] = $this->getApply3DSecure() ?: 0;
 
-        $data['CreateToken'] = $this->getCreateToken();
+        $data['CreateToken'] = $this->getCreateCardReference();
 
         // Creating a token should not be permissible at
         // the same time as using a token.
-        if (! $data['CreateToken'] && $this->getToken()) {
+        if (! $data['CreateToken'] && $this->getCardReference()) {
             // If a token has been supplied, and we are NOT asking to generate
             // a new token here, then use this token and optionally store it
             // again for further use.
-            $data['Token'] = $this->getToken();
-            $data['StoreToken'] = $this->getStoreToken();
+            $data['Token'] = $this->getCardReference();
+            $data['StoreToken'] = $this->getStoreCardReference();
         }
 
         if ($this->getReferrerId()) {
@@ -123,7 +127,7 @@ class DirectAuthorizeRequest extends AbstractRequest
         }
 
         // Card number should not be provided if token is being provided instead
-        if (!$this->getToken()) {
+        if (!$this->getCardReference()) {
             $data['CardNumber'] = $this->getCard()->getNumber();
         }
 
@@ -147,14 +151,18 @@ class DirectAuthorizeRequest extends AbstractRequest
         return 'vspdirect-register';
     }
 
+    /**
+     * Sage Pay uses the same card name as OmniPay, with a few exceptions.
+     * The Sage Pay docs specify this must be upper case.
+     */
     protected function getCardBrand()
     {
         $brand = $this->getCard()->getBrand();
 
-        if (isset($this->cardBrandMap[$brand])) {
-            return $this->cardBrandMap[$brand];
+        if (isset($this->cardBrandMap[strtolower($brand)])) {
+            $brand = $this->cardBrandMap[$brand];
         }
 
-        return $brand;
+        return strtoupper($brand);
     }
 }

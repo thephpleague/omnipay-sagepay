@@ -158,38 +158,40 @@ class DirectGateway extends AbstractGateway
      * Accept card details from a user and return a token, without any
      * authorization against that card.
      * i.e. standalone token creation.
-     * Alias fof registerToken()
      */
-    public function createCard(array $parameters = array())
+    public function createCardReference(array $parameters = array())
     {
-        return $this->registerToken($parameters);
+        return $this->createRequest('\Omnipay\SagePay\Message\DirectTokenRegistrationRequest', $parameters);
     }
 
     /**
      * Accept card details from a user and return a token, without any
      * authorization against that card.
      * i.e. standalone token creation.
+     *
+     * @deprecated for v3.0; use createCardReference
      */
     public function registerToken(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectTokenRegistrationRequest', $parameters);
+        return $this->createCardReference($parameters);
     }
 
     /**
      * Remove a card token from the account.
-     * Alias for removeToken()
      */
-    public function deleteCard(array $parameters = array())
+    public function deleteCardReference(array $parameters = array())
     {
-        return $this->removeToken($parameters);
+        return $this->createRequest('\Omnipay\SagePay\Message\SharedTokenRemovalRequest', $parameters);
     }
 
     /**
      * Remove a card token from the account.
+     *
+     * @deprecated for v3.0; use deleteCardReference
      */
     public function removeToken(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\SharedTokenRemovalRequest', $parameters);
+        return $this->deleteCardReference($parameters);
     }
 
     /**
@@ -197,6 +199,6 @@ class DirectGateway extends AbstractGateway
      */
     public function repeatPayment(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectRepeatPaymentRequest', $parameters);
+        return $this->repeatPurchase($parameters);
     }
 }

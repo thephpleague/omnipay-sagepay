@@ -113,8 +113,13 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         }
     }
 
-    public function getToken()
+    public function getCardReference()
     {
         return isset($this->data['Token']) ? $this->data['Token'] : null;
+    }
+
+    public function getToken()
+    {
+        return $this->getCardReference();
     }
 }
