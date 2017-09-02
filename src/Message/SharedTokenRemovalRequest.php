@@ -12,7 +12,7 @@ class SharedTokenRemovalRequest extends AbstractRequest
     public function getData()
     {
         $data = $this->getBaseData();
-        $data['Token'] = $this->getToken();
+        $data['Token'] = $this->getCardReference() ?: $this->getToken();
 
         unset($data['AccountType']);
 

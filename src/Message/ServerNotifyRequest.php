@@ -228,12 +228,22 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     }
 
     /**
+     * Get the cardReference generated when creating a card reference
+     * during an authorisation or payment, or as an explicit request.
+     * Omnipay standard function; alias for getToken()
+     */
+    public function getCardReference()
+    {
+        return $this->getDataItem('Token', null);
+    }
+
+    /**
      * A card token is returned if one has been requested.
-     * Name may change to getCardReference
+     * Deprecated: this should have been getCardReference()
      */
     public function getToken()
     {
-        return $this->getDataItem('Token');
+        return $this->getCardReference();
     }
 
     /**

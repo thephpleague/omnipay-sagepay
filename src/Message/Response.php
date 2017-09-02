@@ -39,6 +39,14 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         $this->data = $data;
     }
 
+    /**
+     * Get a POST data item, or $default if not present.
+     */
+    protected function getDataItem($name, $default = '')
+    {
+        return isset($this->data[$name]) ? $this->data[$name] : $default;
+    }
+
     public function isSuccessful()
     {
         return isset($this->data['Status']) && 'OK' === $this->data['Status'];
@@ -113,8 +121,21 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         }
     }
 
+    /**
+     * Get the cardReference generated when creating a card reference
+     * during an authorisation or payment, or as an explicit request.
+     */
+    public function getCardReference()
+    {
+        return $this->getDataItem('Token', null);
+    }
+
+    /**
+     * Alias of getCardReference()
+     * Deprecated (see issue #89)
+     */
     public function getToken()
     {
-        return isset($this->data['Token']) ? $this->data['Token'] : null;
+        return $this->getCardReference();
     }
 }

@@ -158,7 +158,7 @@ class DirectGateway extends AbstractGateway
      * Accept card details from a user and return a token, without any
      * authorization against that card.
      * i.e. standalone token creation.
-     * Alias fof registerToken()
+     * Standard Omnipay function.
      */
     public function createCard(array $parameters = array())
     {
@@ -177,7 +177,7 @@ class DirectGateway extends AbstractGateway
 
     /**
      * Remove a card token from the account.
-     * Alias for removeToken()
+     * Standard Omnipay function.
      */
     public function deleteCard(array $parameters = array())
     {

@@ -43,14 +43,14 @@ Sage Pay Direct Methods:
 
 * authorize() - with completeAuthorize for 3D Secure and PayPal redirect
 * purchase() - with completeAuthorize for 3D Secure and PayPal redirect
-* registerToken() - standalone register of a card token
+* createCard() - standalone register of a card token
 
 Sage Pay Server Methods:
 
 * authorize()
 * purchase()
 * acceptNotification() - Notification Handler for authorize, purchase and standalone token registration
-* registerToken() - standalone register of a card token
+* createCard() - standalone register of a card token
 
 Sage Pay Shared Methods (for both Direct and Server):
 
@@ -60,7 +60,7 @@ Sage Pay Shared Methods (for both Direct and Server):
 * repeatAuthorize() - new authorization based on past transaction
 * repeatPurchase() - new purchase based on past transaction
 * void() - void a purchase
-* removeToken() - remove a card token
+* deleteCard() - remove a card token
 
 ### Basket format
 
@@ -68,7 +68,13 @@ Sagepay currently supports two different formats for sending cart/item informati
  - [BasketXML](http://www.sagepay.co.uk/support/12/36/protocol-3-00-basket-xml)
  - [Basket](http://www.sagepay.co.uk/support/error-codes/3021-invalid-basket-format-invalid)
 
-These are incompatible with each other, and cannot be both sent in the same transaction. *BasketXML* is the most modern format, and is the default used by this driver. *Basket* is an older format which may be deprecated one day, but is also the only format currently supported by some of the Sage accounting products (Line 50, etc) which can pull transaction data directly from Sagepay. Therefore for users who require this type of integration, an optional parameter `useOldBasketFormat` with a value of `true` can be passed in the driver's `initialize()` method.
+These are incompatible with each other, and cannot be both sent in the same transaction.
+*BasketXML* is the most recent format, and is the default used by this driver.
+*Basket* is an older format which may be deprecated one day,
+but is also the only format currently supported by some of the Sage accounting products
+(Line 50, etc) which can pull transaction data directly from Sagepay.
+So for users who require this type of integration, an optional parameter `useOldBasketFormat`
+with a value of `true` can be passed in the driver's `initialize()` method.
 
 ## Notification Handler
 
