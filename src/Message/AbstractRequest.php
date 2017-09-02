@@ -189,8 +189,12 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     }
 
     /**
-     * Use this flag to indicate you wish to have a token generated and stored in the SagePay database and
-     * returned to you for future use.
+     * Use this flag to indicate you wish to have a token generated and stored in the Sage Pay
+     * database and returned to you for future use.
+     *
+     * This is a bit of a misnomer. What is referred to as "token" in Sage Pay,
+     * is a "cardReference" in Omnipay. This functions may need to be renamed.
+     * See issue #89
      *
      * @param bool|int $createToken 0 = This will not create a token from the payment (default).
      *                              1 = This will create a token from the payment if
