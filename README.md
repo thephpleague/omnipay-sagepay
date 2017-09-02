@@ -9,7 +9,22 @@
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
 processing library for PHP 5.3+. This package implements Sage Pay support for Omnipay.
 
-## Installation
+Table of Contents
+=================
+
+   * [Omnipay: Sage Pay](#omnipay-sage-pay)
+   * [Installation](#installation)
+   * [Basic Usage](#basic-usage)
+   * [Supported Methods](#supported-methods)
+      * [Sage Pay Direct Methods:](#sage-pay-direct-methods)
+      * [Sage Pay Server Methods:](#sage-pay-server-methods)
+         * [Server createCard()](#server-createcard)
+      * [Sage Pay Shared Methods (for both Direct and Server):](#sage-pay-shared-methods-for-both-direct-and-server)
+   * [Basket format](#basket-format)
+   * [Sage Pay Server Notification Handler](#sage-pay-server-notification-handler)
+   * [Support](#support)
+
+# Installation
 
 Omnipay is installed via [Composer](http://getcomposer.org/). To install, simply add it
 to your `composer.json` file:
@@ -27,7 +42,7 @@ And run composer to update your dependencies:
     $ curl -s http://getcomposer.org/installer | php
     $ php composer.phar update
 
-## Basic Usage
+# Basic Usage
 
 The following gateways are provided by this package:
 
@@ -37,22 +52,68 @@ The following gateways are provided by this package:
 For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
 repository.
 
-### Supported Methods
+# Supported Methods
 
-Sage Pay Direct Methods:
+## Sage Pay Direct Methods:
 
 * authorize() - with completeAuthorize for 3D Secure and PayPal redirect
 * purchase() - with completeAuthorize for 3D Secure and PayPal redirect
-* createCard() - standalone register of a card token
+* createCard() - explicit creation of a cardReference
+* deleteCard() - remove a card cardReference from the accout
 
-Sage Pay Server Methods:
+## Sage Pay Server Methods:
 
 * authorize()
 * purchase()
-* acceptNotification() - Notification Handler for authorize, purchase and standalone token registration
-* createCard() - standalone register of a card token
+* acceptNotification() - Notification Handler for authorize, purchase and explicit cardReference registration
+* createCard() - explicit creation of a cardReference
+* deleteCard() - remove a card cardReference from the accout
 
-Sage Pay Shared Methods (for both Direct and Server):
+### Server createCard()
+
+When creating a cardReference, for Sage Pay Server the reference will be available
+only in the notification callback.
+
+Sample code using Sage Pay Server to create a card reference:
+
+```php
+use Omnipay\Omnipay;
+
+$gateway = OmniPay::create('SagePay\Server');
+
+$gateway->setVendor('your-vendor-code');
+$gateway->setTestMode(true); // For test account
+
+// The transaction ID is used to store the result in the notify callback.
+$transactionId = {create a unique transaction id};
+
+$request = $gateway->createCard([
+    'currency' => 'GBP',
+    'notifyUrl' => {notify callback URL},
+    'transactionId' => $transactionId,
+]);
+
+$response = $request->send();
+
+if ($response->isSuccessful()) {
+    // Should never happen for Sage Pay Server
+} elseif ($response->isRedirect()) {
+    // Redirect to offsite payment gateway to capture the users credit card
+    // details. Note that no address details are needed, nor are they captured.
+    $response->redirect();
+} else {
+    $reason = $response->getMessage();
+}
+```
+
+At this point the user will be redirected to enter their CC details.
+The details will be held by the gateway and a token sent to the notification
+handler, along with the `transactionId`.
+The notification handler needs to store the `cardReference` referenced by the
+`transactionId` then acknowledge the acceptance and provide a final URL the user
+is taken to.
+
+## Sage Pay Shared Methods (for both Direct and Server):
 
 * capture()
 * refund()
@@ -60,9 +121,8 @@ Sage Pay Shared Methods (for both Direct and Server):
 * repeatAuthorize() - new authorization based on past transaction
 * repeatPurchase() - new purchase based on past transaction
 * void() - void a purchase
-* deleteCard() - remove a card token
 
-### Basket format
+# Basket format
 
 Sagepay currently supports two different formats for sending cart/item information to them:  
  - [BasketXML](http://www.sagepay.co.uk/support/12/36/protocol-3-00-basket-xml)
@@ -76,7 +136,7 @@ but is also the only format currently supported by some of the Sage accounting p
 So for users who require this type of integration, an optional parameter `useOldBasketFormat`
 with a value of `true` can be passed in the driver's `initialize()` method.
 
-## Notification Handler
+# Sage Pay Server Notification Handler
 
 > **NOTE:** The notification handler was previously handled by the SagePay_Server `completeAuthorize`,
   `completePurchase` and `completeRegistration` methods. The notification handler replaces all of these.
@@ -131,14 +191,14 @@ The acceptNotification gateway is set up simply. The `$request` will capture the
 ```php
 $gateway = OmniPay\OmniPay::create('SagePay_Server');
 $gateway->setVendor('your-vendor-name');
-$gateway->setTestMode(true); // If testing
+$gateway->setTestMode(true); // To access your test account.
 $request = $gateway->acceptNotification();
 ```
 
 Your original `transactionId` is available to look up the transaction in the database:
 
 ```php
-// Use this to look up the `$transactionReference` you saved:
+// Use this transaction ID to look up the `$transactionReference` you saved:
 $transactionId = $request->getTransactionId();
 ```
 
@@ -201,7 +261,7 @@ That's it. The `$nextUrl` is where you want Sage Pay to send the user to next.
 It will often be the same URL whether the transaction was approved or not,
 since the result will be safely saved in the database.
 
-## Support
+# Support
 
 If you are having general issues with Omnipay, we suggest posting on
 [Stack Overflow](http://stackoverflow.com/). Be sure to add the
