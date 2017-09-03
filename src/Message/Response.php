@@ -11,6 +11,74 @@ use Omnipay\Common\Message\RequestInterface;
  */
 class Response extends AbstractResponse implements RedirectResponseInterface
 {
+    use CardResponseFieldsTrait;
+
+    /**
+     * Raw Status values.
+     */
+
+    const TXTYPE_PAYMENT        = 'PAYMENT';
+    const TXTYPE_DEFERRED       = 'DEFERRED';
+    const TXTYPE_AUTHENTICATE   = 'AUTHENTICATE';
+    const TXTYPE_TOKEN          = 'TOKEN';
+
+    const SAGEPAY_STATUS_OK         = 'OK';
+    const SAGEPAY_STATUS_PENDING    = 'PENDING';
+    const SAGEPAY_STATUS_NOTAUTHED  = 'NOTAUTHED';
+    const SAGEPAY_STATUS_REJECTED   = 'REJECTED';
+    const SAGEPAY_STATUS_ABORT      = 'ABORT';
+    const SAGEPAY_STATUS_ERROR      = 'ERROR';
+
+    const ADDRESS_RESULT_NOTPROVIDED    = 'NOTPROVIDED';
+    const ADDRESS_RESULT_NOTCHECKED     = 'NOTCHECKED';
+    const ADDRESS_RESULT_MATCHED        = 'MATCHED';
+    const ADDRESS_RESULT_NOTMATCHED     = 'NOTMATCHED';
+
+    const POSTCODE_RESULT_NOTPROVIDED   = 'NOTPROVIDED';
+    const POSTCODE_RESULT_NOTCHECKED    = 'NOTCHECKED';
+    const POSTCODE_RESULT_MATCHED       = 'MATCHED';
+    const POSTCODE_RESULT_NOTMATCHED    = 'NOTMATCHED';
+
+    const CV2_RESULT_NOTPROVIDED        = 'NOTPROVIDED';
+    const CV2_RESULT_NOTCHECKED         = 'NOTCHECKED';
+    const CV2_RESULT_MATCHED            = 'MATCHED';
+    const CV2_RESULT_NOTMATCHED         = 'NOTMATCHED';
+
+    const GIFTAID_CHECKED_TRUE  = '1';
+    const GIFTAID_CHECKED_FALSE = '0';
+
+    const SECURE3D_STATUS_OK            = 'OK';
+    const SECURE3D_STATUS_NOTCHECKED    = 'NOTCHECKED';
+    const SECURE3D_STATUS_NOTAVAILABLE  = 'NOTAVAILABLE';
+    const SECURE3D_STATUS_NOTAUTHED     = 'NOTAUTHED';
+    const SECURE3D_STATUS_INCOMPLETE    = 'INCOMPLETE';
+    const SECURE3D_STATUS_ATTEMPTONLY   = 'ATTEMPTONLY';
+    const SECURE3D_STATUS_ERROR         = 'ERROR';
+
+    const ADDRESS_STATUS_NONE           = 'NONE';
+    const ADDRESS_STATUS_CONFIRMED      = 'CONFIRMED';
+    const ADDRESS_STATUS_UNCONFIRMED    = 'UNCONFIRMED';
+
+    const PAYER_STATUS_VERIFIED     = 'VERIFIED';
+    const PAYER_STATUS_UNVERIFIED   = 'UNVERIFIED';
+
+    // TODO: a translation to OmniPay card brands would be useful.
+    const CARDTYPE_VISA     = 'VISA';
+    const CARDTYPE_MC       = 'MC';
+    const CARDTYPE_MCDEBIT  = 'MCDEBIT';
+    const CARDTYPE_DELTA    = 'DELTA';
+    const CARDTYPE_MAESTRO  = 'MAESTRO';
+    const CARDTYPE_UKE      = 'UKE';
+    const CARDTYPE_AMEX     = 'AMEX';
+    const CARDTYPE_DC       = 'DC';
+    const CARDTYPE_JCB      = 'JCB';
+    const CARDTYPE_PAYPAL   = 'PAYPAL';
+
+    const FRAUD_RESPONSE_ACCEPT     = 'ACCEPT';
+    const FRAUD_RESPONSE_CHALLENGE  = 'CHALLENGE';
+    const FRAUD_RESPONSE_DENY       = 'DENY';
+    const FRAUD_RESPONSE_NOTCHECKED = 'NOTCHECKED';
+
     /**
      * FIXME: The response should never be directly passed the raw HTTP
      * body like this. The body should be parsed to data before instantiation.
@@ -37,14 +105,6 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         }
 
         $this->data = $data;
-    }
-
-    /**
-     * Get a POST data item, or $default if not present.
-     */
-    protected function getDataItem($name, $default = '')
-    {
-        return isset($this->data[$name]) ? $this->data[$name] : $default;
     }
 
     public function isSuccessful()
@@ -88,16 +148,6 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         return json_encode($reference);
     }
 
-    public function getStatus()
-    {
-        return isset($this->data['Status']) ? $this->data['Status'] : null;
-    }
-
-    public function getMessage()
-    {
-        return isset($this->data['StatusDetail']) ? $this->data['StatusDetail'] : null;
-    }
-
     /**
      * @return string URL to 3D Secure endpoint.
      */
@@ -126,24 +176,5 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                 'MD' => $this->data['MD'],
             );
         }
-    }
-
-    /**
-     * Alias of getToken()
-     * Get the cardReference generated when creating a card reference
-     * during an authorisation or payment, or as an explicit request.
-     */
-    public function getCardReference()
-    {
-        return $this->getToken();
-    }
-
-    /**
-     * Both single-use tokens and permanent card references are stored and
-     * acccessed in the same way.
-     */
-    public function getToken()
-    {
-        return $this->getDataItem('Token', null);
     }
 }

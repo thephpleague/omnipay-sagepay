@@ -8,8 +8,10 @@ use Omnipay\Common\Exception\InvalidResponseException;
  * Sage Pay Server Notification Respons.
  * Return the appropriate response to Sage Pay.
  */
-class ServerNotifyResponse extends Response
+class ServerNotifyResponse extends Response implements \Omnipay\Common\Message\NotificationInterface
 {
+    use ServerNotifyTrait;
+
     /**
      * Valid status responses.
      */
@@ -28,24 +30,6 @@ class ServerNotifyResponse extends Response
      * provide more control to the application.
      */
     protected $exit_on_response = true;
-
-    public function isValid()
-    {
-        // Get the status from the request, which will work only if not using
-        // mocked requests during testing.
-        if (method_exists($this->getRequest(), 'isValid')) {
-            $valid = $this->getRequest()->isValid();
-        } else {
-            $valid = !empty($this->data['isValid']);
-        }
-
-        return $valid;
-    }
-
-    public function getTransactionReference()
-    {
-        return $this->getRequest()->getTransactionReference();
-    }
 
     /**
      * Confirm
@@ -74,6 +58,24 @@ class ServerNotifyResponse extends Response
     }
 
     /**
+     * The security key was set as a parameter in the server request, but passed
+     * to the response as a data item.
+     */
+    public function getSecurityKey()
+    {
+        return $this->getDataItem('securityKey');
+    }
+
+    /**
+     * The vendor was set as a parameter in the server request, but passed
+     * to the response as a data item.
+     */
+    public function getVendor()
+    {
+        return $this->getDataItem('vendor');
+    }
+
+    /**
      * Error
      *
      * Notify Sage Pay you received the payment details but there was an error and the payment
@@ -98,22 +100,6 @@ class ServerNotifyResponse extends Response
     public function reject($nextUrl, $detail = null)
     {
         return $this->error($nextUrl, $detail);
-    }
-
-    /**
-     * Convenience method.
-     */
-    public function getData()
-    {
-        return $this->request->getData();
-    }
-
-    /**
-     * Convenience method.
-     */
-    public function getTransactionStatus()
-    {
-        return $this->request->getTransactionStatus();
     }
 
     /**
