@@ -13,13 +13,18 @@ Table of Contents
 =================
 
    * [Omnipay: Sage Pay](#omnipay-sage-pay)
+   * [Table of Contents](#table-of-contents)
    * [Installation](#installation)
    * [Basic Usage](#basic-usage)
    * [Supported Methods](#supported-methods)
       * [Sage Pay Direct Methods:](#sage-pay-direct-methods)
+         * [Direct createCard()](#direct-createcard)
       * [Sage Pay Server Methods:](#sage-pay-server-methods)
          * [Server createCard()](#server-createcard)
       * [Sage Pay Shared Methods (for both Direct and Server):](#sage-pay-shared-methods-for-both-direct-and-server)
+   * [Token Billing](#token-billing)
+      * [Generating a Token or CardReference](#generating-a-token-or-cardreference)
+      * [Using a Token or CardRererence](#using-a-token-or-cardrererence)
    * [Basket format](#basket-format)
    * [Sage Pay Server Notification Handler](#sage-pay-server-notification-handler)
    * [Support](#support)
@@ -58,15 +63,65 @@ repository.
 
 * authorize() - with completeAuthorize for 3D Secure and PayPal redirect
 * purchase() - with completeAuthorize for 3D Secure and PayPal redirect
-* createCard() - explicit creation of a cardReference
+* createCard() - explicit "standalone" creation of a cardReference or token
 * deleteCard() - remove a card cardReference from the accout
+
+### Direct createCard()
+
+This will create a card reference with no authorisation.
+If you want to authorise an amount on the card *and* get a cardReference
+for repeated use of the card, then use the `authorize()` method with the
+`createToken` flag set.
+
+Sample code using Sage Pay Direct to create a card reference:
+
+```php
+use Omnipay\Omnipay;
+use Omnipay\CreditCard;
+
+$gateway = OmniPay::create('SagePay\Direct');
+
+$gateway->setVendor('your-vendor-code');
+$gateway->setTestMode(true); // For test account
+
+// The minimal card details to save to the gateway.
+// The CVV is optional. However it can be supplied later when
+// transactions are being initiated, though that is not advised
+// as the CVV will need to go through your site to be added to
+// the transaction.
+
+$card = new CreditCard([
+    'firstName' => 'Joe',
+    'lastName' => 'Bloggs',
+    'number' => '4929000000006',
+    'expiryMonth' => '12',
+    'expiryYear' => '2018',
+    'cvv' => '123',
+]);
+
+// Send the request.
+$request = $gateway->createCard([
+    'currency' => 'GBP',
+    'card' => $card,
+]);
+
+$response = $request->send();
+
+// There will be no need for any redirect (e.g. 3D Secure), since no
+// authorisation is being done.
+if ($response->isSuccessful()) {
+    $cardReference = $response->getCardReference();;
+    // or if you prefer to treat it as a single-use token:
+    $token = $response->getToken();
+}
+```
 
 ## Sage Pay Server Methods:
 
 * authorize()
 * purchase()
 * acceptNotification() - Notification Handler for authorize, purchase and explicit cardReference registration
-* createCard() - explicit creation of a cardReference
+* createCard() - explicit "standalone" creation of a cardReference or token
 * deleteCard() - remove a card cardReference from the accout
 
 ### Server createCard()
@@ -85,6 +140,7 @@ $gateway->setVendor('your-vendor-code');
 $gateway->setTestMode(true); // For test account
 
 // The transaction ID is used to store the result in the notify callback.
+// Create a storage record for this transaction now.
 $transactionId = {create a unique transaction id};
 
 $request = $gateway->createCard([
@@ -100,6 +156,11 @@ if ($response->isSuccessful()) {
 } elseif ($response->isRedirect()) {
     // Redirect to offsite payment gateway to capture the users credit card
     // details. Note that no address details are needed, nor are they captured.
+
+    // Here add the $response->getTransactionReference() to the stored transaction,
+    // as the notification handler will need it for checking the signature of the
+    // notification it receives.
+
     $response->redirect();
 } else {
     $reason = $response->getMessage();
@@ -109,8 +170,8 @@ if ($response->isSuccessful()) {
 At this point the user will be redirected to enter their CC details.
 The details will be held by the gateway and a token sent to the notification
 handler, along with the `transactionId`.
-The notification handler needs to store the `cardReference` referenced by the
-`transactionId` then acknowledge the acceptance and provide a final URL the user
+The notification handler needs to store the `cardReference` or `token` referenced by
+the `transactionId` then acknowledge the acceptance and provide a final URL the user
 is taken to.
 
 ## Sage Pay Shared Methods (for both Direct and Server):
@@ -121,6 +182,51 @@ is taken to.
 * repeatAuthorize() - new authorization based on past transaction
 * repeatPurchase() - new purchase based on past transaction
 * void() - void a purchase
+
+# Token Billing
+
+Sage Pay Server and Direct support the ability to store a credit card detail on
+the gateway, referenced by a token, for later use or reuse.
+The token can be single-use, or permanently stored (until its expiry date or
+explicit removal).
+
+Whether a token is single-use or permanent, depends on how it is *used*, and not
+on how it is generated. This is important to understand, and is explained in more
+detail below.
+
+## Generating a Token or CardReference
+
+A token can be generated explicitly, with no authorisation, or it can be generated
+as a part of a transaction:
+
+* `$gateway->createCard()` - message used to create a card token explicitly.
+* `$request->CreateToken()` - transaction option to generate a token with a transaction.
+
+The transaction response (or notification request for Sage Pay Server) will provide
+the generated token. This is accessed using:
+
+* `$response->getToken()` or
+* `$response->getCardReference()`
+
+These are equivalent since there is no difference in the way tokens or cardRererences
+are generated.
+
+## Using a Token or CardRererence
+
+To use a token, you must leave the credit card details blank in the `CreditCard` object.
+To use the token as a single-use token, add it to the transaction request as a token:
+
+`request->setToken($saved_token);`
+
+Once authorised, this token will be deleted by the gateway and so cannot be used again.
+Note that if the transaction is not authorised, then the token will remain.
+You should then delete the token explicitly to make sure it does not remain in the gateway.
+
+To use the token as a permanent cardReference, add it to the transaction request as a token:
+
+`request->setCardReference($saved_token);`
+
+This token will remain active on the gateway whether this transaction is authorised or not.
 
 # Basket format
 

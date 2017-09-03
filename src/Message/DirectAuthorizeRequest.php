@@ -32,12 +32,27 @@ class DirectAuthorizeRequest extends AbstractRequest
 
         // Creating a token should not be permissible at
         // the same time as using a token.
-        if (! $data['CreateToken'] && $this->getToken()) {
+        if (! $data['CreateToken'] && ($this->getToken() || $this->getCardReference())) {
             // If a token has been supplied, and we are NOT asking to generate
             // a new token here, then use this token and optionally store it
             // again for further use.
-            $data['Token'] = $this->getToken();
-            $data['StoreToken'] = $this->getStoreToken();
+
+            $data['Token'] = $this->getToken() ?: $this->getCardReference();
+
+            // If we don't have a StoreToken override, then set it according to
+            // whether we are dealing with a token or a cardReference.
+
+            $storeToken = $this->getStoreToken();
+
+            if ($storeToken === null) {
+                // If we are using the token as a cardReference, then keep it stored
+                // after this transaction for future use.
+                $storeToken = $this->getCardReference()
+                    ? static::STORE_TOKEN_YES
+                    : static::STORE_TOKEN_NO;
+            }
+
+            $data['StoreToken'] = $storeToken;
         }
 
         if ($this->getReferrerId()) {

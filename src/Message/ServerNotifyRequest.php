@@ -112,7 +112,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     public function buildSignature()
     {
         // Re-create the VPSSignature
-        if ($this->getTxType() == 'TOKEN') {
+        if ($this->getTxType() === 'TOKEN') {
             $signature_data = array(
                 // For some bizarre reason, the VPSTxId is hashed at the Sage Pay gateway
                 // without its curly crackets, so we must do the same to validate the hash.
@@ -162,10 +162,12 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
 
     /**
      * Check whether the ignature is valid.
+     *
+     * @return bool True if the signature is valid; false otherwise.
      */
     public function isValid()
     {
-        return $this->getSignature() == $this->buildSignature();
+        return $this->getSignature() === $this->buildSignature();
     }
 
     /**
@@ -321,7 +323,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     public function getTransactionStatus()
     {
         // If the signature check fails, then all bets are off - the POST cannot be trusted.
-        if (!$this->isValid()) {
+        if (! $this->isValid()) {
             return static::STATUS_FAILED;
         }
 

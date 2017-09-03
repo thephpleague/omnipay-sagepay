@@ -98,6 +98,9 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         return isset($this->data['StatusDetail']) ? $this->data['StatusDetail'] : null;
     }
 
+    /**
+     * @return string URL to 3D Secure endpoint.
+     */
     public function getRedirectUrl()
     {
         if ($this->isRedirect()) {
@@ -110,6 +113,10 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         return 'POST';
     }
 
+    /**
+     * The usual reason for a redirect is for a 3D Secure check.
+     * @return array 3D Secure POST data.
+     */
     public function getRedirectData()
     {
         if ($this->isRedirect()) {
@@ -122,20 +129,21 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     }
 
     /**
+     * Alias of getToken()
      * Get the cardReference generated when creating a card reference
      * during an authorisation or payment, or as an explicit request.
      */
     public function getCardReference()
     {
-        return $this->getDataItem('Token', null);
+        return $this->getToken();
     }
 
     /**
-     * Alias of getCardReference()
-     * Deprecated (see issue #89)
+     * Both single-use tokens and permanent card references are stored and
+     * acccessed in the same way.
      */
     public function getToken()
     {
-        return $this->getCardReference();
+        return $this->getDataItem('Token', null);
     }
 }

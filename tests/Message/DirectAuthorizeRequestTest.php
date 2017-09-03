@@ -33,7 +33,13 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertSame('E', $data['AccountType']);
         $this->assertSame(0, $data['ApplyAVSCV2']);
         $this->assertSame(0, $data['Apply3DSecure']);
-        $this->assertSame(0, $data['CreateToken']);
+
+        // If we have not explicitly set the CreateToken flag, then it remains
+        // undefined. This allows it to default when creating a transaction
+        // according to whether we are using a single-use token or a more
+        // permanent cardReference.
+
+        $this->assertNull($data['CreateToken']);
     }
 
     public function testGetData()
@@ -46,6 +52,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->setReferrerId('3F7A4119-8671-464F-A091-9E59EB47B80C');
         $this->request->setVendorData('Vendor secret codes');
         $this->request->setCardholderName('Mr E User');
+        $this->request->setCreateToken(true);
 
         $data = $this->request->getData();
 
@@ -60,6 +67,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertSame('3F7A4119-8671-464F-A091-9E59EB47B80C', $data['ReferrerID']);
         $this->assertSame('Vendor secret codes', $data['VendorData']);
         $this->assertSame('Mr E User', $data['CardHolder']);
+        $this->assertSame(1, $data['CreateToken']);
     }
 
     public function testNoBasket()
@@ -269,6 +277,9 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertContains($expected, $data['BasketXML'], 'Basket XML does not match the expected output');
     }
 
+    /**
+     * 
+     */
     public function testCreateTokenCanBeSetInRequest()
     {
         $this->request->setCreateToken(true);
@@ -295,6 +306,21 @@ class DirectAuthorizeRequestTest extends TestCase
 
         $data = $this->request->getData();
         $this->assertSame($token, $data['Token']);
+
+        // If using a "token" then it is assumed to be single-use by default.
+        $this->assertSame(0, $data['StoreToken']);
+    }
+
+    public function testExistingCardReferenceCanBeSet()
+    {
+        $token = '{ABCDEF}';
+        $this->request->setCardReference($token);
+
+        $data = $this->request->getData();
+        $this->assertSame($token, $data['Token']);
+
+        // If using a "cardReference" then it is assumed to be permanent by default.
+        $this->assertSame(1, $data['StoreToken']);
     }
 
     public function testExistingTokenCannotBeSetIfCreateTokenIsTrue()

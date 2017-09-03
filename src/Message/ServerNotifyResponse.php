@@ -24,6 +24,8 @@ class ServerNotifyResponse extends Response
 
     /**
      * Whether to exit immediately on responding.
+     * For 3.0 it will be worth switching this off by default to
+     * provide more control to the application.
      */
     protected $exit_on_response = true;
 
@@ -141,24 +143,38 @@ class ServerNotifyResponse extends Response
     }
 
     /**
-     * Respond to SagePay confirming or rejecting the notification.
+     * Construct the response body.
      *
      * @param string The status to send to Sage Pay, one of static::RESPONSE_STATUS_*
      * @param string URL to forward the customer to.
-     * @param string Optional human readable reasons for this response.
+     * @param string Optional human readable reason for this response.
      */
-    public function sendResponse($status, $nextUrl, $detail = null)
+    public function getResponseBody($status, $nextUrl, $detail = null)
     {
-        $message = array(
+        $body = array(
             'Status=' . $status,
             'RedirectUrl=' . $nextUrl,
         );
 
         if ($detail !== null) {
-            $message[] = 'StatusDetail=' . $detail;
+            $body[] = 'StatusDetail=' . $detail;
         }
 
-        echo implode(static::LINE_SEP, $message);
+        return implode(static::LINE_SEP, $body);
+    }
+
+    /**
+     * Respond to SagePay confirming or rejecting the notification.
+     *
+     * @param string The status to send to Sage Pay, one of static::RESPONSE_STATUS_*
+     * @param string URL to forward the customer to.
+     * @param string Optional human readable reason for this response.
+     */
+    public function sendResponse($status, $nextUrl, $detail = null)
+    {
+        $message = $this->getResponseBody($status, $nextUrl, $detail);
+
+        echo $message;
 
         if ($this->exit_on_response) {
             exit;

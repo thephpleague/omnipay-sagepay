@@ -14,6 +14,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     const APPLY_3DSECURE_NONE = 2;
     const APPLY_3DSECURE_AUTH = 3;
 
+    const STORE_TOKEN_YES   = 1;
+    const STORE_TOKEN_NO    = 0;
+
     protected $liveEndpoint = 'https://live.sagepay.com/gateway/service';
     protected $testEndpoint = 'https://test.sagepay.com/gateway/service';
 
@@ -209,15 +212,19 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     public function getCreateToken()
     {
-        return $this->parameters->get('createToken', 0);
+        return $this->getParameter('createToken');
     }
 
     /**
      * An optional flag to indicate if you wish to continue to store the Token in the SagePay
      * token database for future use.
      *
+     * Note: this is just an override method. It is best to leave this unset, and
+     * use either setToken or setCardReference to derive the StoreToken flag
+     * automatically.
+     *
      * @param bool|int $storeToken  0 = The Token will be deleted from the SagePay database if
-     *                                  authorised by the bank (default).
+     *                                  authorised by the bank.
      *                              1 = Continue to store the Token in the SagePay database for future use.
      */
     public function setStoreToken($storeToken)
@@ -229,7 +236,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     public function getStoreToken()
     {
-        return $this->parameters->get('storeToken', 0);
+        return $this->getParameter('storeToken');
     }
 
     protected function createResponse($data)
