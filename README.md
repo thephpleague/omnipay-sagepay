@@ -64,7 +64,6 @@ repository.
 * authorize() - with completeAuthorize for 3D Secure and PayPal redirect
 * purchase() - with completeAuthorize for 3D Secure and PayPal redirect
 * createCard() - explicit "standalone" creation of a cardReference or token
-* deleteCard() - remove a card cardReference from the accout
 
 ### Direct createCard()
 
@@ -122,7 +121,6 @@ if ($response->isSuccessful()) {
 * purchase()
 * acceptNotification() - Notification Handler for authorize, purchase and explicit cardReference registration
 * createCard() - explicit "standalone" creation of a cardReference or token
-* deleteCard() - remove a card cardReference from the accout
 
 ### Server createCard()
 
@@ -147,6 +145,7 @@ $request = $gateway->createCard([
     'currency' => 'GBP',
     'notifyUrl' => {notify callback URL},
     'transactionId' => $transactionId,
+    'iframe' => true, // TRUE if the offsite form is to go into an iframe
 ]);
 
 $response = $request->send();
@@ -174,6 +173,10 @@ The notification handler needs to store the `cardReference` or `token` reference
 the `transactionId` then acknowledge the acceptance and provide a final URL the user
 is taken to.
 
+If using an iframe for the hosted credit card form, then on return to the final
+redirect URL (provided by the notification handler) it is your site's responsibility
+to break out of the iframe.
+
 ## Sage Pay Shared Methods (for both Direct and Server):
 
 * capture()
@@ -182,6 +185,37 @@ is taken to.
 * repeatAuthorize() - new authorization based on past transaction
 * repeatPurchase() - new purchase based on past transaction
 * void() - void a purchase
+* deleteCard() - remove a cardReference or token from the accout
+
+### Direct/Server deleteCard()
+
+This is one of the simpler messages:
+
+```php
+use Omnipay\Omnipay;
+use Omnipay\CreditCard;
+
+$gateway = OmniPay::create('SagePay\Direct');
+// or
+$gateway = OmniPay::create('SagePay\Server');
+
+$gateway->setVendor('your-vendor-code');
+$gateway->setTestMode(true); // For test account
+
+// Send the request.
+$request = $gateway->deleteCard([
+    'cardReference' => $cardReference,
+]);
+
+$response = $request->send();
+
+// There will be no need for any redirect (e.g. 3D Secure), since no
+// authorisation is being done.
+if ($response->isSuccessful()) {
+    $message = $response->getMessage();
+    // "2017 : Token removed successfully."
+}
+```
 
 # Token Billing
 

@@ -9,17 +9,31 @@ use Omnipay\Common\Exception\InvalidRequestException;
  */
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
-    const APPLY_3DSECURE_APPLY = 0;
-    const APPLY_3DSECURE_FORCE = 1;
-    const APPLY_3DSECURE_NONE = 2;
-    const APPLY_3DSECURE_AUTH = 3;
+    const APPLY_3DSECURE_APPLY  = 0;
+    const APPLY_3DSECURE_FORCE  = 1;
+    const APPLY_3DSECURE_NONE   = 2;
+    const APPLY_3DSECURE_AUTH   = 3;
 
+    /**
+     * Flag whether to store a cardReference or token for multiple use.
+     */
     const STORE_TOKEN_YES   = 1;
     const STORE_TOKEN_NO    = 0;
+
+    /**
+     * Profile for Sage Pay Server hosted forms.
+     * - NORMAL for full page forms.
+     * - LOW for use in iframes.
+     */
+    const PROFILE_NORMAL    = 'NORMAL';
+    const PROFILE_LOW       = 'LOW';
 
     protected $liveEndpoint = 'https://live.sagepay.com/gateway/service';
     protected $testEndpoint = 'https://test.sagepay.com/gateway/service';
 
+    /**
+     * The vendor name identified the account.
+     */
     public function getVendor()
     {
         return $this->getParameter('vendor');
@@ -28,6 +42,38 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function setVendor($value)
     {
         return $this->setParameter('vendor', $value);
+    }
+
+    /**
+     * Indicates whether a NORMAL or LOW profile page is to be used
+     * for hosted forms.
+     * @return string|null
+     */
+    public function getProfile()
+    {
+        return $this->getParameter('profile');
+    }
+
+    /**
+     * @param string $value Values: PROFILE_NORMAL or PROFILE_LOW
+     * @return $this
+     */
+    public function setProfile($value)
+    {
+        return $this->setParameter('profile', $value);
+    }
+
+    /**
+     * Convenience method to switch iframe mode on or off.
+     *
+     * @param bool $value True to use an iframe profile for hosted forms.
+     * @return $this
+     */
+    public function setIframe($value)
+    {
+        $profile = ((bool)$value ? static::PROFILE_LOW : static::PROFILE_NORMAL);
+
+        return $this->setParameter('profile', $profile);
     }
 
     public function getVendorData()
