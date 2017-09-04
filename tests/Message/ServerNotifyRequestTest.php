@@ -42,7 +42,7 @@ class ServerNotifyRequestTest extends TestCase
 
         //$this->assertSame('0707', $this->request->getExpiryDate());
 
-        // FIXME: disable duntil I work out how yo initialise a server request (notify)
+        // FIXME: disabled until I work out how yo initialise a server request (notify)
         // object with data.
 
         $this->assertSame('DISABLED', 'DISABLED');
