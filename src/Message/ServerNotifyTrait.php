@@ -30,7 +30,7 @@ trait ServerNotifyTrait
         if ($this->getTxType() === Response::TXTYPE_TOKEN) {
             $signature_data = array(
                 // For some bizarre reason, the VPSTxId is hashed at the Sage Pay gateway
-                // without its curly crackets, so we must do the same to validate the hash.
+                // without its curly brackets, so we must do the same to validate the hash.
                 str_replace(array('{', '}'), '', $this->getVPSTxId()),
                 // VendorTxCode
                 $this->getTransactionId(),
@@ -100,11 +100,11 @@ trait ServerNotifyTrait
 
         $status = $this->getStatus();
 
-        if ($status == Response::SAGEPAY_STATUS_OK) {
+        if ($status === Response::SAGEPAY_STATUS_OK) {
             return static::STATUS_COMPLETED;
         }
 
-        if ($status == Response::SAGEPAY_STATUS_PENDING) {
+        if ($status === Response::SAGEPAY_STATUS_PENDING) {
             return static::STATUS_PENDING;
         }
 
