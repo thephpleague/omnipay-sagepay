@@ -38,7 +38,8 @@ trait ServerNotifyTrait
             // This only happens for a valid TOKEN request, and not for an aborted
             // TOKEN request.
             // The successful TOKEN request also does not include the card details, even
-            // though they are present.
+            // though they are present. The ABORTed token request does include the address
+            // result details in the signature, even though they are no relevant.
 
             $VPSTxId = str_replace(array('{', '}'), '', $VPSTxId);
         }
