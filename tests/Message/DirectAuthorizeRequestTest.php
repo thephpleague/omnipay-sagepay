@@ -6,6 +6,8 @@ use Omnipay\Tests\TestCase;
 
 class DirectAuthorizeRequestTest extends TestCase
 {
+    const SURCHARGE_XML = '<surcharges><surcharge><paymentType>VISA</paymentType><percentage>2.50</percentage></surcharge></surcharges>';
+
     /**
      * @var \Omnipay\Common\Message\AbstractRequest $request
      */
@@ -21,6 +23,7 @@ class DirectAuthorizeRequestTest extends TestCase
                 'amount' => '12.00',
                 'currency' => 'GBP',
                 'transactionId' => '123',
+                'surchargeXml' => self::SURCHARGE_XML,
                 'card' => $this->getValidCard(),
             )
         );
@@ -68,6 +71,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertSame('Vendor secret codes', $data['VendorData']);
         $this->assertSame('Mr E User', $data['CardHolder']);
         $this->assertSame(1, $data['CreateToken']);
+        $this->assertSame(self::SURCHARGE_XML, $data['surchargeXml']);
     }
 
     public function testNoBasket()

@@ -6,6 +6,8 @@ use Omnipay\Tests\TestCase;
 
 class ServerAuthorizeRequestTest extends TestCase
 {
+    const SURCHARGE_XML = '<surcharges><surcharge><paymentType>VISA</paymentType><percentage>2.50</percentage></surcharge></surcharges>';
+
     public function setUp()
     {
         parent::setUp();
@@ -15,7 +17,10 @@ class ServerAuthorizeRequestTest extends TestCase
             array(
                 'amount' => '12.00',
                 'transactionId' => '123',
+                'surchargeXml' => self::SURCHARGE_XML,
                 'card' => $this->getValidCard(),
+                'notifyUrl' => 'https://www.example.com/return',
+                'profile' => 'LOW',
             )
         );
     }
@@ -26,11 +31,12 @@ class ServerAuthorizeRequestTest extends TestCase
         $this->assertSame('NORMAL', $this->request->getProfile());
     }
 
-    public function getData()
+    public function testGetData()
     {
         $data = $this->request->getData();
 
         $this->assertSame('https://www.example.com/return', $data['NotificationURL']);
         $this->assertSame('LOW', $data['Profile']);
+        $this->assertSame(self::SURCHARGE_XML, $data['surchargeXml']);
     }
 }
