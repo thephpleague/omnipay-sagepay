@@ -9,10 +9,26 @@ use Omnipay\Common\Exception\InvalidRequestException;
  */
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
+    /**
+     * Supported 3D Secure values.
+     */
     const APPLY_3DSECURE_APPLY  = 0;
     const APPLY_3DSECURE_FORCE  = 1;
     const APPLY_3DSECURE_NONE   = 2;
     const APPLY_3DSECURE_AUTH   = 3;
+
+    /**
+     * Supported AVS/CV2 values.
+     *
+     * DEFAULT will use the account settings for checks and applying of rules.
+     * FORCE_CHECKS will force checks to be made.
+     * NO_CHECKS will force no checks to be performed.
+     * NO_RULES will force no rules to be applied.
+     */
+    const APPLY_AVSCV2_DEFAULT      = 0;
+    const APPLY_AVSCV2_FORCE_CHECKS = 1;
+    const APPLY_AVSCV2_NO_CHECKS    = 2;
+    const APPLY_AVSCV2_NO_RULES     = 3;
 
     /**
      * Flag whether to store a cardReference or token for multiple use.
@@ -145,6 +161,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Set the apply AVSCV2 checks.
+     * Values defined in APPLY_AVSCV2_* constant.
      *
      * @param  int $value 0: If AVS/CV2 enabled then check them. If rules apply, use rules. (default)
      *                    1: Force AVS/CV2 checks even if not enabled for the account. If rules apply
@@ -167,6 +184,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      * Whether or not to apply 3D secure authentication.
      *
      * This is ignored for PAYPAL, EUROPEAN PAYMENT transactions.
+     * Values defined in APPLY_3DSECURE_* constant.
      *
      * @param  int $value 0: If 3D-Secure checks are possible and rules allow, perform the
      *                       checks and apply the authorisation rules. (default)

@@ -15,9 +15,9 @@ class ServerNotifyResponse extends Response implements \Omnipay\Common\Message\N
     /**
      * Valid status responses.
      */
-    const RESPONSE_STATUS_OK = 'OK';
-    const RESPONSE_STATUS_ERROR = 'ERROR';
-    const RESPONSE_STATUS_INVALID = 'INVALID';
+    const RESPONSE_STATUS_OK        = 'OK';
+    const RESPONSE_STATUS_ERROR     = 'ERROR';
+    const RESPONSE_STATUS_INVALID   = 'INVALID';
 
     /**
      * Live separator for return message to Sage Pay.
@@ -43,7 +43,7 @@ class ServerNotifyResponse extends Response implements \Omnipay\Common\Message\N
     {
         // If the signature is invalid, then do not allow the confirm.
         if (! $this->isValid()) {
-            throw new InvalidResponseException('Attempted to confirm an invalid notification');
+            throw new InvalidResponseException('Cannot confirm an invalid notification');
         }
 
         $this->sendResponse(static::RESPONSE_STATUS_OK, $nextUrl, $detail);
@@ -86,9 +86,10 @@ class ServerNotifyResponse extends Response implements \Omnipay\Common\Message\N
      */
     public function error($nextUrl, $detail = null)
     {
-        // If the signature is invalid, then do not allow the confirm.
+        // If the signature is invalid, then do not allow the reject.
+        // CHECKME: why?
         if (! $this->isValid()) {
-            throw new InvalidResponseException('Attempted to reject an invalid notification');
+            throw new InvalidResponseException('Cannot reject an invalid notification');
         }
 
         $this->sendResponse(static::RESPONSE_STATUS_ERROR, $nextUrl, $detail);

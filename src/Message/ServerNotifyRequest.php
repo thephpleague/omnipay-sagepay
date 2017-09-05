@@ -2,8 +2,10 @@
 
 namespace Omnipay\SagePay\Message;
 
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Omnipay\Common\Exception\InvalidResponseException;
 use Omnipay\Common\Message\NotificationInterface;
+use Guzzle\Http\ClientInterface;
 
 /**
  * Sage Pay Server Notification.
@@ -11,7 +13,6 @@ use Omnipay\Common\Message\NotificationInterface;
  */
 class ServerNotifyRequest extends AbstractRequest implements NotificationInterface
 {
-    use CardResponseFieldsTrait;
     use ServerNotifyTrait;
 
     /**
@@ -19,16 +20,22 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
      */
     protected $data;
 
-    public function getData()
+    /**
+     * Initialise the data from the server request.
+     */
+    public function __construct(ClientInterface $httpClient, HttpRequest $httpRequest)
     {
+        parent::__construct($httpClient, $httpRequest);
+
         // Grab the data from the request if we don't already have it.
         // This would be a good place to convert the encoding if required
         // e.g. ISO-8859-1 to UTF-8.
 
-        if (!isset($this->data)) {
-            $this->data = $this->httpRequest->request->all();
-        }
+        $this->data = $httpRequest->request->all();
+    }
 
+    public function getData()
+    {
         return $this->data;
     }
 

@@ -33,8 +33,8 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['VendorTxCode'] = $this->getTransactionId();
         $data['ClientIPAddress'] = $this->getClientIp();
 
-        $data['ApplyAVSCV2'] = $this->getApplyAVSCV2() ?: 0;
-        $data['Apply3DSecure'] = $this->getApply3DSecure() ?: 0;
+        $data['ApplyAVSCV2'] = $this->getApplyAVSCV2() ?: static::APPLY_AVSCV2_DEFAULT;
+        $data['Apply3DSecure'] = $this->getApply3DSecure() ?: static::APPLY_3DSECURE_APPLY;
 
         if ($this->getReferrerId()) {
             $data['ReferrerID'] = $this->getReferrerId();
@@ -47,7 +47,7 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['BillingAddress2'] = $card->getBillingAddress2();
         $data['BillingCity'] = $card->getBillingCity();
         $data['BillingPostCode'] = $card->getBillingPostcode();
-        $data['BillingState'] = $card->getBillingCountry() === 'US' ? $card->getBillingState() : '';
+        $data['BillingState'] = ($card->getBillingCountry() === 'US' ? $card->getBillingState() : '');
         $data['BillingCountry'] = $card->getBillingCountry();
         $data['BillingPhone'] = $card->getBillingPhone();
 
@@ -58,7 +58,7 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['DeliveryAddress2'] = $card->getShippingAddress2();
         $data['DeliveryCity'] = $card->getShippingCity();
         $data['DeliveryPostCode'] = $card->getShippingPostcode();
-        $data['DeliveryState'] = $card->getShippingCountry() === 'US' ? $card->getShippingState() : '';
+        $data['DeliveryState'] = ($card->getShippingCountry() === 'US' ? $card->getShippingState() : '');
         $data['DeliveryCountry'] = $card->getShippingCountry();
         $data['DeliveryPhone'] = $card->getShippingPhone();
         $data['CustomerEMail'] = $card->getEmail();

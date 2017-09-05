@@ -11,8 +11,6 @@ use Omnipay\Common\Message\RequestInterface;
  */
 class Response extends AbstractResponse implements RedirectResponseInterface
 {
-    use CardResponseFieldsTrait;
-
     /**
      * Raw Status values.
      */
@@ -105,6 +103,51 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         }
 
         $this->data = $data;
+    }
+
+    /**
+     * Get a POST data item, or null if not present.
+     */
+    protected function getDataItem($name, $default = null)
+    {
+        $data = $this->getData();
+
+        return isset($this->data[$name]) ? $this->data[$name] : $default;
+    }
+
+    /**
+     * Get the cardReference generated when creating a card reference
+     * during an authorisation or payment, or as an explicit request.
+     */
+    public function getCardReference()
+    {
+        return $this->getToken();
+    }
+
+    /**
+     * A card token is returned if one has been requested.
+     */
+    public function getToken()
+    {
+        return $this->getDataItem('Token');
+    }
+
+    /**
+     * The raw status code.
+     */
+    public function getStatus()
+    {
+        return $this->getDataItem('Status');
+    }
+
+    /**
+     * Response Textual Message
+     *
+     * @return string A response message from the payment gateway
+     */
+    public function getMessage()
+    {
+        return $this->getDataItem('StatusDetail');
     }
 
     public function isSuccessful()

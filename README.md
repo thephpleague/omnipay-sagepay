@@ -237,8 +237,8 @@ as a part of a transaction:
 * `$request->CreateToken()` - transaction option to generate a token with a transaction.
 
 If created explicitly, then a CVV can be provided, and that will be stored against the token
-until the token is first used to make a payment. If reused after the first payment, then
-a CVV must be supplied each time (if your rules require the CVV to be checked).
+until the token is first used to make a payment. If the cardreference is reused after the first
+payment, then a CVV must be supplied each time (assuming your rules require the CVV to be checked).
 If using Sage Pay Server, then the user will be prompted for a CVV on subsequent uses of
 the cardReference.
 
