@@ -79,6 +79,12 @@ class DirectAuthorizeRequest extends AbstractRequest
             }
         }
 
+        $surchargeXml = $this->getSurchargeXml();
+
+        if ($surchargeXml) {
+            $data['surchargeXml'] = $this->getSurchargeXml();
+        }
+
         return $data;
     }
 
@@ -156,5 +162,24 @@ class DirectAuthorizeRequest extends AbstractRequest
         }
 
         return $brand;
+    }
+
+    /**
+     * Set the raw surcharge XML field.
+     *
+     * @param string $surchargeXml The XML data formatted as per Sage Pay documentation.
+     * @return $this
+     */
+    public function setSurchargeXml($surchargeXml)
+    {
+        return $this->setParameter('surchargeXml', $surchargeXml);
+    }
+
+    /**
+     * @return string The XML surchange data as set.
+     */
+    public function getSurchargeXml()
+    {
+        return $this->getParameter('surchargeXml');
     }
 }
