@@ -42,6 +42,12 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     const CV2_RESULT_MATCHED            = 'MATCHED';
     const CV2_RESULT_NOTMATCHED         = 'NOTMATCHED';
 
+    const AVSCV2_RESULT_ALLMATCH            = 'ALLMATCH';
+    const AVSCV2_RESULT_SECURITY_CODE_ONLY  = 'SECURITY CODE MATCH ONLY';
+    const AVSCV2_RESULT_ADDRESS_ONLY        = 'ADDRESS MATCH ONLY';
+    const AVSCV2_RESULT_NO_DATA             = 'NO DATA MATCHES';
+    const AVSCV2_RESULT_NOT_CHECKED         = 'DATA NOT CHECKED';
+
     const GIFTAID_CHECKED_TRUE  = '1';
     const GIFTAID_CHECKED_FALSE = '0';
 

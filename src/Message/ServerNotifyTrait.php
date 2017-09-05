@@ -26,49 +26,63 @@ trait ServerNotifyTrait
      */
     public function buildSignature()
     {
-        // Re-create the VPSSignature
-        if ($this->getTxType() === Response::TXTYPE_TOKEN) {
-            $signature_data = array(
-                // For some bizarre reason, the VPSTxId is hashed at the Sage Pay gateway
-                // without its curly brackets, so we must do the same to validate the hash.
-                str_replace(array('{', '}'), '', $this->getVPSTxId()),
-                // VendorTxCode
-                $this->getTransactionId(),
-                $this->getStatus(),
-                strtolower($this->getVendor()),
-                // Only returned for card tokenisation requests.
-                $this->getToken(),
-                // As saved in the merchant application.
-                $this->getSecurityKey(),
-            );
-        } else {
-            // Transaction types PAYMENT, DEFERRED and AUTHENTICATE (when suppoted)
-            $signature_data = array(
-                $this->getVPSTxId(),
-                // VendorTxCode
-                $this->getTransactionId(),
-                $this->getStatus(),
-                $this->getTxAuthNo(),
-                strtolower($this->getVendor()),
-                $this->getDataItem('AVSCV2'),
-                // As saved in the merchant application.
-                $this->getSecurityKey(),
-                // Optional.
-                $this->getDataItem('AddressResult'),
-                $this->getDataItem('PostCodeResult'),
-                $this->getDataItem('CV2Result'),
-                $this->getDataItem('GiftAid'),
-                $this->getDataItem('3DSecureStatus'),
-                $this->getDataItem('CAVV'),
-                $this->getDataItem('AddressStatus'),
-                $this->getDataItem('PayerStatus'),
-                $this->getDataItem('CardType'),
-                $this->getLast4Digits(),
-                // New for protocol v3.00
-                $this->getDataItem('DeclineCode'),
-                $this->getExpiryDate(),
-                $this->getDataItem('FraudResponse'),
-                $this->getDataItem('BankAuthCode'),
+        // Re-create the VPSSignature.
+        // Note that an ABORT notification for a TOKEN request type flips back to
+        // the transaction format. We'll try merging these.
+
+        $VPSTxId = $this->getVPSTxId();
+
+        if ($this->getTxType() === Response::TXTYPE_TOKEN && $this->getStatus() === Response::SAGEPAY_STATUS_OK) {
+            // For some bizarre reason, the VPSTxId is hashed at the Sage Pay gateway
+            // without its curly brackets, so we must do the same to validate the hash.
+            // This only happens for a valid TOKEN request, and not for an aborted
+            // TOKEN request.
+            // The successful TOKEN request also does not include the card details, even
+            // though they are present.
+
+            $VPSTxId = str_replace(array('{', '}'), '', $VPSTxId);
+        }
+
+        // Transaction types PAYMENT, DEFERRED and AUTHENTICATE (when suppoted)
+        // and non-transaction TOKEN request.
+
+        $signature_data = array(
+            $VPSTxId,
+            // VendorTxCode
+            $this->getTransactionId(),
+            $this->getStatus(),
+            $this->getTxAuthNo(),
+            strtolower($this->getVendor()),
+            $this->getDataItem('AVSCV2'),
+            $this->getToken(),
+            // As saved in the merchant application.
+            $this->getSecurityKey(),
+        );
+
+        if ($this->getTxType() != Response::TXTYPE_TOKEN || $this->getStatus() != Response::SAGEPAY_STATUS_OK) {
+            // Do not use any of these fields for a successful TOKEN transaction, even
+            // though some of them may be present.
+
+            $signature_data = array_merge(
+                $signature_data,
+                array(
+                    // Optional.
+                    $this->getDataItem('AddressResult'),
+                    $this->getDataItem('PostCodeResult'),
+                    $this->getDataItem('CV2Result'),
+                    $this->getDataItem('GiftAid'),
+                    $this->getDataItem('3DSecureStatus'),
+                    $this->getDataItem('CAVV'),
+                    $this->getDataItem('AddressStatus'),
+                    $this->getDataItem('PayerStatus'),
+                    $this->getDataItem('CardType'),
+                    $this->getLast4Digits(),
+                    // New for protocol v3.00
+                    $this->getDataItem('DeclineCode'),
+                    $this->getExpiryDate(),
+                    $this->getDataItem('FraudResponse'),
+                    $this->getDataItem('BankAuthCode'),
+                )
             );
         }
 

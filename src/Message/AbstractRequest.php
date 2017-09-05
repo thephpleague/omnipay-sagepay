@@ -37,6 +37,12 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     const STORE_TOKEN_NO    = 0;
 
     /**
+     * Flag whether to create a cardReference or token for the CC supplied.
+     */
+    const CREATE_TOKEN_YES   = 1;
+    const CREATE_TOKEN_NO    = 0;
+
+    /**
      * Profile for Sage Pay Server hosted forms.
      * - NORMAL for full page forms.
      * - LOW for use in iframes.
@@ -261,22 +267,23 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     /**
      * Use this flag to indicate you wish to have a token generated and stored in the Sage Pay
      * database and returned to you for future use.
-     *
-     * This is a bit of a misnomer. What is referred to as "token" in Sage Pay,
-     * is a "cardReference" in Omnipay. This functions may need to be renamed.
-     * See issue #89
+     * Values set in contants CREATE_TOKEN_*
      *
      * @param bool|int $createToken 0 = This will not create a token from the payment (default).
      *                              1 = This will create a token from the payment if
      *                                  successful and return a Token.
+     * @return $this
      */
     public function setCreateToken($createToken)
     {
         $createToken = (bool)$createToken;
 
-        $this->setParameter('createToken', (int)$createToken);
+        return $this->setParameter('createToken', (int)$createToken);
     }
 
+    /**
+     * @return int static::CREATE_TOKEN_YES or static::CREATE_TOKEN_NO
+     */
     public function getCreateToken()
     {
         return $this->getParameter('createToken');
@@ -285,10 +292,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     /**
      * An optional flag to indicate if you wish to continue to store the Token in the SagePay
      * token database for future use.
+     * Values set in contants SET_TOKEN_*
      *
      * Note: this is just an override method. It is best to leave this unset, and
-     * use either setToken or setCardReference to derive the StoreToken flag
-     * automatically.
+     * use either setToken or setCardReference. This flag will then be set automatically.
      *
      * @param bool|int $storeToken  0 = The Token will be deleted from the SagePay database if
      *                                  authorised by the bank.
@@ -301,6 +308,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $this->setParameter('storeToken', (int)$storeToken);
     }
 
+    /**
+     * @return int static::STORE_TOKEN_YES or static::STORE_TOKEN_NO
+     */
     public function getStoreToken()
     {
         return $this->getParameter('storeToken');
@@ -405,8 +415,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     }
 
     /**
-     * Generate Basket string in the old format
+     * Generate Basket string in the older non-XML format
      * This is called if "useOldBasketFormat" is set to true in the gateway config
+     *
      * @return string Basket field in format of:
      * 1:Item:2:10.00:0.00:10.00:20.00
      * [number of lines]:[item name]:[quantity]:[unit cost]:[item tax]:[item total]:[line total]
