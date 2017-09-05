@@ -236,6 +236,15 @@ as a part of a transaction:
 * `$gateway->createCard()` - message used to create a card token explicitly.
 * `$request->CreateToken()` - transaction option to generate a token with a transaction.
 
+If created explicitly, then a CVV can be provided, and that will be stored against the token
+until the token is first used to make a payment. If reused after the first payment, then
+a CVV must be supplied each time (if your rules require the CVV to be checked).
+If using Sage Pay Server, then the user will be prompted for a CVV on subsequent uses of
+the cardReference.
+
+If creating a token or cardReference with a transaction, then the CVV will never be
+stored against the token.
+
 The transaction response (or notification request for Sage Pay Server) will provide
 the generated token. This is accessed using:
 
@@ -247,7 +256,8 @@ are generated.
 
 ## Using a Token or CardRererence
 
-To use a token, you must leave the credit card details blank in the `CreditCard` object.
+To use a token with Sage Pay Direct, you must leave the credit card details blank in
+the `CreditCard` object. Sage Pay Server does not use the credit card details anyway.
 To use the token as a single-use token, add it to the transaction request as a token:
 
 `request->setToken($saved_token);`

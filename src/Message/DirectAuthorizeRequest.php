@@ -13,47 +13,28 @@ class DirectAuthorizeRequest extends AbstractRequest
         'diners_club' => 'dc'
     );
 
+    /**
+     * The required fields concerning what is being authorised and who
+     * it is being authorised for.
+     */
     protected function getBaseAuthorizeData()
     {
         $this->validate('amount', 'card', 'transactionId');
         $card = $this->getCard();
 
+        // Start with the authorisation and API version details.
         $data = $this->getBaseData();
+
         $data['Description'] = $this->getDescription();
         $data['Amount'] = $this->getAmount();
         $data['Currency'] = $this->getCurrency();
+
         $data['VendorData'] = $this->getVendorData();
         $data['VendorTxCode'] = $this->getTransactionId();
         $data['ClientIPAddress'] = $this->getClientIp();
+
         $data['ApplyAVSCV2'] = $this->getApplyAVSCV2() ?: 0;
         $data['Apply3DSecure'] = $this->getApply3DSecure() ?: 0;
-
-        $data['CreateToken'] = $this->getCreateToken();
-
-        // Creating a token should not be permissible at
-        // the same time as using a token.
-        if (! $data['CreateToken'] && ($this->getToken() || $this->getCardReference())) {
-            // If a token has been supplied, and we are NOT asking to generate
-            // a new token here, then use this token and optionally store it
-            // again for further use.
-
-            $data['Token'] = $this->getToken() ?: $this->getCardReference();
-
-            // If we don't have a StoreToken override, then set it according to
-            // whether we are dealing with a token or a cardReference.
-
-            $storeToken = $this->getStoreToken();
-
-            if ($storeToken === null) {
-                // If we are using the token as a cardReference, then keep it stored
-                // after this transaction for future use.
-                $storeToken = $this->getCardReference()
-                    ? static::STORE_TOKEN_YES
-                    : static::STORE_TOKEN_NO;
-            }
-
-            $data['StoreToken'] = $storeToken;
-        }
 
         if ($this->getReferrerId()) {
             $data['ReferrerID'] = $this->getReferrerId();
@@ -126,32 +107,91 @@ class DirectAuthorizeRequest extends AbstractRequest
         return $this->getParameter('cardholderName');
     }
 
+    /**
+     * If a token or cardReference is being used, then include the details
+     * of the token in the data.
+     */
+    public function getTokenData($data = array())
+    {
+        // Are there token details to add?
+        if ($this->getToken() || $this->getCardReference()) {
+            // A card token or reference has been provided.
+            $data['Token'] = $this->getToken() ?: $this->getCardReference();
+
+            // If we don't have a StoreToken override, then set it according to
+            // whether we are dealing with a token or a cardReference.
+            // Overriding the default token storage flag is for legacy support.
+
+            $storeToken = $this->getStoreToken();
+
+            if ($storeToken === null) {
+                // If we are using the token as a cardReference, then keep it stored
+                // after this transaction for future use.
+
+                $storeToken = $this->getCardReference()
+                    ? static::STORE_TOKEN_YES
+                    : static::STORE_TOKEN_NO;
+            }
+
+            $data['StoreToken'] = $storeToken;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Add the credit card or token details to the data.
+     */
     public function getData()
     {
         $data = $this->getBaseAuthorizeData();
-        $this->getCard()->validate();
 
-        if ($this->getCardholderName()) {
-            $data['CardHolder'] = $this->getCardholderName();
+        if ($this->getToken() || $this->getCardReference()) {
+            // If using a token, then set that data.
+            $data = $this->getTokenData($data);
         } else {
-            $data['CardHolder'] = $this->getCard()->getName();
+            // Otherwise, a credit card has to have been provided.
+            $this->getCard()->validate();
+
+            if ($this->getCardholderName()) {
+                $data['CardHolder'] = $this->getCardholderName();
+            } else {
+                $data['CardHolder'] = $this->getCard()->getName();
+            }
+
+            // Card number should not be provided if token is being provided instead
+            if (! $this->getToken()) {
+                $data['CardNumber'] = $this->getCard()->getNumber();
+            }
+
+            $data['ExpiryDate'] = $this->getCard()->getExpiryDate('my');
+            $data['CardType'] = $this->getCardBrand();
+
+            if ($this->getCard()->getStartMonth() and $this->getCard()->getStartYear()) {
+                $data['StartDate'] = $this->getCard()->getStartDate('my');
+            }
+
+            if ($this->getCard()->getIssueNumber()) {
+                $data['IssueNumber'] = $this->getCard()->getIssueNumber();
+            }
+
+            // If we want the card details to be saved on the gateway as a
+            // token or card reference, then request for that to be done.
+            $data['CreateToken'] = $this->getCreateToken();
+
+            if ($this->getCard()->getCvv() !== null) {
+                $data['CV2'] = $this->getCard()->getCvv();
+            }
         }
 
-        // Card number should not be provided if token is being provided instead
-        if (!$this->getToken()) {
-            $data['CardNumber'] = $this->getCard()->getNumber();
-        }
+        // A CVV may be supplied whether using a token or credit card details.
+        // On *first* use of a token for which a CVV was provided, that CVV will
+        // be used when making a transaction. The CVV will then be deleted by the
+        // gateway. For each *resuse* of a cardReference, a new CVV must be provided,
+        // if the security rules require it.
 
-        $data['CV2'] = $this->getCard()->getCvv();
-        $data['ExpiryDate'] = $this->getCard()->getExpiryDate('my');
-        $data['CardType'] = $this->getCardBrand();
-
-        if ($this->getCard()->getStartMonth() and $this->getCard()->getStartYear()) {
-            $data['StartDate'] = $this->getCard()->getStartDate('my');
-        }
-
-        if ($this->getCard()->getIssueNumber()) {
-            $data['IssueNumber'] = $this->getCard()->getIssueNumber();
+        if ($this->getCard()->getCvv() !== null) {
+            $data['CV2'] = $this->getCard()->getCvv();
         }
 
         return $data;

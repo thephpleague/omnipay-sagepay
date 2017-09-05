@@ -323,6 +323,10 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertSame(1, $data['StoreToken']);
     }
 
+    /**
+     * This has been turned on its head: if a token is provided, then that
+     * takes priority and the "createToken" flag is ignored.
+     */
     public function testExistingTokenCannotBeSetIfCreateTokenIsTrue()
     {
         $this->request->setCreateToken(true);
@@ -330,8 +334,8 @@ class DirectAuthorizeRequestTest extends TestCase
 
         $data = $this->request->getData();
 
-        $this->assertArrayNotHasKey('Token', $data);
-        $this->assertSame(1, $data['CreateToken']);
+        $this->assertArrayNotHasKey('CreateToken', $data);
+        $this->assertSame('{ABCDEF}', $data['Token']);
     }
 
     public function testStoreTokenCanOnlyBeSetIfExistingTokenIsSetInRequest()

@@ -182,6 +182,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('apply3DSecure', $value);
     }
 
+    /**
+     * Basic authorisation, rtransaction type and protocol version.
+     */
     protected function getBaseData()
     {
         $data = array();

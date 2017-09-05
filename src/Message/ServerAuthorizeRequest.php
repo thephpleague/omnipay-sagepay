@@ -8,7 +8,8 @@ namespace Omnipay\SagePay\Message;
 class ServerAuthorizeRequest extends DirectAuthorizeRequest
 {
     /**
-     * The returnUrl is supported for legacy applications.
+     * Add the optional token details to the base data.
+     * The returnUrl is supported for legacy applications not using the notifyUrl.
      */
     public function getData()
     {
@@ -17,6 +18,11 @@ class ServerAuthorizeRequest extends DirectAuthorizeRequest
         }
 
         $data = $this->getBaseAuthorizeData();
+
+        // If a token is being used, then include the token data.
+        // With a valid token or card reference, the user is just asked
+        // for the CVV and not any remaining card details.
+        $data = $this->getTokenData($data);
 
         // ReturnUrl is for legacy usage.
         $data['NotificationURL'] = $this->getNotifyUrl() ?: $this->getReturnUrl();
