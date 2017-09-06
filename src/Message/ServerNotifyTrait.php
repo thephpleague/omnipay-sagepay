@@ -54,7 +54,7 @@ trait ServerNotifyTrait
             $this->getStatus(),
             $this->getTxAuthNo(),
             strtolower($this->getVendor()),
-            $this->getDataItem('AVSCV2'),
+            $this->getAVSCV2(),
             $this->getToken(),
             // As saved in the merchant application.
             $this->getSecurityKey(),
@@ -67,22 +67,23 @@ trait ServerNotifyTrait
             $signature_data = array_merge(
                 $signature_data,
                 array(
-                    // Optional.
-                    $this->getDataItem('AddressResult'),
-                    $this->getDataItem('PostCodeResult'),
-                    $this->getDataItem('CV2Result'),
-                    $this->getDataItem('GiftAid'),
-                    $this->getDataItem('3DSecureStatus'),
-                    $this->getDataItem('CAVV'),
-                    $this->getDataItem('AddressStatus'),
-                    $this->getDataItem('PayerStatus'),
-                    $this->getDataItem('CardType'),
+                    // Details for AVSCV2:
+                    $this->getAddressResult(),
+                    $this->getPostCodeResult(),
+                    $this->getCV2Result(),
+                    //
+                    $this->getGiftAid(),
+                    $this->get3DSecureStatus(),
+                    $this->getCAVV(),
+                    $this->getAddressStatus(),
+                    $this->getPayerStatus(),
+                    $this->getCardType(),
                     $this->getLast4Digits(),
                     // New for protocol v3.00
                     $this->getDataItem('DeclineCode'),
                     $this->getExpiryDate(),
-                    $this->getDataItem('FraudResponse'),
-                    $this->getDataItem('BankAuthCode'),
+                    $this->getFraudResponse(),
+                    $this->getBankAuthCode(),
                 )
             );
         }
@@ -139,11 +140,6 @@ trait ServerNotifyTrait
         return $this->getDataItem('VPSTxId');
     }
 
-    public function getTxAuthNo()
-    {
-        return $this->getDataItem('TxAuthNo');
-    }
-
     /**
      * The VendorTxCode is POSTed - we will need this for looking up the transaction
      * locally.
@@ -192,53 +188,6 @@ trait ServerNotifyTrait
     }
 
     /**
-     * Raw expiry date for the card, "MMYY" format by default.
-     */
-    public function getExpiryDate($format = null)
-    {
-        $expiryDate = $this->getDataItem('ExpiryDate');
-
-        if ($format === null || $expiryDate === null) {
-            return $expiryDate;
-        } else {
-            return gmdate(
-                $format,
-                gmmktime(0, 0, 0, $this->getExpiryMonth(), 1, $this->getExpiryYear())
-            );
-        }
-    }
-
-    /**
-     * Get the card expiry month.
-     *
-     * @return int
-     */
-    public function getExpiryMonth()
-    {
-        $expiryDate = $this->getDataItem('ExpiryDate');
-
-        if (! empty($expiryDate)) {
-            return (int)substr($expiryDate, 0, 2);
-        }
-    }
-
-    /**
-     * Get the card expiry year.
-     *
-     * @return int
-     */
-    public function getExpiryYear()
-    {
-        $expiryDate = $this->getDataItem('ExpiryDate');
-
-        if (! empty($expiryDate)) {
-            // COnvert 2-digit year to 4-dogot year, in 1970-2069 range.
-            $dateTime = \DateTime::createFromFormat('y', substr($expiryDate, 2, 2));
-            return (int)$dateTime->format('Y');
-        }
-    }
-
-    /**
      * Last four digits of the card used.
      */
     public function getLast4Digits()
@@ -254,48 +203,35 @@ trait ServerNotifyTrait
         return $this->getLast4Digits();
     }
 
-    /**
-     * Get a POST data item, or null if not present.
+    /*
+     * This field is always present even if GiftAid is not active
+     * on your account.
      */
-    protected function getDataItem($name, $default = null)
+    public function getGiftAid()
     {
-        $data = $this->getData();
-
-        return isset($this->data[$name]) ? $this->data[$name] : $default;
+        return $this->getDataItem('GiftAid');
     }
 
     /**
-     * Get the cardReference generated when creating a card reference
-     * during an authorisation or payment, or as an explicit request.
+     * PayPal Transactions Only.
+     * If AddressStatus is CONFIRMED and PayerStatus is VERIFIED,
+     * the transaction may be eligible for PayPal Seller Protection.
+     * To learn more about PayPal Seller Protection, please contact
+     * PayPal directly or visit paypal.com
      */
-    public function getCardReference()
+    public function getAddressStatus()
     {
-        return $this->getToken();
+        return $this->getDataItem('AddressStatus');
     }
 
     /**
-     * A card token is returned if one has been requested.
+     * VERIFIED lets other members know the customer is a
+     * confirmed PayPal member with a current, active bank
+     * account, it also means the transaction may be eligible for
+     * PayPal Seller Protection.
      */
-    public function getToken()
+    public function getPayerStatus()
     {
-        return $this->getDataItem('Token');
-    }
-
-    /**
-     * The raw status code.
-     */
-    public function getStatus()
-    {
-        return $this->getDataItem('Status');
-    }
-
-    /**
-     * Response Textual Message
-     *
-     * @return string A response message from the payment gateway
-     */
-    public function getMessage()
-    {
-        return $this->getDataItem('StatusDetail');
+        return $this->getDataItem('PayerStatus');
     }
 }

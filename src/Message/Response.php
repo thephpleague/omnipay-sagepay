@@ -11,6 +11,8 @@ use Omnipay\Common\Message\RequestInterface;
  */
 class Response extends AbstractResponse implements RedirectResponseInterface
 {
+    use ResponseFieldsTrait;
+
     /**
      * Raw Status values.
      */
@@ -20,12 +22,22 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     const TXTYPE_AUTHENTICATE   = 'AUTHENTICATE';
     const TXTYPE_TOKEN          = 'TOKEN';
 
-    const SAGEPAY_STATUS_OK         = 'OK';
-    const SAGEPAY_STATUS_PENDING    = 'PENDING';
-    const SAGEPAY_STATUS_NOTAUTHED  = 'NOTAUTHED';
-    const SAGEPAY_STATUS_REJECTED   = 'REJECTED';
-    const SAGEPAY_STATUS_ABORT      = 'ABORT';
-    const SAGEPAY_STATUS_ERROR      = 'ERROR';
+    /**
+     * There are a wide range of status codes across the different gatweay types
+     * and in response to different types of request.
+     */
+    const SAGEPAY_STATUS_OK             = 'OK';
+    const SAGEPAY_STATUS_PENDING        = 'PENDING';
+    const SAGEPAY_STATUS_NOTAUTHED      = 'NOTAUTHED';
+    const SAGEPAY_STATUS_REJECTED       = 'REJECTED';
+    const SAGEPAY_STATUS_AUTHENTICATED  = 'AUTHENTICATED';
+    const SAGEPAY_STATUS_REGISTERED     = 'REGISTERED';
+    const SAGEPAY_STATUS_3DAUTH         = '3DAUTH';
+    const SAGEPAY_STATUS_PPREDIRECT     = 'PPREDIRECT';
+    const SAGEPAY_STATUS_ABORT          = 'ABORT';
+    const SAGEPAY_STATUS_MALFORMED      = 'MALFORMED';
+    const SAGEPAY_STATUS_INVALID        = 'INVALID';
+    const SAGEPAY_STATUS_ERROR          = 'ERROR';
 
     const ADDRESS_RESULT_NOTPROVIDED    = 'NOTPROVIDED';
     const ADDRESS_RESULT_NOTCHECKED     = 'NOTCHECKED';
@@ -58,6 +70,10 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     const SECURE3D_STATUS_INCOMPLETE    = 'INCOMPLETE';
     const SECURE3D_STATUS_ATTEMPTONLY   = 'ATTEMPTONLY';
     const SECURE3D_STATUS_ERROR         = 'ERROR';
+    const SECURE3D_STATUS_NOAUTH        = 'NOAUTH';
+    const SECURE3D_STATUS_CANTAUTH      = 'CANTAUTH';
+    const SECURE3D_STATUS_MALFORMED     = 'MALFORMED';
+    const SECURE3D_STATUS_INVALID       = 'INVALID';
 
     const ADDRESS_STATUS_NONE           = 'NONE';
     const ADDRESS_STATUS_CONFIRMED      = 'CONFIRMED';
@@ -111,63 +127,9 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         $this->data = $data;
     }
 
-    /**
-     * Get a POST data item, or null if not present.
-     */
-    protected function getDataItem($name, $default = null)
-    {
-        $data = $this->getData();
-
-        return isset($this->data[$name]) ? $this->data[$name] : $default;
-    }
-
-    /**
-     * Get the cardReference generated when creating a card reference
-     * during an authorisation or payment, or as an explicit request.
-     */
-    public function getCardReference()
-    {
-        return $this->getToken();
-    }
-
-    /**
-     * A card token is returned if one has been requested.
-     */
-    public function getToken()
-    {
-        return $this->getDataItem('Token');
-    }
-
-    /**
-     * The raw status code.
-     */
-    public function getStatus()
-    {
-        return $this->getDataItem('Status');
-    }
-
-    /**
-     * Response Textual Message
-     *
-     * @return string A response message from the payment gateway
-     */
-    public function getMessage()
-    {
-        return $this->getDataItem('StatusDetail');
-    }
-
     public function isSuccessful()
     {
-        return isset($this->data['Status']) && 'OK' === $this->data['Status'];
-    }
-
-    /**
-     * The only reason supported for a redirect from a Server transaction
-     * will be 3D Secure. PayPal may come into this at some point.
-     */
-    public function isRedirect()
-    {
-        return isset($this->data['Status']) && '3DAUTH' === $this->data['Status'];
+        return $this->getStatus() === static::SAGEPAY_STATUS_OK;
     }
 
     /**
@@ -187,14 +149,24 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         $reference['VendorTxCode'] = $this->getRequest()->getTransactionId();
 
         foreach (array('SecurityKey', 'TxAuthNo', 'VPSTxId') as $key) {
-            if (isset($this->data[$key])) {
-                $reference[$key] = $this->data[$key];
+            $value = $this->{'get' . $key}();
+            if ($value !== null) {
+                $reference[$key] = $value;
             }
         }
 
         ksort($reference);
 
         return json_encode($reference);
+    }
+
+    /**
+     * The only reason supported for a redirect from a Server transaction
+     * will be 3D Secure. PayPal may come into this at some point.
+     */
+    public function isRedirect()
+    {
+        return $this->getStatus() === static::SAGEPAY_STATUS_3DAUTH;
     }
 
     /**
@@ -225,5 +197,27 @@ class Response extends AbstractResponse implements RedirectResponseInterface
                 'MD' => $this->data['MD'],
             );
         }
+    }
+
+    /**
+     * The Sage Pay ID to uniquely identify the transaction on their system.
+     * Only present if Status is OK or OK REPEATED.
+     *
+     * @return string
+     */
+    public function getVPSTxId()
+    {
+        return $this->getDataItem('VPSTxId');
+    }
+
+    /**
+     * A hash used to sign the notification request sent direct to your
+     * application.
+     * The documentation states that this is used by Sage Pay Direct, but
+     * I believe it is only used with Sage Pay Server.
+     */
+    public function getSecurityKey()
+    {
+        return $this->getDataItem('SecurityKey');
     }
 }

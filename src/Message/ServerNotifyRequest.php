@@ -13,6 +13,7 @@ use Guzzle\Http\ClientInterface;
  */
 class ServerNotifyRequest extends AbstractRequest implements NotificationInterface
 {
+    use ResponseFieldsTrait;
     use ServerNotifyTrait;
 
     /**
@@ -63,6 +64,20 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     }
 
     /**
+     * Get the Sage Pay Responder.
+     *
+     * @param string $data message body.
+     * @return ServerNotifyResponse
+     */
+    public function sendData($data)
+    {
+        $data['vendor'] = $this->getVendor();
+        $data['securityKey'] = $this->getSecurityKey();
+
+        return $this->response = new ServerNotifyResponse($this, $data);
+    }
+
+    /**
      * Set the SecurityKey that we saved locally.
      *
      * @return self
@@ -75,19 +90,5 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     public function getSecurityKey()
     {
         return $this->getParameter('SecurityKey');
-    }
-
-    /**
-     * Get the Sage Pay Responder.
-     *
-     * @param string $data message body.
-     * @return ServerNotifyResponse
-     */
-    public function sendData($data)
-    {
-        $data['vendor'] = $this->getVendor();
-        $data['securityKey'] = $this->getSecurityKey();
-
-        return $this->response = new ServerNotifyResponse($this, $data);
     }
 }

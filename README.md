@@ -110,7 +110,7 @@ $response = $request->send();
 // There will be no need for any redirect (e.g. 3D Secure), since no
 // authorisation is being done.
 if ($response->isSuccessful()) {
-    $cardReference = $response->getCardReference();;
+    $cardReference = $response->getCardReference();
     // or if you prefer to treat it as a single-use token:
     $token = $response->getToken();
 }
@@ -238,12 +238,12 @@ as a part of a transaction:
 * `$request->setCreateToken()` - transaction option to generate a token with the transaction.
 
 If created explicitly, then a CVV can be provided, and that will be stored against the token
-until the token is first used to make a payment. If the cardreference is reused after the first
+until the token is first used to make a payment. If the cardReference is reused after the first
 payment, then a CVV must be supplied each time (assuming your rules require the CVV to be checked).
 If using Sage Pay Server, then the user will be prompted for a CVV on subsequent uses of
 the cardReference.
 
-If creating a token or cardReference with a transaction, then the CVV will never be
+If creating a `token` or `cardReference` with a transaction, then the CVV will never be
 stored against the token.
 
 The transaction response (or notification request for Sage Pay Server) will provide
