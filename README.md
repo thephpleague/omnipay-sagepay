@@ -7,7 +7,8 @@
 [![Total Downloads](https://poser.pugx.org/omnipay/sagepay/d/total.png)](https://packagist.org/packages/omnipay/sagepay)
 
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
-processing library for PHP 5.3+. This package implements Sage Pay support for Omnipay.
+processing library for PHP 5.3+. This package implements Sage Pay support for Omnipay. This version only supports
+PHP 5.4+.
 
 Table of Contents
 =================
@@ -233,8 +234,8 @@ detail below.
 A token can be generated explicitly, with no authorisation, or it can be generated
 as a part of a transaction:
 
-* `$gateway->createCard()` - message used to create a card token explicitly.
-* `$request->CreateToken()` - transaction option to generate a token with a transaction.
+* `$gateway->createCard()` - message used to create a card token explicitly/standalone.
+* `$request->setCreateToken()` - transaction option to generate a token with the transaction.
 
 If created explicitly, then a CVV can be provided, and that will be stored against the token
 until the token is first used to make a payment. If the cardreference is reused after the first
