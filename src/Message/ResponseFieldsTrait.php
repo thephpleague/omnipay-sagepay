@@ -156,6 +156,19 @@ trait ResponseFieldsTrait
     }
 
     /**
+     * Returns the surcharge amount charged and is only
+     * present if a surcharge was applied to the transaction.
+     * The surcharge should be added to the original requested amount
+     * to give the total amount authorised for payment.
+     *
+     * @return string|null Contains a floating point number.
+     */
+    public function getSurcharge()
+    {
+        return $this->getDataItem('Surcharge');
+    }
+
+    /**
      * Raw expiry date for the card, "MMYY" format by default.
      * The expiry date is available for Sage Pay Direct responses, even if the
      * remaining card details are not.
