@@ -11,6 +11,10 @@ trait ResponseFieldsTrait
 {
     /**
      * Get a POST data item, or null if not present.
+     *
+     * @param  string $name    The key for the field.
+     * @param  mixed $default  The value to return if the data item is not found at all, or is null.
+     * @return mixed           The value of the field, often a string, but could be case to anything..
      */
     protected function getDataItem($name, $default = null)
     {
@@ -22,6 +26,8 @@ trait ResponseFieldsTrait
     /**
      * Get the cardReference generated when creating a card reference
      * during an authorisation or payment, or as an explicit request.
+     *
+     * @return string Currently an md5 format token.
      */
     public function getCardReference()
     {
@@ -30,6 +36,8 @@ trait ResponseFieldsTrait
 
     /**
      * A card token is returned if one has been requested.
+     *
+     * @return string Currently an md5 format token.
      */
     public function getToken()
     {
@@ -38,6 +46,8 @@ trait ResponseFieldsTrait
 
     /**
      * The raw status code.
+     *
+     * @return string One of static::SAGEPAY_STATUS_*
      */
     public function getStatus()
     {
@@ -77,7 +87,7 @@ trait ResponseFieldsTrait
      * Not present if the Status is:
      * 3DAUTH, AUTHENTICATED, PPREDIRECT or REGISTERED.
      *
-     * @return string
+     * @return string One of static::AVSCV2_RESULT_*
      */
     public function getAVSCV2()
     {
@@ -87,6 +97,8 @@ trait ResponseFieldsTrait
     /**
      * The specific result of the checks on the cardholder’s
      * address numeric from the AVS/CV2 checks.
+     *
+     * @return string Once of static::ADDRESS_RESULT_*
      */
     public function getAddressResult()
     {
@@ -96,6 +108,8 @@ trait ResponseFieldsTrait
     /**
      * The specific result of the checks on the cardholder’s
      * Postcode from the AVS/CV2 checks.
+     *
+     * @return string Once of static::POSTCODE_RESULT_*
      */
     public function getPostCodeResult()
     {
@@ -105,6 +119,8 @@ trait ResponseFieldsTrait
     /**
      * The specific result of the checks on the cardholder’s CV2
      * code from the AVS/CV2 checks.
+     *
+     * @return string One of static::CV2_RESULT_*
      */
     public function getCV2Result()
     {
@@ -114,6 +130,8 @@ trait ResponseFieldsTrait
     /**
      * This field details the results of the 3D-Secure checks
      * where appropriate.
+     *
+     * @return string One of static::SECURE3D_STATUS_*
      */
     public function get3DSecureStatus()
     {
@@ -123,6 +141,8 @@ trait ResponseFieldsTrait
     /**
      * The encoded result code from the 3D-Secure checks (CAVV or UCAF).
      * Only present if the 3DSecureStatus field is OK or ATTEMPTONLY.
+     *
+     * @return string Up to 32 characters long.
      */
     public function getCAVV()
     {
@@ -130,7 +150,9 @@ trait ResponseFieldsTrait
     }
 
     /**
-     * TBC
+     * The raw frawd response from the gateway.
+     *
+     * @return string One of static::FRAUD_RESPONSE_*
      */
     public function getFraudResponse()
     {
@@ -139,6 +161,7 @@ trait ResponseFieldsTrait
 
     /**
      * The authorisation code returned from the bank. e.g. T99777
+     * @return string
      */
     public function getBankAuthCode()
     {
@@ -149,6 +172,7 @@ trait ResponseFieldsTrait
      * The decline code from the bank. These codes are
      * specific to the bank. Please contact them for a description
      * of each code. e.g. 00
+     * @return string Two digit code, specific to the bacnk.
      */
     public function getDeclineCode()
     {
@@ -172,6 +196,10 @@ trait ResponseFieldsTrait
      * Raw expiry date for the card, "MMYY" format by default.
      * The expiry date is available for Sage Pay Direct responses, even if the
      * remaining card details are not.
+     * Also supports custom formats.
+     *
+     * @param  string|null $format Format using the PHP date() format string.
+     * @return string
      */
     public function getExpiryDate($format = null)
     {
@@ -190,7 +218,7 @@ trait ResponseFieldsTrait
     /**
      * Get the card expiry month.
      *
-     * @return int
+     * @return int The month number, 1 to 12.
      */
     public function getExpiryMonth()
     {
@@ -204,7 +232,7 @@ trait ResponseFieldsTrait
     /**
      * Get the card expiry year.
      *
-     * @return int
+     * @return int The full four-digit year.
      */
     public function getExpiryYear()
     {

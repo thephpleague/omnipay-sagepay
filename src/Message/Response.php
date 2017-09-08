@@ -14,9 +14,9 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     use ResponseFieldsTrait;
 
     /**
-     * Raw Status values.
+     * The raw transaction type the response is a part of
+     * @var string
      */
-
     const TXTYPE_PAYMENT        = 'PAYMENT';
     const TXTYPE_DEFERRED       = 'DEFERRED';
     const TXTYPE_AUTHENTICATE   = 'AUTHENTICATE';
@@ -25,6 +25,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     /**
      * There are a wide range of status codes across the different gatweay types
      * and in response to different types of request.
+     * @var string
      */
     const SAGEPAY_STATUS_OK             = 'OK';
     const SAGEPAY_STATUS_PENDING        = 'PENDING';
@@ -39,30 +40,54 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     const SAGEPAY_STATUS_INVALID        = 'INVALID';
     const SAGEPAY_STATUS_ERROR          = 'ERROR';
 
+    /**
+     * Raw values for AddressResult
+     * @var string
+     */
     const ADDRESS_RESULT_NOTPROVIDED    = 'NOTPROVIDED';
     const ADDRESS_RESULT_NOTCHECKED     = 'NOTCHECKED';
     const ADDRESS_RESULT_MATCHED        = 'MATCHED';
     const ADDRESS_RESULT_NOTMATCHED     = 'NOTMATCHED';
 
+    /**
+     * Raw values for PostCodeResult
+     * @var string
+     */
     const POSTCODE_RESULT_NOTPROVIDED   = 'NOTPROVIDED';
     const POSTCODE_RESULT_NOTCHECKED    = 'NOTCHECKED';
     const POSTCODE_RESULT_MATCHED       = 'MATCHED';
     const POSTCODE_RESULT_NOTMATCHED    = 'NOTMATCHED';
 
+    /**
+     * Raw values for CV2Result
+     * @var string
+     */
     const CV2_RESULT_NOTPROVIDED        = 'NOTPROVIDED';
     const CV2_RESULT_NOTCHECKED         = 'NOTCHECKED';
     const CV2_RESULT_MATCHED            = 'MATCHED';
     const CV2_RESULT_NOTMATCHED         = 'NOTMATCHED';
 
+    /**
+     * Raw values for AVSCV2
+     * @var string
+     */
     const AVSCV2_RESULT_ALLMATCH            = 'ALLMATCH';
     const AVSCV2_RESULT_SECURITY_CODE_ONLY  = 'SECURITY CODE MATCH ONLY';
     const AVSCV2_RESULT_ADDRESS_ONLY        = 'ADDRESS MATCH ONLY';
     const AVSCV2_RESULT_NO_DATA             = 'NO DATA MATCHES';
     const AVSCV2_RESULT_NOT_CHECKED         = 'DATA NOT CHECKED';
 
+    /**
+     * Raw values for GiftAidResult (Sage Pay Serverv only)
+     * @var string
+     */
     const GIFTAID_CHECKED_TRUE  = '1';
     const GIFTAID_CHECKED_FALSE = '0';
 
+    /**
+     * Raw results for 3DSecureStatus
+     * @var string
+     */
     const SECURE3D_STATUS_OK            = 'OK';
     const SECURE3D_STATUS_NOTCHECKED    = 'NOTCHECKED';
     const SECURE3D_STATUS_NOTAVAILABLE  = 'NOTAVAILABLE';
@@ -75,14 +100,26 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     const SECURE3D_STATUS_MALFORMED     = 'MALFORMED';
     const SECURE3D_STATUS_INVALID       = 'INVALID';
 
+    /**
+     * Raw results for AddressStatus (PayPal only)
+     * @var string
+     */
     const ADDRESS_STATUS_NONE           = 'NONE';
     const ADDRESS_STATUS_CONFIRMED      = 'CONFIRMED';
     const ADDRESS_STATUS_UNCONFIRMED    = 'UNCONFIRMED';
 
+    /**
+     * Raw results for PayerStatus (PayPal only)
+     * @var string
+     */
     const PAYER_STATUS_VERIFIED     = 'VERIFIED';
     const PAYER_STATUS_UNVERIFIED   = 'UNVERIFIED';
 
-    // TODO: a translation to OmniPay card brands would be useful.
+    /**
+     * The raw recorded card type that was used (Sage Pay Server).
+     * TODO: a translation to OmniPay card brands would be useful.
+     * @var string
+     */
     const CARDTYPE_VISA     = 'VISA';
     const CARDTYPE_MC       = 'MC';
     const CARDTYPE_MCDEBIT  = 'MCDEBIT';
@@ -94,6 +131,10 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     const CARDTYPE_JCB      = 'JCB';
     const CARDTYPE_PAYPAL   = 'PAYPAL';
 
+    /**
+     * The raw FraudResponse values.
+     * @var string
+     */
     const FRAUD_RESPONSE_ACCEPT     = 'ACCEPT';
     const FRAUD_RESPONSE_CHALLENGE  = 'CHALLENGE';
     const FRAUD_RESPONSE_DENY       = 'DENY';
