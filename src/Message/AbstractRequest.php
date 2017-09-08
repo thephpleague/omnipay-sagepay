@@ -352,8 +352,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $createToken = (bool)$createToken;
 
         return $this->setParameter(
-             'createToken',
-             ($createToken ? static::CREATE_TOKEN_YES : static::CREATE_TOKEN_NO)
+            'createToken',
+            ($createToken ? static::CREATE_TOKEN_YES : static::CREATE_TOKEN_NO)
         );
     }
 
@@ -383,8 +383,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $storeToken = (bool)$storeToken;
 
         $this->setParameter(
-          'storeToken',
-          ($storeToken ? static::STORE_TOKEN_YES | static::STORE_TOKEN_NO)
+            'storeToken',
+            ($storeToken ? static::STORE_TOKEN_YES | static::STORE_TOKEN_NO)
         );
     }
 
