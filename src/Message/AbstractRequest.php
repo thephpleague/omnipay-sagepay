@@ -384,7 +384,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
         $this->setParameter(
             'storeToken',
-            ($storeToken ? static::STORE_TOKEN_YES | static::STORE_TOKEN_NO)
+            ($storeToken ? static::STORE_TOKEN_YES : static::STORE_TOKEN_NO)
         );
     }
 
