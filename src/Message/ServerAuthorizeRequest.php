@@ -12,6 +12,8 @@ class ServerAuthorizeRequest extends DirectAuthorizeRequest
     /**
      * Add the optional token details to the base data.
      * The returnUrl is supported for legacy applications not using the notifyUrl.
+     *
+     * @return array
      */
     public function getData()
     {

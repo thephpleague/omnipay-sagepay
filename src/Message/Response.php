@@ -28,6 +28,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
      * @var string
      */
     const SAGEPAY_STATUS_OK             = 'OK';
+    const SAGEPAY_STATUS_OK_REPEATED    = 'OK REPEATED';
     const SAGEPAY_STATUS_PENDING        = 'PENDING';
     const SAGEPAY_STATUS_NOTAUTHED      = 'NOTAUTHED';
     const SAGEPAY_STATUS_REJECTED       = 'REJECTED';

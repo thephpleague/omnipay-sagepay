@@ -6,6 +6,7 @@ use Omnipay\Tests\TestCase;
 
 class DirectAuthorizeRequestTest extends TestCase
 {
+    // VISA incurrs a surcharge of 2.5% when used.
     const SURCHARGE_XML = '<surcharges><surcharge><paymentType>VISA</paymentType><percentage>2.50</percentage></surcharge></surcharges>';
 
     /**
@@ -187,7 +188,8 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->getCard()->setNumber('4929000000006');
         $data = $this->request->getData();
 
-        $this->assertSame('visa', $data['CardType']);
+        // The card type to be sent is always upper case.
+        $this->assertSame('VISA', $data['CardType']);
     }
 
     public function testGetDataMastercard()
@@ -195,7 +197,8 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->getCard()->setNumber('5404000000000001');
         $data = $this->request->getData();
 
-        $this->assertSame('mc', $data['CardType']);
+        // The card type to be sent is always upper case.
+        $this->assertSame('MC', $data['CardType']);
     }
 
     public function testGetDataDinersClub()
@@ -203,7 +206,8 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->getCard()->setNumber('30569309025904');
         $data = $this->request->getData();
 
-        $this->assertSame('dc', $data['CardType']);
+        // This card type does not involve any mapping.
+        $this->assertSame('DC', $data['CardType']);
     }
 
     public function testGetDataNullBillingAddress2()

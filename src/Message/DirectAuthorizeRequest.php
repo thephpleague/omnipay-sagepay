@@ -5,19 +5,25 @@ namespace Omnipay\SagePay\Message;
 /**
  * Sage Pay Direct Authorize Request
  */
+
 class DirectAuthorizeRequest extends AbstractRequest
 {
     protected $action = 'DEFERRED';
     protected $service = 'vspdirect-register';
 
+    /**
+     * @var array Some mapping from Omnipay card brand codes to Sage Pay card branc codes.
+     */
     protected $cardBrandMap = array(
-        'mastercard' => 'mc',
-        'diners_club' => 'dc'
+        'mastercard' => 'MC',
+        'diners_club' => 'DC'
     );
 
     /**
      * The required fields concerning what is being authorised and who
      * it is being authorised for.
+     *
+     * @return array
      */
     protected function getBaseAuthorizeData()
     {
@@ -89,6 +95,8 @@ class DirectAuthorizeRequest extends AbstractRequest
     /**
      * SagePay throws an error if passed an IPv6 address.
      * Filter out addresses that are not IPv4 format.
+     *
+     * @return string|null The IPv4 IP addess string or null if not available in this format.
      */
     public function getClientIp()
     {
@@ -118,6 +126,9 @@ class DirectAuthorizeRequest extends AbstractRequest
     /**
      * If a token or cardReference is being used, then include the details
      * of the token in the data.
+     *
+     * @param array $data The data collected so far (to be added to).
+     * @return array
      */
     public function getTokenData($data = array())
     {
@@ -148,6 +159,51 @@ class DirectAuthorizeRequest extends AbstractRequest
     }
 
     /**
+     * If a credit card is being used, then include the details
+     * of the card in the data.
+     *
+     * @param array $data The data collected so far (to be added to).
+     * @return array
+     */
+    public function getCardData($data = array())
+    {
+        // Validate the card details (number, date, cardholder name).
+        $this->getCard()->validate();
+
+        if ($this->getCardholderName()) {
+            $data['CardHolder'] = $this->getCardholderName();
+        } else {
+            $data['CardHolder'] = $this->getCard()->getName();
+        }
+
+        // Card number should not be provided if token is being provided instead
+        if (! $this->getToken()) {
+            $data['CardNumber'] = $this->getCard()->getNumber();
+        }
+
+        $data['ExpiryDate'] = $this->getCard()->getExpiryDate('my');
+        $data['CardType'] = $this->getCardBrand();
+
+        if ($this->getCard()->getStartMonth() and $this->getCard()->getStartYear()) {
+            $data['StartDate'] = $this->getCard()->getStartDate('my');
+        }
+
+        if ($this->getCard()->getIssueNumber()) {
+            $data['IssueNumber'] = $this->getCard()->getIssueNumber();
+        }
+
+        // If we want the card details to be saved on the gateway as a
+        // token or card reference, then request for that to be done.
+        $data['CreateToken'] = $this->getCreateToken();
+
+        if ($this->getCard()->getCvv() !== null) {
+            $data['CV2'] = $this->getCard()->getCvv();
+        }
+
+        return $data;
+    }
+
+    /**
      * Add the credit card or token details to the data.
      */
     public function getData()
@@ -159,37 +215,7 @@ class DirectAuthorizeRequest extends AbstractRequest
             $data = $this->getTokenData($data);
         } else {
             // Otherwise, a credit card has to have been provided.
-            $this->getCard()->validate();
-
-            if ($this->getCardholderName()) {
-                $data['CardHolder'] = $this->getCardholderName();
-            } else {
-                $data['CardHolder'] = $this->getCard()->getName();
-            }
-
-            // Card number should not be provided if token is being provided instead
-            if (! $this->getToken()) {
-                $data['CardNumber'] = $this->getCard()->getNumber();
-            }
-
-            $data['ExpiryDate'] = $this->getCard()->getExpiryDate('my');
-            $data['CardType'] = $this->getCardBrand();
-
-            if ($this->getCard()->getStartMonth() and $this->getCard()->getStartYear()) {
-                $data['StartDate'] = $this->getCard()->getStartDate('my');
-            }
-
-            if ($this->getCard()->getIssueNumber()) {
-                $data['IssueNumber'] = $this->getCard()->getIssueNumber();
-            }
-
-            // If we want the card details to be saved on the gateway as a
-            // token or card reference, then request for that to be done.
-            $data['CreateToken'] = $this->getCreateToken();
-
-            if ($this->getCard()->getCvv() !== null) {
-                $data['CV2'] = $this->getCard()->getCvv();
-            }
+            $data = $this->getCardData($data);
         }
 
         // A CVV may be supplied whether using a token or credit card details.
@@ -205,15 +231,20 @@ class DirectAuthorizeRequest extends AbstractRequest
         return $data;
     }
 
+    /**
+     * @return string Get the card brand in a format expected by Sage Pay.
+     */
     protected function getCardBrand()
     {
         $brand = $this->getCard()->getBrand();
+
+        // Some Omnipay-derived card brands will need mapping to new names.
 
         if (isset($this->cardBrandMap[$brand])) {
             return $this->cardBrandMap[$brand];
         }
 
-        return $brand;
+        return strtoupper($brand);
     }
 
     /**
