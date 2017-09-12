@@ -29,5 +29,8 @@ class SharedTokenRemovalRequestTest extends TestCase
         $this->assertSame('3.00', $data['VPSProtocol']);
         $this->assertSame('testvendor', $data['Vendor']);
         $this->assertArrayNotHasKey('AccountType', $data);
+
+        $this->assertSame('REMOVETOKEN', $data['TxType']);
+        $this->assertSame('removetoken', $this->request->getService());
     }
 }

@@ -18,9 +18,4 @@ class SharedTokenRemovalRequest extends AbstractRequest
 
         return $data;
     }
-
-    public function getService()
-    {
-        return 'removetoken';
-    }
 }

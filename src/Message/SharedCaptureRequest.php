@@ -9,6 +9,9 @@ class SharedCaptureRequest extends AbstractRequest
 {
     protected $action = 'RELEASE';
 
+    /**
+     * @return array The message body data.
+     */
     public function getData()
     {
         $this->validate('amount', 'transactionReference');

@@ -7,6 +7,8 @@ namespace Omnipay\SagePay\Message;
  */
 class ServerAuthorizeRequest extends DirectAuthorizeRequest
 {
+    protected $service = 'vspserver-register';
+
     /**
      * Add the optional token details to the base data.
      * The returnUrl is supported for legacy applications not using the notifyUrl.
@@ -34,11 +36,6 @@ class ServerAuthorizeRequest extends DirectAuthorizeRequest
         }
 
         return $data;
-    }
-
-    public function getService()
-    {
-        return 'vspserver-register';
     }
 
     protected function createResponse($data)

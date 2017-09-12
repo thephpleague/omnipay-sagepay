@@ -37,6 +37,9 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertSame(0, $data['ApplyAVSCV2']);
         $this->assertSame(0, $data['Apply3DSecure']);
 
+        $this->assertSame('DEFERRED', $data['TxType']);
+        $this->assertSame('vspdirect-register', $this->request->getService());
+
         // If we have not explicitly set the CreateToken flag, then it remains
         // undefined. This allows it to default when creating a transaction
         // according to whether we are using a single-use token or a more

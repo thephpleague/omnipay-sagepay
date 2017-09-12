@@ -11,6 +11,16 @@ namespace Omnipay\SagePay\Message;
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
     /**
+     * @var string The transaction type, used in the request body.
+     */
+    protected $action;
+
+    /**
+     * @var string The service name, used in the endpoint URL.
+     */
+    protected $service;
+
+    /**
      * Supported 3D Secure values for Apply3DSecure.
      * APPLY - If 3D-Secure checks are possible and rules allow,
      * perform the checks and apply the authorisation rules.
@@ -66,7 +76,11 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     const PROFILE_LOW       = 'LOW';
 
     /**
-     * Theoptional  account types for the AccountType field.
+     * The values for the AccountType field.
+     * E – for ecommerce transactions (default)
+     * M – for telephone (MOTO) transactions
+     * C – for repeat transactions
+     *
      * @var string
      */
     const ACCOUNT_TYPE_E = 'E';
@@ -149,12 +163,14 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * The name of the service used in the endpoint to send the message.
+     * For most services, the URL fragment will be the lower case version
+     * of the action.
      *
      * @return string Sage Oay endpoint service name.
      */
     public function getService()
     {
-        return $this->action;
+        return ($this->service ?: strtolower($this->action));
     }
 
     /**
@@ -270,16 +286,24 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('apply3DSecure', $value);
     }
 
+    public function getTxType()
+    {
+        if (isset($this->action)) {
+            return $this->action;
+        }
+    }
+
     /**
-     * Basic authorisation, rtransaction type and protocol version.
+     * Basic authorisation, transaction type and protocol version.
      *
      * @return Array
      */
     protected function getBaseData()
     {
         $data = array();
+
         $data['VPSProtocol'] = '3.00';
-        $data['TxType'] = $this->action;
+        $data['TxType'] = $this->getTxType();
         $data['Vendor'] = $this->getVendor();
         $data['AccountType'] = $this->getAccountType() ?: 'E';
 
@@ -330,7 +354,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      */
     public function getEndpoint()
     {
-        $service = strtolower($this->getService());
+        $service = $this->getService();
 
         if ($this->getTestMode()) {
             return $this->testEndpoint."/$service.vsp";

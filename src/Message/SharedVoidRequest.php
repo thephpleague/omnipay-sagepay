@@ -12,6 +12,7 @@ class SharedVoidRequest extends AbstractRequest
     public function getData()
     {
         $this->validate('transactionReference');
+
         $reference = json_decode($this->getTransactionReference(), true);
 
         $data = $this->getBaseData();

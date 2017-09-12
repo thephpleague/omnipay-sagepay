@@ -11,7 +11,11 @@ use Omnipay\Common\Helper;
 class SharedRepeatAuthorizeRequest extends AbstractRequest
 {
     protected $action = 'REPEATDEFERRED';
+    protected $service = 'repeat';
 
+    /**
+     * @return array The message body data.
+     */
     public function getData()
     {
         // API version and account details.
@@ -71,11 +75,6 @@ class SharedRepeatAuthorizeRequest extends AbstractRequest
         return $this->getParameter('description');
     }
 
-    public function getService()
-    {
-        return 'repeat';
-    }
-
     public function setDescription($value)
     {
         return $this->setParameter('description', $value);
@@ -111,9 +110,6 @@ class SharedRepeatAuthorizeRequest extends AbstractRequest
     {
         return $this->setTransactionReference($jsonEncodedReference);
     }
-
-
-
 
     /**
      * The original transaction remote gateway ID.

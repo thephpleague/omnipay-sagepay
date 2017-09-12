@@ -9,6 +9,9 @@ class SharedRefundRequest extends AbstractRequest
 {
     protected $action = 'REFUND';
 
+    /**
+     * @return array The message body data.
+     */
     public function getData()
     {
         $this->validate('amount', 'transactionReference');

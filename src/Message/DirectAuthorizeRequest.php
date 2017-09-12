@@ -8,6 +8,8 @@ namespace Omnipay\SagePay\Message;
 class DirectAuthorizeRequest extends AbstractRequest
 {
     protected $action = 'DEFERRED';
+    protected $service = 'vspdirect-register';
+
     protected $cardBrandMap = array(
         'mastercard' => 'mc',
         'diners_club' => 'dc'
@@ -201,11 +203,6 @@ class DirectAuthorizeRequest extends AbstractRequest
         }
 
         return $data;
-    }
-
-    public function getService()
-    {
-        return 'vspdirect-register';
     }
 
     protected function getCardBrand()
