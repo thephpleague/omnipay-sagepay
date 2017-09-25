@@ -21,8 +21,11 @@ Table of Contents
       * [Sage Pay Direct Methods:](#sage-pay-direct-methods)
          * [Direct createCard()](#direct-createcard)
       * [Sage Pay Server Methods:](#sage-pay-server-methods)
+         * [Server Gateway](#server-gateway)
+         * [Server authorize()](#server-authorize)
          * [Server createCard()](#server-createcard)
       * [Sage Pay Shared Methods (for both Direct and Server):](#sage-pay-shared-methods-for-both-direct-and-server)
+         * [Direct/Server deleteCard()](#directserver-deletecard)
    * [Token Billing](#token-billing)
       * [Generating a Token or CardReference](#generating-a-token-or-cardreference)
       * [Using a Token or CardRererence](#using-a-token-or-cardrererence)
@@ -65,6 +68,8 @@ repository.
 * authorize() - with completeAuthorize for 3D Secure and PayPal redirect
 * purchase() - with completeAuthorize for 3D Secure and PayPal redirect
 * createCard() - explicit "standalone" creation of a cardReference or token
+
+*Note: PayPal is not implemented in this driver at this time.*
 
 ### Direct createCard()
 
@@ -123,6 +128,128 @@ if ($response->isSuccessful()) {
 * acceptNotification() - Notification Handler for authorize, purchase and explicit cardReference registration
 * createCard() - explicit "standalone" creation of a cardReference or token
 
+### Server Gateway
+
+All Sage Pay Server methods all start by creating the gateway object, which we
+will store in `$gateway` here. Note there are no secrets or passwords that need
+to be set, as the gateway uses your server's IP address as its main method of
+security access.
+
+The gateway object is minimally created like this:
+
+```php
+use Omnipay\Omnipay;
+
+$gateway = OmniPay::create('SagePay\Server');
+
+$gateway->setVendor('your-vendor-code');
+$gateway->setTestMode(true); // For a test account
+```
+
+### Server authorize()
+
+This method authorises a payment against a credit or debit card.
+A `cardToken` or `cardReference` previously captured, can be used here, and only
+the user's CVV will be captured, but the overall flow will remain the same.
+
+The `$creditCard` object will provide the billing and shipping details:
+
+```php
+use Omnipay\Common\CreditCard;
+
+$creditCard = new CreditCard([
+    'firstName' => 'Joe',
+    'lastName' => 'Bloggs',
+    //
+    'billingAddress1' => 'Billing Address 1',
+    'billingAddress2' => 'Billing Address 2',
+    //'billingState' => '',
+    'billingCity' => 'Billing City',
+    'billingPostcode' => 'BPOSTC',
+    'billingCountry' => 'GB',
+    'billingPhone' => '01234 567 890',
+    //
+    'email' =>  'test@example.com',
+    'clientIp' => '123.123.123.123',
+    //
+    'shippingAddress1' => '99',
+    'shippingState' => 'NY',
+    'shippingCity' => 'City1',
+    'shippingPostcode' => 'SPOSTC',
+    'shippingCountry' => 'US',
+    'shippingPhone' => '01234 567 890 SS',
+]);
+```
+
+* The country must be a twe-character ISO 3166 code.
+* The state will be a two-character ISO code, and is mandatory if the country is "US".
+* The state will be ignored if the country is not "US".
+* Adddress2 is optional, but all other fields are mandatory.
+* The postcode is optional for Republic of Ireland "IE".
+* You can use UTF-8. Only joking! This gateway lives on an extended ASCII ISO 8859-1 back end. Really.
+  Do any characterset conversions in your merchant site to avoid surprises.
+
+```php
+// Create a unique transaction ID to track this transaction.
+$transactionId = {create a unique transaction id};
+
+// Custom surcharges can be added here.
+// You must construct the XML string; there is no XML builder in this driver
+// at this time. Length is very limited, so kepe it compact.
+$surchargeXml = '<surcharges>'
+        . '<surcharge>'
+            . '<paymentType>VISA</paymentType>'
+            . '<percentage>5.20</percentage>'
+        . '</surcharge>'
+    . '</surcharges>';
+
+// Send the authorize request.
+// Some optional parameters are shown commented out.
+$response = $gateway->authorize(array(
+    'amount' => '9.99', // A bargain!
+    'currency' => 'GBP',
+    'card' => $card,
+    'notifyUrl' => 'http://example.com/your/notify.php',
+    'transactionId' => $transactionId,
+    'description' => 'Mandatory description',
+    // 'items' => $items,
+    // 'cardReference' => '{4E50F334-9D42-9946-2B0B-ED70B2421D48}',
+    // 'surchargeXml' => $surchargeXml,
+    // 'token' => $token,
+    // 'cardReference' => $cardReference,
+))->send();
+
+// Create storage for this transaction now, indexed by the transaction ID.
+// We will need to access it in the notification handler.
+// The reference given by `$response->getTransactionReference()` must be stored.
+
+// Now decide what to do next, based on the response.
+if ($response->isSuccessful()) {
+    // The transaction is complete and successful and no further action is needed.
+    // This may happen if a cardReference has been supplied, having captured
+    // the card reference with a CVV and using it for the first time. The CVV will
+    // only be kept by the gateway for this first authorisation. This also assumes
+    // 3D Secure is turned off.
+} elseif ($response->isRedirect()) {
+    // Redirect to offsite payment gateway to capture the users credit card
+    // details.
+    // If a cardReference was provided, then only the CVV will be asked for.
+    // 3D Secure will be performed here too, if enabled.
+    // Once the user is redirected to the gateway, the results will be POSTed
+    // to the [notification handler](#sage-pay-server-notification-handler).
+    // The handler will then inform the gateway where to finally return the user
+    // to on the merchant site.
+
+    $response->redirect();
+} else {
+    // Something went wrong; get the message.
+    // The error may be a simple validation error on the address details.
+    // Catch those and allow the user to correct the details and submit again.
+    // This is a particular pain point of Sage Pay Server.
+    $reason = $response->getMessage();
+}
+```
+
 ### Server createCard()
 
 When creating a cardReference, for Sage Pay Server the reference will be available
@@ -131,15 +258,8 @@ only in the notification callback.
 Sample code using Sage Pay Server to create a card reference:
 
 ```php
-use Omnipay\Omnipay;
-
-$gateway = OmniPay::create('SagePay\Server');
-
-$gateway->setVendor('your-vendor-code');
-$gateway->setTestMode(true); // For test account
-
 // The transaction ID is used to store the result in the notify callback.
-// Create a storage record for this transaction now.
+// Create storage for this transaction now, indexed by the transaction ID.
 $transactionId = {create a unique transaction id};
 
 $request = $gateway->createCard([
@@ -152,7 +272,8 @@ $request = $gateway->createCard([
 $response = $request->send();
 
 if ($response->isSuccessful()) {
-    // Should never happen for Sage Pay Server
+    // Should never happen for Sage Pay Server, since the user will always
+    // be asked to go off-site to enter their credit card details.
 } elseif ($response->isRedirect()) {
     // Redirect to offsite payment gateway to capture the users credit card
     // details. Note that no address details are needed, nor are they captured.
