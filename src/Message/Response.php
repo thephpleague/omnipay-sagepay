@@ -169,6 +169,11 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         $this->data = $data;
     }
 
+    /**
+     * CHECKME: should we include "OK REPEATED" as a successful status too?
+     *
+     * @return bool True if the transaction is successful and complete.
+     */
     public function isSuccessful()
     {
         return $this->getStatus() === static::SAGEPAY_STATUS_OK;
@@ -184,6 +189,8 @@ class Response extends AbstractResponse implements RedirectResponseInterface
      * custom format: VendorTxCode;VPSTxId;TxAuthNo;SecurityKey
      *
      * We have opted to return this reference as JSON, as the keys are much more explicit.
+     *
+     * @return string JSON formatted data.
      */
     public function getTransactionReference()
     {
@@ -205,6 +212,8 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     /**
      * The only reason supported for a redirect from a Server transaction
      * will be 3D Secure. PayPal may come into this at some point.
+     *
+     * @return bool True if a 3DSecure Redirect needs to be performed.
      */
     public function isRedirect()
     {
@@ -221,6 +230,9 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         }
     }
 
+    /**
+     * @return string The redirect method.
+     */
     public function getRedirectMethod()
     {
         return 'POST';
@@ -228,7 +240,9 @@ class Response extends AbstractResponse implements RedirectResponseInterface
 
     /**
      * The usual reason for a redirect is for a 3D Secure check.
-     * @return array 3D Secure POST data.
+     * Note: when PayPal is supported, a different set of data will be returned.
+     *
+     * @return array Collected 3D Secure POST data.
      */
     public function getRedirectData()
     {

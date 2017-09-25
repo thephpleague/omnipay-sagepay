@@ -259,7 +259,7 @@ are generated.
 
 To use a token with Sage Pay Direct, you must leave the credit card details blank in
 the `CreditCard` object. Sage Pay Server does not use the credit card details anyway.
-To use the token as a single-use token, add it to the transaction request as a token:
+To use the token as a single-use token, add it to the transaction request like this:
 
 `request->setToken($saved_token);`
 
@@ -267,11 +267,12 @@ Once authorised, this token will be deleted by the gateway and so cannot be used
 Note that if the transaction is not authorised, then the token will remain.
 You should then delete the token explicitly to make sure it does not remain in the gateway.
 
-To use the token as a permanent cardReference, add it to the transaction request as a token:
+To use the token as a permanent cardReference, add it to the transaction request like this:
 
 `request->setCardReference($saved_token);`
 
-This token will remain active on the gateway whether this transaction is authorised or not.
+This CardReference will remain active on the gateway whether this transaction is authorised
+or not, so can be used multiple times.
 
 # Basket format
 

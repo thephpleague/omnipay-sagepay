@@ -21,17 +21,22 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     protected $service;
 
     /**
+     * @var string The protocol version number.
+     */
+    protected $VPSProtocol = '3.00';
+
+    /**
      * Supported 3D Secure values for Apply3DSecure.
-     * APPLY - If 3D-Secure checks are possible and rules allow,
-     * perform the checks and apply the authorisation rules.
-     * (default)
-     * FORCE - Force 3D-Secure checks for this transaction if
-     * possible and apply rules for authorisation.
-     * NONE - Do not perform 3D-Secure checks for this
-     * transaction and always authorise.
-     * AUTH - Force 3D-Secure checks for this transaction if
-     * possible but ALWAYS obtain an auth code, irrespective
-     * of rule base.
+     * 0: APPLY - If 3D-Secure checks are possible and rules allow,
+     *      perform the checks and apply the authorisation rules.
+     *      (default)
+     * 1: FORCE - Force 3D-Secure checks for this transaction if
+     *      possible and apply rules for authorisation.
+     * 2: NONE - Do not perform 3D-Secure checks for this
+     *      transaction and always authorise.
+     * 3: AUTH - Force 3D-Secure checks for this transaction if
+     *      possible but ALWAYS obtain an auth code, irrespective
+     *      of rule base.
      *
      * @var integer
      */
@@ -210,6 +215,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     /**
      * Set account type.
+     * Neither 'M' nor 'C' offer the 3D-Secure checks that the "E" customer
+     * experience offers.
      *
      * This is ignored for all PAYPAL transactions.
      *
@@ -302,10 +309,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         $data = array();
 
-        $data['VPSProtocol'] = '3.00';
+        $data['VPSProtocol'] = $this->VPSProtocol;
         $data['TxType'] = $this->getTxType();
         $data['Vendor'] = $this->getVendor();
-        $data['AccountType'] = $this->getAccountType() ?: 'E';
+        $data['AccountType'] = $this->getAccountType() ?: static::ACCOUNT_TYPE_E;
 
         return $data;
     }
