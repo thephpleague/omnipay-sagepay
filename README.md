@@ -195,7 +195,7 @@ $transactionId = {create a unique transaction id};
 
 // Custom surcharges can be added here.
 // You must construct the XML string; there is no XML builder in this driver
-// at this time. Length is very limited, so kepe it compact.
+// at this time. Length is very limited, so keep it compact.
 $surchargeXml = '<surcharges>'
         . '<surcharge>'
             . '<paymentType>VISA</paymentType>'
@@ -515,8 +515,8 @@ If you accept the notification, then you can update your local records and let S
 $request->getData();
 
 // Save the final transactionReference against the transaction in the database. It will
-// be needed if you want to capture the payment (for an authorize) or void or refund the
-// payment later.
+// be needed if you want to capture the payment (for an authorize) or void or refund or
+// repeat the payment later.
 $finalTransactionReference = $response->getTransactionReference();
 
 // The payment or authorisation result:
