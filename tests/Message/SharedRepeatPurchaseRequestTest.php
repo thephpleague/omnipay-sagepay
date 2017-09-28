@@ -40,5 +40,8 @@ class SharedRepeatPurchaseRequestTest extends TestCase
             'Related VPSTxId does not match');
         $this->assertEquals('D6429BY7x2217743', $data['RelatedVendorTxCode'], 'Related VendorTxCode does not match');
         $this->assertEquals('1518884596', $data['RelatedTxAuthNo'], 'Related TxAuthNo does not match');
+
+        $this->assertEquals('REPEAT', $data['TxType']);
+        $this->assertEquals('repeat', $this->request->getService());
     }
 }

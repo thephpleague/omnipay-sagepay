@@ -11,8 +11,8 @@ class ServerPurchaseRequestTest extends TestCase
 
     public function testInitialize()
     {
-        $request = new ServerPurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
-        $request->initialize(
+        $this->request = new ServerPurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request->initialize(
             array(
                 'returnUrl' => 'http://www.example.com/return',
                 'amount' => '12.00',
@@ -22,7 +22,10 @@ class ServerPurchaseRequestTest extends TestCase
             )
         );
 
-        $data = $request->getData();
+        $data = $this->request->getData();
+
+        $this->assertSame('PAYMENT', $data['TxType']);
+        $this->assertSame('vspserver-register', $this->request->getService());
     }
 
     public function testSetSurchargeXml()

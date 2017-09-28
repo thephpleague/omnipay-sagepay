@@ -17,7 +17,11 @@ class DirectTokenRequestTest extends TestCase
 
     public function setUp()
     {
-        $this->request = new DirectTokenRegistrationRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new DirectTokenRegistrationRequest(
+            $this->getHttpClient(),
+            $this->getHttpRequest()
+        );
+
         $this->request->initialize(
             array(
                 'amount' => '12.00',
@@ -39,12 +43,16 @@ class DirectTokenRequestTest extends TestCase
         $this->assertSame('visa', $data['CardType']);
         $this->assertArrayNotHasKey('AccountType', $data);
 
+        $this->assertSame('visa', $data['CardType']);
+
         $card = $this->request->getCard();
 
         $this->assertSame($card->getNumber(), $data['CardNumber']);
         $this->assertSame($card->getCvv(), $data['CV2']);
         $this->assertSame($card->getName(), $data['CardHolder']);
         $this->assertSame($card->getExpiryDate('my'), $data['ExpiryDate']);
+
+        $this->assertSame('directtoken', $this->request->getService());
     }
 
     public function testGetDataMastercard()

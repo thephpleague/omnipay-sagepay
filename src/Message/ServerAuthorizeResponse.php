@@ -14,13 +14,15 @@ class ServerAuthorizeResponse extends Response
 
     public function isRedirect()
     {
-        return isset($this->data['Status']) &&
-           in_array($this->data['Status'], array('OK', 'OK REPEATED'));
+        return in_array(
+            $this->getStatus(),
+            array(static::SAGEPAY_STATUS_OK, static::SAGEPAY_STATUS_OK_REPEATED)
+        );
     }
 
     public function getRedirectUrl()
     {
-        return isset($this->data['NextURL']) ? $this->data['NextURL'] : null;
+        return $this->getDataItem('NextURL');
     }
 
     public function getRedirectMethod()

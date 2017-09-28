@@ -2,9 +2,14 @@
 
 namespace Omnipay\SagePay\Message;
 
+/**
+ * Register a card with the gateway in exchange for a token.
+ */
+
 class DirectTokenRegistrationRequest extends AbstractRequest
 {
     protected $action = 'TOKEN';
+
     protected $cardBrandMap = array(
         'mastercard' => 'mc',
         'diners_club' => 'dc'
@@ -24,6 +29,7 @@ class DirectTokenRegistrationRequest extends AbstractRequest
         $data['CV2'] = $this->getCard()->getCvv();
         $data['CardType'] = $this->getCardBrand();
 
+        // The account type only comes into play when a transation is requested.
         unset($data['AccountType']);
 
         return $data;

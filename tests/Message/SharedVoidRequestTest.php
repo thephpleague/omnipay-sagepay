@@ -30,6 +30,9 @@ class SharedVoidRequestTest extends TestCase
         $this->assertSame('{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}', $data['VPSTxId']);
         $this->assertSame('JEUPDN1N7E', $data['SecurityKey']);
         $this->assertSame('4255', $data['TxAuthNo']);
+
+        $this->assertSame('VOID', $data['TxType']);
+        $this->assertSame('void', $this->request->getService());
     }
 
     public function testGetEndpoint()

@@ -7,7 +7,6 @@ namespace Omnipay\SagePay\Message;
  */
 class ServerPurchaseRequest extends ServerAuthorizeRequest
 {
-
     protected $action = 'PAYMENT';
 
     public function getData()

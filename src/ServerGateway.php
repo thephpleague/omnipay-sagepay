@@ -46,7 +46,7 @@ class ServerGateway extends DirectGateway
      * Accept card details from a user and return a token, without any
      * authorization against that card.
      * i.e. standalone token creation.
-     * Alias fof registerToken()
+     * Omnipay standard function; alias for registerToken()
      */
     public function createCard(array $parameters = array())
     {
@@ -54,9 +54,19 @@ class ServerGateway extends DirectGateway
     }
 
     /**
+     * Remove a card token from the account.
+     * Standard Omnipay function.
+     */
+    public function deleteCard(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\SagePay\Message\SharedTokenRemovalRequest', $parameters);
+    }
+
+    /**
      * Accept card details from a user and return a token, without any
      * authorization against that card.
      * i.e. standalone token creation.
+     * Gateway-specific function.
      */
     public function registerToken(array $parameters = array())
     {

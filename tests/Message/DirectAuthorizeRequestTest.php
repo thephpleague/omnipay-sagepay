@@ -6,6 +6,7 @@ use Omnipay\Tests\TestCase;
 
 class DirectAuthorizeRequestTest extends TestCase
 {
+    // VISA incurrs a surcharge of 2.5% when used.
     const SURCHARGE_XML = '<surcharges><surcharge><paymentType>VISA</paymentType><percentage>2.50</percentage></surcharge></surcharges>';
 
     /**
@@ -36,7 +37,16 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertSame('E', $data['AccountType']);
         $this->assertSame(0, $data['ApplyAVSCV2']);
         $this->assertSame(0, $data['Apply3DSecure']);
-        $this->assertSame(0, $data['CreateToken']);
+
+        $this->assertSame('DEFERRED', $data['TxType']);
+        $this->assertSame('vspdirect-register', $this->request->getService());
+
+        // If we have not explicitly set the CreateToken flag, then it remains
+        // undefined. This allows it to default when creating a transaction
+        // according to whether we are using a single-use token or a more
+        // permanent cardReference.
+
+        $this->assertNull($data['CreateToken']);
     }
 
     public function testGetData()
@@ -49,6 +59,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->setReferrerId('3F7A4119-8671-464F-A091-9E59EB47B80C');
         $this->request->setVendorData('Vendor secret codes');
         $this->request->setCardholderName('Mr E User');
+        $this->request->setCreateToken(true);
 
         $data = $this->request->getData();
 
@@ -63,6 +74,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertSame('3F7A4119-8671-464F-A091-9E59EB47B80C', $data['ReferrerID']);
         $this->assertSame('Vendor secret codes', $data['VendorData']);
         $this->assertSame('Mr E User', $data['CardHolder']);
+        $this->assertSame(1, $data['CreateToken']);
         $this->assertSame(self::SURCHARGE_XML, $data['surchargeXml']);
     }
 
@@ -176,7 +188,8 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->getCard()->setNumber('4929000000006');
         $data = $this->request->getData();
 
-        $this->assertSame('visa', $data['CardType']);
+        // The card type to be sent is always upper case.
+        $this->assertSame('VISA', $data['CardType']);
     }
 
     public function testGetDataMastercard()
@@ -184,7 +197,8 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->getCard()->setNumber('5404000000000001');
         $data = $this->request->getData();
 
-        $this->assertSame('mc', $data['CardType']);
+        // The card type to be sent is always upper case.
+        $this->assertSame('MC', $data['CardType']);
     }
 
     public function testGetDataDinersClub()
@@ -192,7 +206,8 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->getCard()->setNumber('30569309025904');
         $data = $this->request->getData();
 
-        $this->assertSame('dc', $data['CardType']);
+        // This card type does not involve any mapping.
+        $this->assertSame('DC', $data['CardType']);
     }
 
     public function testGetDataNullBillingAddress2()
@@ -273,6 +288,9 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertContains($expected, $data['BasketXML'], 'Basket XML does not match the expected output');
     }
 
+    /**
+     * 
+     */
     public function testCreateTokenCanBeSetInRequest()
     {
         $this->request->setCreateToken(true);
@@ -299,8 +317,27 @@ class DirectAuthorizeRequestTest extends TestCase
 
         $data = $this->request->getData();
         $this->assertSame($token, $data['Token']);
+
+        // If using a "token" then it is assumed to be single-use by default.
+        $this->assertSame(0, $data['StoreToken']);
     }
 
+    public function testExistingCardReferenceCanBeSet()
+    {
+        $token = '{ABCDEF}';
+        $this->request->setCardReference($token);
+
+        $data = $this->request->getData();
+        $this->assertSame($token, $data['Token']);
+
+        // If using a "cardReference" then it is assumed to be permanent by default.
+        $this->assertSame(1, $data['StoreToken']);
+    }
+
+    /**
+     * This has been turned on its head: if a token is provided, then that
+     * takes priority and the "createToken" flag is ignored.
+     */
     public function testExistingTokenCannotBeSetIfCreateTokenIsTrue()
     {
         $this->request->setCreateToken(true);
@@ -308,8 +345,8 @@ class DirectAuthorizeRequestTest extends TestCase
 
         $data = $this->request->getData();
 
-        $this->assertArrayNotHasKey('Token', $data);
-        $this->assertSame(1, $data['CreateToken']);
+        $this->assertArrayNotHasKey('CreateToken', $data);
+        $this->assertSame('{ABCDEF}', $data['Token']);
     }
 
     public function testStoreTokenCanOnlyBeSetIfExistingTokenIsSetInRequest()
