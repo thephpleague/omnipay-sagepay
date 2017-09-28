@@ -22,7 +22,7 @@ Table of Contents
          * [Direct createCard()](#direct-createcard)
       * [Sage Pay Server Methods:](#sage-pay-server-methods)
          * [Server Gateway](#server-gateway)
-         * [Server authorize()](#server-authorize)
+         * [Server authorize()/purchase()](#server-authorize-purchase)
          * [Server createCard()](#server-createcard)
       * [Sage Pay Shared Methods (for both Direct and Server):](#sage-pay-shared-methods-for-both-direct-and-server)
          * [Direct/Server deleteCard()](#directserver-deletecard)
@@ -63,7 +63,12 @@ repository.
 
 # Supported Methods
 
-## Sage Pay Direct Methods:
+## Sage Pay Direct Methods
+
+Sage Pay Direct is a server-to-server protocol, with all credit card details
+needing to pass through your application for forwarding on to the gateway.
+You must be aware of the PCI implications of handling credit card details
+if using this API.
 
 * authorize() - with completeAuthorize for 3D Secure and PayPal redirect
 * purchase() - with completeAuthorize for 3D Secure and PayPal redirect
@@ -100,11 +105,12 @@ $card = new CreditCard([
     'lastName' => 'Bloggs',
     'number' => '4929000000006',
     'expiryMonth' => '12',
-    'expiryYear' => '2018',
+    'expiryYear' => '2020',
     'cvv' => '123',
 ]);
 
 // Send the request.
+
 $request = $gateway->createCard([
     'currency' => 'GBP',
     'card' => $card,
@@ -112,8 +118,9 @@ $request = $gateway->createCard([
 
 $response = $request->send();
 
-// There will be no need for any redirect (e.g. 3D Secure), since no
-// authorisation is being done.
+// There will be no need for any redirect (e.g. 3D Secure), since the
+// card is not being authorised at this point.
+
 if ($response->isSuccessful()) {
     $cardReference = $response->getCardReference();
     // or if you prefer to treat it as a single-use token:
@@ -121,7 +128,15 @@ if ($response->isSuccessful()) {
 }
 ```
 
-## Sage Pay Server Methods:
+## Sage Pay Server Methods
+
+Sage Pay Server captures any credit card details in forms hosted by the
+Sage Pay gateway, either by sending the user to the gateway or loading the
+hosted forms in iframes. This is the preferred and safest API to use.
+
+Sage Pay Server uses your IP address to authenticate backend access to the
+gateway, and it also needs to a public URL that it can send back-channel
+notifications to. This makes development on a localhost server difficult.
 
 * authorize()
 * purchase()
@@ -130,10 +145,10 @@ if ($response->isSuccessful()) {
 
 ### Server Gateway
 
-All Sage Pay Server methods all start by creating the gateway object, which we
+All Sage Pay Server methods start by creating the gateway object, which we
 will store in `$gateway` here. Note there are no secrets or passwords that need
 to be set, as the gateway uses your server's IP address as its main method of
-security access.
+authenticating your application.
 
 The gateway object is minimally created like this:
 
@@ -146,7 +161,7 @@ $gateway->setVendor('your-vendor-code');
 $gateway->setTestMode(true); // For a test account
 ```
 
-### Server authorize()
+### Server authorize()/purchase()
 
 This method authorises a payment against a credit or debit card.
 A `cardToken` or `cardReference` previously captured, can be used here, and only
