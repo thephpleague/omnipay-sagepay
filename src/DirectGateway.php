@@ -84,7 +84,7 @@ class DirectGateway extends AbstractGateway
         return $this->createRequest(Message\DirectAuthorizeRequest::class, $parameters);
     }
 
-    public function completeAuthorize(array $parameters = array())
+    public function completeAuthorize(array $parameters = [])
     {
         return $this->createRequest(Message\DirectCompleteAuthorizeRequest::class, $parameters);
     }
@@ -92,12 +92,12 @@ class DirectGateway extends AbstractGateway
     /**
      * Purchase and handling of return from 3D Secure or PayPal redirection.
      */
-    public function purchase(array $parameters = array())
+    public function purchase(array $parameters = [])
     {
         return $this->createRequest(Message\DirectPurchaseRequest::class, $parameters);
     }
 
-    public function completePurchase(array $parameters = array())
+    public function completePurchase(array $parameters = [])
     {
         return $this->completeAuthorize($parameters);
     }
@@ -109,7 +109,7 @@ class DirectGateway extends AbstractGateway
     /**
      * Capture an authorization.
      */
-    public function capture(array $parameters = array())
+    public function capture(array $parameters = [])
     {
         return $this->createRequest(Message\SharedCaptureRequest::class, $parameters);
     }
@@ -117,7 +117,7 @@ class DirectGateway extends AbstractGateway
     /**
      * Void a paid transaction.
      */
-    public function void(array $parameters = array())
+    public function void(array $parameters = [])
     {
         return $this->createRequest(Message\SharedVoidRequest::class, $parameters);
     }
@@ -125,7 +125,7 @@ class DirectGateway extends AbstractGateway
     /**
      * Abort an authorization.
      */
-    public function abort(array $parameters = array())
+    public function abort(array $parameters = [])
     {
         return $this->createRequest(Message\SharedAbortRequest::class, $parameters);
     }
@@ -133,7 +133,7 @@ class DirectGateway extends AbstractGateway
     /**
      * Void a completed (captured) transation.
      */
-    public function refund(array $parameters = array())
+    public function refund(array $parameters = [])
     {
         return $this->createRequest(Message\SharedRefundRequest::class, $parameters);
     }
@@ -141,7 +141,7 @@ class DirectGateway extends AbstractGateway
     /**
      * Create a new authorization against a previous payment.
      */
-    public function repeatAuthorize(array $parameters = array())
+    public function repeatAuthorize(array $parameters = [])
     {
         return $this->createRequest(Message\SharedRepeatAuthorizeRequest::class, $parameters);
     }
@@ -149,7 +149,7 @@ class DirectGateway extends AbstractGateway
     /**
      * Create a new purchase against a previous payment.
      */
-    public function repeatPurchase(array $parameters = array())
+    public function repeatPurchase(array $parameters = [])
     {
         return $this->createRequest(Message\SharedRepeatPurchaseRequest::class, $parameters);
     }
@@ -160,7 +160,7 @@ class DirectGateway extends AbstractGateway
      * i.e. standalone token creation.
      * Standard Omnipay function.
      */
-    public function createCard(array $parameters = array())
+    public function createCard(array $parameters = [])
     {
         return $this->registerToken($parameters);
     }
@@ -170,7 +170,7 @@ class DirectGateway extends AbstractGateway
      * authorization against that card.
      * i.e. standalone token creation.
      */
-    public function registerToken(array $parameters = array())
+    public function registerToken(array $parameters = [])
     {
         return $this->createRequest(Message\DirectTokenRegistrationRequest::class, $parameters);
     }
@@ -179,7 +179,7 @@ class DirectGateway extends AbstractGateway
      * Remove a card token from the account.
      * Standard Omnipay function.
      */
-    public function deleteCard(array $parameters = array())
+    public function deleteCard(array $parameters = [])
     {
         return $this->removeToken($parameters);
     }
@@ -187,7 +187,7 @@ class DirectGateway extends AbstractGateway
     /**
      * Remove a card token from the account.
      */
-    public function removeToken(array $parameters = array())
+    public function removeToken(array $parameters = [])
     {
         return $this->createRequest(Message\SharedTokenRemovalRequest::class, $parameters);
     }
@@ -195,7 +195,7 @@ class DirectGateway extends AbstractGateway
     /**
      * @deprecated use repeatAuthorize() or repeatPurchase()
      */
-    public function repeatPayment(array $parameters = array())
+    public function repeatPayment(array $parameters = [])
     {
         return $this->createRequest(Message\SharedRepeatPurchaseRequest::class, $parameters);
     }
