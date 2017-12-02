@@ -18,11 +18,11 @@ class DirectGateway extends AbstractGateway
 
     public function getDefaultParameters()
     {
-        return array(
+        return [
             'vendor' => '',
             'testMode' => false,
             'referrerId' => '',
-        );
+        ];
     }
 
     /**
@@ -79,14 +79,14 @@ class DirectGateway extends AbstractGateway
     /**
      * Authorize and handling of return from 3D Secure or PayPal redirection.
      */
-    public function authorize(array $parameters = array())
+    public function authorize(array $parameters = [])
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectAuthorizeRequest', $parameters);
+        return $this->createRequest(Message\DirectAuthorizeRequest::class, $parameters);
     }
 
     public function completeAuthorize(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectCompleteAuthorizeRequest', $parameters);
+        return $this->createRequest(Message\DirectCompleteAuthorizeRequest::class, $parameters);
     }
 
     /**
@@ -94,7 +94,7 @@ class DirectGateway extends AbstractGateway
      */
     public function purchase(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectPurchaseRequest', $parameters);
+        return $this->createRequest(Message\DirectPurchaseRequest::class, $parameters);
     }
 
     public function completePurchase(array $parameters = array())
@@ -111,7 +111,7 @@ class DirectGateway extends AbstractGateway
      */
     public function capture(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\SharedCaptureRequest', $parameters);
+        return $this->createRequest(Message\SharedCaptureRequest::class, $parameters);
     }
 
     /**
@@ -119,7 +119,7 @@ class DirectGateway extends AbstractGateway
      */
     public function void(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\SharedVoidRequest', $parameters);
+        return $this->createRequest(Message\SharedVoidRequest::class, $parameters);
     }
 
     /**
@@ -127,7 +127,7 @@ class DirectGateway extends AbstractGateway
      */
     public function abort(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\SharedAbortRequest', $parameters);
+        return $this->createRequest(Message\SharedAbortRequest::class, $parameters);
     }
 
     /**
@@ -135,7 +135,7 @@ class DirectGateway extends AbstractGateway
      */
     public function refund(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\SharedRefundRequest', $parameters);
+        return $this->createRequest(Message\SharedRefundRequest::class, $parameters);
     }
 
     /**
@@ -143,7 +143,7 @@ class DirectGateway extends AbstractGateway
      */
     public function repeatAuthorize(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\SharedRepeatAuthorizeRequest', $parameters);
+        return $this->createRequest(Message\SharedRepeatAuthorizeRequest::class, $parameters);
     }
 
     /**
@@ -151,7 +151,7 @@ class DirectGateway extends AbstractGateway
      */
     public function repeatPurchase(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\SharedRepeatPurchaseRequest', $parameters);
+        return $this->createRequest(Message\SharedRepeatPurchaseRequest::class, $parameters);
     }
 
     /**
@@ -172,7 +172,7 @@ class DirectGateway extends AbstractGateway
      */
     public function registerToken(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\DirectTokenRegistrationRequest', $parameters);
+        return $this->createRequest(Message\DirectTokenRegistrationRequest::class, $parameters);
     }
 
     /**
@@ -189,7 +189,7 @@ class DirectGateway extends AbstractGateway
      */
     public function removeToken(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\SharedTokenRemovalRequest', $parameters);
+        return $this->createRequest(Message\SharedTokenRemovalRequest::class, $parameters);
     }
 
     /**
@@ -197,6 +197,6 @@ class DirectGateway extends AbstractGateway
      */
     public function repeatPayment(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\SharedRepeatPurchaseRequest', $parameters);
+        return $this->createRequest(Message\SharedRepeatPurchaseRequest::class, $parameters);
     }
 }

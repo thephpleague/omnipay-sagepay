@@ -28,15 +28,16 @@
         "psr-4": { "Omnipay\\SagePay\\" : "src/" }
     },
     "require": {
-        "php": ">=5.4",
-        "omnipay/common": "~2.4"
+        "omnipay/common": "~3.0"
     },
     "require-dev": {
-        "omnipay/tests": "~2.0"
+        "omnipay/tests": "~3.0"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0.x-dev"
+            "dev-master": "3.0.x-dev"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
