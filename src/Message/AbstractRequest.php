@@ -565,7 +565,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 ':' . number_format($lineTotal, 2, '.', '');  // Line total
 
             $count++;
-
         }
 
         // Prepend number of lines to the result string
