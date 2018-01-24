@@ -197,7 +197,9 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         $reference = array();
         $reference['VendorTxCode'] = $this->getRequest()->getTransactionId();
 
-        foreach (array('SecurityKey', 'TxAuthNo', 'VPSTxId') as $key) {
+        foreach (array('VPSTxId', 'SecurityKey', 'TxAuthNo',
+                        'AVSCV2', 'AddressResult', 'PostCodeResult', 'CV2Result', '3DSecureStatus',
+                        'DeclineCode', 'BankAuthCode', 'CAVV') as $key) {
             $value = $this->{'get' . $key}();
             if ($value !== null) {
                 $reference[$key] = $value;
@@ -275,5 +277,146 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     public function getSecurityKey()
     {
         return $this->getDataItem('SecurityKey');
+    }
+
+    /**
+     * Sage Pay unique Authorisation Code for a successfully authorised transaction.
+     * Only present if Status is OK.
+     *
+     * @return string
+     */
+    public function getTxAuthNo()
+    {
+        return $this->getDataItem('TxAuthNo');
+    }
+
+    /**
+     * This is the response from AVS and CV2 checks. Provided for Vendor
+     * info and backward compatibility with the banks. Rules set up at the
+     * Sage Pay server will accept or reject the transaction based on these values.
+     * More detailed results are split out in the next three fields. Not present
+     * if the Status is 3DAUTH, AUTHENTICATED, PPREDIRECT or REGISTERED.
+     *
+     * @return string
+     */
+    public function getAVSCV2()
+    {
+        return $this->getDataItem('AVSCV2');
+    }
+
+    /**
+     * The specific result of the checks on the cardholder’s address numeric
+     * from the AVS/CV2 checks. Not present if the Status is 3DAUTH,
+     * AUTHENTICATED, PPREDIRECT or REGISTERED.
+     *
+     * @return string
+     */
+    public function getAddressResult()
+    {
+        return $this->getDataItem('AddressResult');
+    }
+
+    /**
+     * The specific result of the checks on the cardholder’s Postcode from
+     * the AVS/CV2 checks. Not present if the Status is 3DAUTH,
+     * AUTHENTICATED, PPREDIRECT or REGISTERED.
+     *
+     * @return string
+     */
+    public function getPostCodeResult()
+    {
+        return $this->getDataItem('PostCodeResult');
+    }
+
+    /**
+     * The specific result of the checks on the cardholder’s CV2 code from
+     * the AVS/CV2 checks. Not present if the Status is 3DAUTH,
+     * AUTHENTICATED, PPREDIRECT or REGISTERED.
+     *
+     * @return string
+     */
+    public function getCV2Result()
+    {
+        return $this->getDataItem('CV2Result');
+    }
+
+    /**
+     * This field details the results of the 3D-Secure checks (where appropriate)
+     * OK – The 3D-Authentication step completed successfully. If the
+     * Status field is OK too, then this indicates that the authorized
+     * transaction was also 3D-authenticated and a CAVV will be returned.
+     * Liability shift occurs.
+     *
+     * ATTEMPTONLY – The cardholder attempted to authenticate themselves but
+     * the process did not complete. A CAVV is returned, therefore a liability
+     * shift may occur for non-Maestro cards. Check your Merchant Agreement.
+     *
+     * NOAUTH – This means the card is not in the 3D-Secure scheme.
+     *
+     * CANTAUTH - This normally means the card Issuer is not part of the scheme.
+     *
+     * NOTAUTHED – The cardholder failed to authenticate themselves with their
+     * Issuing Bank.
+     *
+     * NOTCHECKED - No 3D Authentication was attempted for this transaction.
+     * Always returned if 3D-Secure is not active on your account.
+     *
+     * INCOMPLETE – 3D-Secure authentication was unable to complete
+     * (normally at the card issuer site). No authentication occurred.
+     *
+     * MALFORMED,INVALID,ERROR – These statuses indicate a
+     * problem with creating or receiving the 3D-Secure data. These
+     * should not occur on the live environment.
+     * If the status is not OK, the StatusDetail field will give more
+     * information about the status.
+     *
+     * AUTHENTICATED and REGISTERED statuses are only returned if the TxType
+     * is AUTHENTICATE. Please notify Sage Pay if a Status report of
+     * ERROR is seen, together with your VendorTxCode and the StatusDetail
+     * text.
+     *
+     * 3DAUTH is only returned if 3D-Authentication is available on your
+     * account AND the directory services have issued a URL to which you
+     * can progress. A Status of 3DAUTH only returns the StatusDetail,
+     * 3DSecureStatus, MD, ACSURL and PAReq fields. The other fields are
+     * returned with other Status codes only. See Appendix 3.
+     *
+     * @return string
+     */
+    public function get3DSecureStatus()
+    {
+        return $this->getDataItem('3DSecureStatus');
+    }
+
+    /**
+     * The decline code from the bank. These codes are specific to the
+     * bank. Please contact them for a description of each code. e.g. 00
+     *
+     * @return string
+     */
+    public function getDeclineCode()
+    {
+        return $this->getDataItem('DeclineCode');
+    }
+
+    /**
+     * The authorisation code returned from the bank. e.g T99777
+     *
+     * @return string
+     */
+    public function getBankAuthCode()
+    {
+        return $this->getDataItem('BankAuthCode');
+    }
+
+    /**
+     * The encoded result code from the 3D-Secure checks (CAVV or UCAF).
+     * Only present if the 3DSecureStatus field is OK or ATTEMPTONLY
+     *
+     * @return string
+     */
+    public function getCAVV()
+    {
+        return $this->getDataItem('CAVV');
     }
 }
