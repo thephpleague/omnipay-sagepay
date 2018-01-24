@@ -18,7 +18,7 @@ class ResponseTest extends TestCase
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('{"SecurityKey":"OUWLNYQTVT","TxAuthNo":"9962","VPSTxId":"{5A1BC414-5409-48DD-9B8B-DCDF096CE0BE}","VendorTxCode":"123456"}', $response->getTransactionReference());
+        $this->assertSame('{"AVSCV2":"ALL MATCH","AddressResult":"MATCHED","CV2Result":"MATCHED","PostCodeResult":"MATCHED","SecurityKey":"OUWLNYQTVT","TxAuthNo":"9962","VPSTxId":"{5A1BC414-5409-48DD-9B8B-DCDF096CE0BE}","VendorTxCode":"123456"}', $response->getTransactionReference());
         $this->assertSame('Direct transaction from Simulator.', $response->getMessage());
     }
 
@@ -42,7 +42,7 @@ class ResponseTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
-        $this->assertSame('{"VendorTxCode":"123456"}', $response->getTransactionReference());
+        $this->assertSame('{"3DSecureStatus":"OK","VendorTxCode":"123456"}', $response->getTransactionReference());
         $this->assertNull($response->getMessage());
         $this->assertSame('https://test.sagepay.com/Simulator/3DAuthPage.asp', $response->getRedirectUrl());
 
