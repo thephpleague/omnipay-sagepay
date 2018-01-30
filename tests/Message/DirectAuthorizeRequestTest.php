@@ -118,6 +118,34 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertContains($basketXml, $data['BasketXML']);
     }
 
+    public function testBasketExtendItem()
+    {
+        $items = new \Omnipay\Common\ItemBag(array(
+            new \Omnipay\SagePay\Extend\Item(array(
+                'name' => 'Name',
+                'description' => 'Description',
+                'quantity' => 1,
+                'price' => 1.23,
+                'vat' => 0.205,
+            ))
+        ));
+
+        $basketXml = '<basket><item>'
+            . '<description>Name</description><quantity>1</quantity>'
+            . '<unitNetAmount>1.23</unitNetAmount><unitTaxAmount>0.205</unitTaxAmount>'
+            . '<unitGrossAmount>1.435</unitGrossAmount><totalGrossAmount>1.435</totalGrossAmount>'
+            . '</item></basket>';
+
+        $this->request->setItems($items);
+
+        $data = $this->request->getData();
+
+        // The element does exist, and must contain the basket XML, with optional XML header and
+        // trailing newlines.
+        $this->assertArrayHasKey('BasketXML', $data);
+        $this->assertContains($basketXml, $data['BasketXML']);
+    }
+
     public function testGetDataNoReferrerId()
     {
         // Default value is equivalent to this:
