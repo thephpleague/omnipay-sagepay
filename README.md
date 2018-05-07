@@ -6,9 +6,9 @@
 [![Latest Stable Version](https://poser.pugx.org/omnipay/sagepay/version.png)](https://packagist.org/packages/omnipay/sagepay)
 [![Total Downloads](https://poser.pugx.org/omnipay/sagepay/d/total.png)](https://packagist.org/packages/omnipay/sagepay)
 
-[Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
+[Omnipay](https://github.com/thephpleague/omnipay) 3.x is a framework agnostic, multi-gateway payment
 processing library for PHP 5.3+. This package implements Sage Pay support for Omnipay. This version only supports
-PHP 5.4+.
+PHP 5.6+.
 
 Table of Contents
 =================
@@ -42,7 +42,7 @@ to your `composer.json` file:
 ```json
 {
     "require": {
-        "omnipay/sagepay": "~2.0"
+        "omnipay/sagepay": "~3.0"
     }
 }
 ```

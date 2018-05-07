@@ -335,9 +335,12 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         });
 
         $httpResponse = $this
-          ->httpClient
-          ->post($this->getEndpoint(), null, $data)
-          ->send();
+            ->httpClient
+            ->post(
+                $this->getEndpoint(),
+                ['Content-Type' => 'application/x-www-form-urlencoded'],
+                http_build_query($data)
+            );
 
         // The body is a string.
         $body = $httpResponse->getBody();
@@ -570,7 +573,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 ':' . number_format($lineTotal, 2, '.', '');  // Line total
 
             $count++;
-
         }
 
         // Prepend number of lines to the result string
