@@ -51,6 +51,16 @@ trait ResponseFieldsTrait
      */
     public function getStatus()
     {
+        return $this->getCode();
+    }
+
+    /**
+     * The raw status code.
+     *
+     * @return string One of static::SAGEPAY_STATUS_*
+     */
+    public function getCode()
+    {
         return $this->getDataItem('Status');
     }
 

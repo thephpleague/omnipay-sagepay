@@ -16,6 +16,8 @@ class ResponseTest extends TestCase
         $httpResponse = $this->getMockHttpResponse('DirectPurchaseSuccess.txt');
         $response = new Response($this->getMockRequest(), $httpResponse->getBody());
 
+        $this->assertSame('OK', $response->getCode());
+
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertSame('{"SecurityKey":"OUWLNYQTVT","TxAuthNo":"9962","VPSTxId":"{5A1BC414-5409-48DD-9B8B-DCDF096CE0BE}","VendorTxCode":"123456"}', $response->getTransactionReference());

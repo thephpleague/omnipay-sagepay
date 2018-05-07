@@ -43,6 +43,8 @@ class ServerNotifyResponseTest extends TestCase
 
         //$this->getMockRequest()->shouldReceive('getTransactionReference')->once()->andReturn($transactionReference);
 
+        $this->assertSame('OK', $response->getCode());
+
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertSame($transactionReference, $response->getTransactionReference());

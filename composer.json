@@ -25,7 +25,9 @@
         }
     ],
     "autoload": {
-        "psr-4": { "Omnipay\\SagePay\\" : "src/" }
+        "psr-4": {
+            "Omnipay\\SagePay\\" : "src/"
+        }
     },
     "require": {
         "php": ">=5.4",

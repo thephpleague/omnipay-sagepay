@@ -179,15 +179,6 @@ trait ServerNotifyTrait
     }
 
     /**
-     * This should probably be the numeric code embedded in the StatusDetail,
-     * but this is a good approximation.
-     */
-    public function getCode()
-    {
-        return $this->getStatus();
-    }
-
-    /**
      * Last four digits of the card used.
      */
     public function getLast4Digits()
