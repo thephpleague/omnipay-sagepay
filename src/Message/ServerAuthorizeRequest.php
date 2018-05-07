@@ -8,8 +8,9 @@ namespace Omnipay\SagePay\Message;
 class ServerAuthorizeRequest extends DirectAuthorizeRequest
 {
     /**
-     * Flag whether to allow the gift aid acceptance box to appear for this transaction on the payment page. This only
-     * appears if your vendor account is Gift Aid enabled.
+     * Flag whether to allow the gift aid acceptance box to appear for this
+     * transaction on the payment page. This only appears if your vendor
+     * account is Gift Aid enabled.
      */
     const ALLOW_GIFT_AID_YES = 1;
     const ALLOW_GIFT_AID_NO  = 0;
@@ -61,8 +62,8 @@ class ServerAuthorizeRequest extends DirectAuthorizeRequest
     }
 
     /**
-     * This flag allows the gift aid acceptance box to appear for this transaction on the payment page. This only
-     * appears if your vendor account is Gift Aid enabled.
+     * This flag allows the gift aid acceptance box to appear for this transaction
+     * on the payment page. This only appears if your vendor account is Gift Aid enabled.
      *
      * Values defined in static::ALLOW_GIFT_AID_* constant.
      *
