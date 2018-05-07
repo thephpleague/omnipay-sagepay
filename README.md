@@ -447,6 +447,22 @@ Authorize.Net calls it the "business model" and includes "retail" as an option, 
 to card machines and hand-held scanners. This is not yet standardised in Omnipay, but
 there are some moves to do so.
 
+# VAT
+
+If you want to include VAT amount in the item array you must use `\Omnipay\SagePay\Extend\Item` as follows.
+
+```php
+$items = array(
+    array(new \Omnipay\SagePay\Extend\Item(array(
+        'name' => 'My Product Name',
+        'description' => 'My Product Description',
+        'quantity' => 1,
+        'price' => 9.99,
+        'vat' => 1.665, // VAT amount, not percentage
+    ))
+);
+```
+
 # Sage Pay Server Notification Handler
 
 > **NOTE:** The notification handler was previously handled by the SagePay_Server `completeAuthorize`,
@@ -464,8 +480,19 @@ The URL for the notification handler is set in the authorize or payment message:
 // The Server response will be a redirect to the Sage Pay CC form.
 // This is a Sage Pay Server Purchase request.
 
+$transactionId = time(); // Your transaction id
+
+$items = array(
+    array(
+        'name' => 'My Product Name',
+        'description' => 'My Product Description',
+        'quantity' => 1,
+        'price' => 9.99,
+    )
+);
+
 $response = $gateway->purchase(array(
-    'amount' => '9.99',
+    'amount' => 9.99,
     'currency' => 'GBP',
     'card' => $card, // Just the name and address, NOT CC details.
     'notifyUrl' => route('sagepay.server.notify'), // The route to your application's notification handler.
