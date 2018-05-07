@@ -7,6 +7,14 @@ namespace Omnipay\SagePay\Message;
  */
 class ServerAuthorizeRequest extends DirectAuthorizeRequest
 {
+    /**
+     * Flag whether to allow the gift aid acceptance box to appear for this
+     * transaction on the payment page. This only appears if your vendor
+     * account is Gift Aid enabled.
+     */
+    const ALLOW_GIFT_AID_YES = 1;
+    const ALLOW_GIFT_AID_NO  = 0;
+
     protected $service = 'vspserver-register';
 
     /**
@@ -43,5 +51,47 @@ class ServerAuthorizeRequest extends DirectAuthorizeRequest
     protected function createResponse($data)
     {
         return $this->response = new ServerAuthorizeResponse($this, $data);
+    }
+
+    /**
+     * @return int static::ALLOW_GIFT_AID_YES or static::ALLOW_GIFT_AID_NO
+     */
+    public function getAllowGiftAid()
+    {
+        return $this->getParameter('allowGiftAid');
+    }
+
+    /**
+     * This flag allows the gift aid acceptance box to appear for this transaction
+     * on the payment page. This only appears if your vendor account is Gift Aid enabled.
+     *
+     * Values defined in static::ALLOW_GIFT_AID_* constant.
+     *
+     * @param bool|int $allowGiftAid 0 = No Gift Aid box displayed (default).
+     *                               1 = Display Gift Aid box on payment page.
+     *
+     * @return $this
+     */
+    public function setAllowGiftAid($allowGiftAid)
+    {
+        $allowGiftAid = (bool) $allowGiftAid;
+
+        $this->setParameter(
+            'allowGiftAid',
+            ($allowGiftAid ? static::ALLOW_GIFT_AID_YES : static::ALLOW_GIFT_AID_NO)
+        );
+    }
+
+    protected function getBaseAuthorizeData()
+    {
+        $data = parent::getBaseAuthorizeData();
+
+        if (null === $this->getAllowGiftAid()) {
+            $data['AllowGiftAid'] = static::ALLOW_GIFT_AID_NO;
+        } else {
+            $data['AllowGiftAid'] = $this->getAllowGiftAid();
+        }
+
+        return $data;
     }
 }
