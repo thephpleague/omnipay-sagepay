@@ -10,6 +10,9 @@
 processing library for PHP 5.3+. This package implements Sage Pay support for Omnipay. This version only supports
 PHP 5.4+.
 
+This is the `2.x` branch of Omnipay.
+For the `3.x` branch, please visit https://github.com/thephpleague/omnipay-sagepay/tree/master
+
 Table of Contents
 =================
 
