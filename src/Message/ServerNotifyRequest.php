@@ -5,7 +5,7 @@ namespace Omnipay\SagePay\Message;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Omnipay\Common\Exception\InvalidResponseException;
 use Omnipay\Common\Message\NotificationInterface;
-use Guzzle\Http\ClientInterface;
+use Omnipay\Common\Http\Client;
 
 /**
  * Sage Pay Server Notification.
@@ -24,7 +24,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     /**
      * Initialise the data from the server request.
      */
-    public function __construct(ClientInterface $httpClient, HttpRequest $httpRequest)
+    public function __construct(Client $httpClient, HttpRequest $httpRequest)
     {
         parent::__construct($httpClient, $httpRequest);
 

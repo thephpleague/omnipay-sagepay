@@ -6,9 +6,10 @@
 [![Latest Stable Version](https://poser.pugx.org/omnipay/sagepay/version.png)](https://packagist.org/packages/omnipay/sagepay)
 [![Total Downloads](https://poser.pugx.org/omnipay/sagepay/d/total.png)](https://packagist.org/packages/omnipay/sagepay)
 
-[Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
-processing library for PHP 5.3+. This package implements Sage Pay support for Omnipay. This version only supports
-PHP 5.4+.
+[Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic,
+multi-gateway payment processing library for PHP.
+This package implements Sage Pay support for Omnipay.
+This version only supports PHP 5.6+.
 
 Table of Contents
 =================
@@ -36,13 +37,13 @@ Table of Contents
 
 # Installation
 
-Omnipay is installed via [Composer](http://getcomposer.org/). To install, simply add it
-to your `composer.json` file:
+Omnipay is installed via [Composer](http://getcomposer.org/).
+To install, simply add it to your `composer.json` file:
 
 ```json
 {
     "require": {
-        "omnipay/sagepay": "~2.0"
+        "omnipay/sagepay": "~3.0"
     }
 }
 ```
@@ -222,7 +223,7 @@ $surchargeXml = '<surcharges>'
 // Send the authorize request.
 // Some optional parameters are shown commented out.
 $response = $gateway->authorize(array(
-    'amount' => '9.99', // A bargain!
+    'amount' => '9.99',
     'currency' => 'GBP',
     'card' => $card,
     'notifyUrl' => 'http://example.com/your/notify.php',
@@ -449,7 +450,8 @@ there are some moves to do so.
 
 # VAT
 
-If you want to include VAT amount in the item array you must use `\Omnipay\SagePay\Extend\Item` as follows.
+If you want to include VAT amount in the item array you must use
+`\Omnipay\SagePay\Extend\Item` as follows.
 
 ```php
 $items = array(

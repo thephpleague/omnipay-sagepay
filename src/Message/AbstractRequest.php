@@ -6,10 +6,11 @@ namespace Omnipay\SagePay\Message;
  * Sage Pay Abstract Request.
  * Base for Sage Pay Server and Sage Pay Direct.
  */
- use Omnipay\Common\Exception\InvalidRequestException;
- use Omnipay\SagePay\Extend\Item as ExtendItem;
+use Omnipay\Common\Exception\InvalidRequestException;
+use Omnipay\SagePay\Extend\Item as ExtendItem;
+use Omnipay\Common\Message\AbstractRequest as OmnipayAbstractRequest;
 
-abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
+abstract class AbstractRequest extends OmnipayAbstractRequest
 {
     /**
      * @var string The transaction type, used in the request body.
@@ -335,9 +336,15 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         });
 
         $httpResponse = $this
-          ->httpClient
-          ->post($this->getEndpoint(), null, $data)
-          ->send();
+            ->httpClient
+            ->request(
+                'POST',
+                $this->getEndpoint(),
+                [
+                    'Content-Type' => 'application/x-www-form-urlencoded'
+                ],
+                http_build_query($data)
+            );
 
         // The body is a string.
         $body = $httpResponse->getBody();
@@ -345,16 +352,16 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         // Split into lines.
         $lines = preg_split('/[\n\r]+/', $body);
 
-        $response_data = array();
+        $responseData = array();
 
         foreach ($lines as $line) {
             $line = explode('=', $line, 2);
             if (!empty($line[0])) {
-                $response_data[trim($line[0])] = isset($line[1]) ? trim($line[1]) : '';
+                $responseData[trim($line[0])] = isset($line[1]) ? trim($line[1]) : '';
             }
         }
 
-        return $this->createResponse($response_data);
+        return $this->createResponse($responseData);
     }
 
     /**
@@ -570,7 +577,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
                 ':' . number_format($lineTotal, 2, '.', '');  // Line total
 
             $count++;
-
         }
 
         // Prepend number of lines to the result string
