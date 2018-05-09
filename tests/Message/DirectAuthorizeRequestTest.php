@@ -8,7 +8,9 @@ use Money\Money;
 class DirectAuthorizeRequestTest extends TestCase
 {
     // VISA incurrs a surcharge of 2.5% when used.
-    const SURCHARGE_XML = '<surcharges><surcharge><paymentType>VISA</paymentType><percentage>2.50</percentage></surcharge></surcharges>';
+    const SURCHARGE_XML = '<surcharges><surcharge>'
+        . '<paymentType>VISA</paymentType><percentage>2.50</percentage>'
+        . '</surcharge></surcharges>';
 
     /**
      * @var \Omnipay\Common\Message\AbstractRequest $request
