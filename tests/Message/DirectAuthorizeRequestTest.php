@@ -3,11 +3,14 @@
 namespace Omnipay\SagePay\Message;
 
 use Omnipay\Tests\TestCase;
+use Money\Money;
 
 class DirectAuthorizeRequestTest extends TestCase
 {
     // VISA incurrs a surcharge of 2.5% when used.
-    const SURCHARGE_XML = '<surcharges><surcharge><paymentType>VISA</paymentType><percentage>2.50</percentage></surcharge></surcharges>';
+    const SURCHARGE_XML = '<surcharges><surcharge>'
+        . '<paymentType>VISA</paymentType><percentage>2.50</percentage>'
+        . '</surcharge></surcharges>';
 
     /**
      * @var \Omnipay\Common\Message\AbstractRequest $request
@@ -21,8 +24,8 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request = new DirectAuthorizeRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(
             array(
-                'amount' => '12.00',
-                'currency' => 'GBP',
+                // Money as Omnipay 3.x Money object, combining currency and amount
+                'amount' => Money::GBP(1200),
                 'transactionId' => '123',
                 'surchargeXml' => self::SURCHARGE_XML,
                 'card' => $this->getValidCard(),
