@@ -3,7 +3,7 @@
 namespace Omnipay\SagePay\Message;
 
 use Omnipay\Tests\TestCase;
-use Money\Money;
+//use Money\Money;
 
 class DirectAuthorizeRequestTest extends TestCase
 {
@@ -25,7 +25,9 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->initialize(
             array(
                 // Money as Omnipay 3.x Money object, combining currency and amount
-                'amount' => Money::GBP(1200),
+                // Omnipay 3.0-RC2 no longer accepts a money object.
+                'amount' => '12.00', //Money::GBP(1200),
+                'currency' => 'GBP',
                 'transactionId' => '123',
                 'surchargeXml' => self::SURCHARGE_XML,
                 'card' => $this->getValidCard(),

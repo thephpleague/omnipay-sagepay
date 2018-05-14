@@ -36,7 +36,7 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['Description'] = $this->getDescription();
         // Money formatted as major unit decimal.
         $data['Amount'] = $this->getAmount();
-        $data['Currency'] = $this->getCurrency() ?: $this->getMoney()->getCurrency()->getCode();
+        $data['Currency'] = $this->getCurrency();
 
         $data['VendorData'] = $this->getVendorData();
         $data['VendorTxCode'] = $this->getTransactionId();
