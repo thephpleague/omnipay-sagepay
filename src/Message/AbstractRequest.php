@@ -334,7 +334,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
         $data['AccountType'] = $this->getAccountType() ?: static::ACCOUNT_TYPE_E;
 
         if ($language = $this->getLanguage()) {
-            // Although documented as ISO639, the gateway expects 
+            // Although documented as ISO639, the gateway expects
             // the code to be upper case.
 
             $language = strtoupper($language);
