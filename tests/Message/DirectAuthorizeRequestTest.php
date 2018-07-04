@@ -31,6 +31,7 @@ class DirectAuthorizeRequestTest extends TestCase
                 'transactionId' => '123',
                 'surchargeXml' => self::SURCHARGE_XML,
                 'card' => $this->getValidCard(),
+                'language' => 'EN',
             )
         );
     }
@@ -52,6 +53,8 @@ class DirectAuthorizeRequestTest extends TestCase
         // permanent cardReference.
 
         $this->assertNull($data['CreateToken']);
+
+        $this->assertSame('EN', $data['Language']);
     }
 
     public function testGetData()
