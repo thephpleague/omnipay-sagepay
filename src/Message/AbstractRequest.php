@@ -110,7 +110,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
 
     /**
      * @param string $value The vendor name, as supplied in lower case.
-     * @return $this Provides a fluent inetrface.
+     * @return $this Provides a fluent interface.
      */
     public function setVendor($value)
     {
@@ -169,11 +169,29 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     }
 
     /**
+     * @return string The language.
+     */
+    public function getLanguage()
+    {
+        return $this->getParameter('language');
+    }
+
+    /**
+     * Set language to instruct sagepay, on which language will be seen on payment pages.
+     *
+     * @param string $value ISO 639 2 character language code.
+     */
+    public function setLanguage($value)
+    {
+        return $this->setParameter('language', $value);
+    }
+
+    /**
      * The name of the service used in the endpoint to send the message.
      * For most services, the URL fragment will be the lower case version
      * of the action.
      *
-     * @return string Sage Oay endpoint service name.
+     * @return string Sage Pay endpoint service name.
      */
     public function getService()
     {
