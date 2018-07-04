@@ -245,6 +245,23 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
         return $this->setParameter('referrerId', $value);
     }
 
+    /**
+     * @return string|null
+     */
+    public function getLanguage()
+    {
+        return $this->getParameter('language');
+    }
+
+    /**
+     * @param string $value Language ISO639-1 alpha-2 code
+     * @return $this
+     */
+    public function setLanguage($value)
+    {
+        return $this->setParameter('language', $value);
+    }
+
     public function getApplyAVSCV2()
     {
         return $this->getParameter('applyAVSCV2');
@@ -315,6 +332,21 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
         $data['TxType'] = $this->getTxType();
         $data['Vendor'] = $this->getVendor();
         $data['AccountType'] = $this->getAccountType() ?: static::ACCOUNT_TYPE_E;
+
+        if ($language = $this->getLanguage()) {
+            // Although documented as ISO639, the gateway expects 
+            // the code to be upper case.
+
+            $language = strtoupper($language);
+
+            // If a locale has been passed in instead, then just take the first part.
+            // e.g. both "en" and "en-gb" becomes "EN".
+
+            $parts = preg_split('/[-_]/', $language);
+            $language = $parts[0];
+
+            $data['Language'] = $language;
+        }
 
         return $data;
     }

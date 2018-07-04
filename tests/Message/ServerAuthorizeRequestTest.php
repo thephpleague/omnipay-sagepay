@@ -23,6 +23,7 @@ class ServerAuthorizeRequestTest extends TestCase
                 'card' => $this->getValidCard(),
                 'notifyUrl' => 'https://www.example.com/return',
                 'profile' => 'LOW',
+                'language' => 'en-gb',
             )
         );
     }
@@ -42,5 +43,6 @@ class ServerAuthorizeRequestTest extends TestCase
         $this->assertSame(self::SURCHARGE_XML, $data['surchargeXml']);
         $this->assertSame('12.00', $data['Amount']);
         $this->assertSame('GBP', $data['Currency']);
+        $this->assertSame('EN', $data['Language']);
     }
 }

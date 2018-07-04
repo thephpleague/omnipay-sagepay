@@ -22,6 +22,8 @@ class DirectGateway extends AbstractGateway
             'vendor' => '',
             'testMode' => false,
             'referrerId' => '',
+            // Examples: EN, DE and FR.
+            'language' => '',
         ];
     }
 
@@ -46,6 +48,23 @@ class DirectGateway extends AbstractGateway
     public function setReferrerId($value)
     {
         return $this->setParameter('referrerId', $value);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLanguage()
+    {
+        return $this->getParameter('language');
+    }
+
+    /**
+     * @param string $value Language ISO639-1 alpha-2 code
+     * @return $this
+     */
+    public function setLanguage($value)
+    {
+        return $this->setParameter('language', $value);
     }
 
     /**
