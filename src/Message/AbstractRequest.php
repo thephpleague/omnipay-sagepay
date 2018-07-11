@@ -169,24 +169,6 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     }
 
     /**
-     * @return string The language.
-     */
-    public function getLanguage()
-    {
-        return $this->getParameter('language');
-    }
-
-    /**
-     * Set language to instruct sagepay, on which language will be seen on payment pages.
-     *
-     * @param string $value ISO 639 2 character language code.
-     */
-    public function setLanguage($value)
-    {
-        return $this->setParameter('language', $value);
-    }
-
-    /**
      * The name of the service used in the endpoint to send the message.
      * For most services, the URL fragment will be the lower case version
      * of the action.
@@ -272,7 +254,10 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     }
 
     /**
-     * @param string $value Language ISO639-1 alpha-2 code
+     * Set language to instruct sagepay, on which language will be seen
+     * on payment pages.
+     *
+     * @param string $value ISO 639 alpha-2 character language code.
      * @return $this
      */
     public function setLanguage($value)

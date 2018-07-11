@@ -50,16 +50,6 @@ class DirectGateway extends AbstractGateway
         return $this->setParameter('referrerId', $value);
     }
 
-    public function getLanguage()
-    {
-        return $this->getParameter('language');
-    }
-
-    public function setLanguage($value)
-    {
-        return $this->setParameter('language', $value);
-    }
-
     /**
      * @return string|null
      */
