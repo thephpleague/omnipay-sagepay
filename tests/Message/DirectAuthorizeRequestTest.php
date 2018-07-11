@@ -65,6 +65,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->setDescription('food');
         $this->request->setClientIp('127.0.0.1');
         $this->request->setReferrerId('3F7A4119-8671-464F-A091-9E59EB47B80C');
+        $this->request->setLanguage('EN');
         $this->request->setVendorData('Vendor secret codes');
         $this->request->setCardholderName('Mr E User');
         $this->request->setCreateToken(true);
@@ -79,7 +80,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertSame('127.0.0.1', $data['ClientIPAddress']);
         $this->assertSame(2, $data['ApplyAVSCV2']);
         $this->assertSame(3, $data['Apply3DSecure']);
-        $this->assertSame('3F7A4119-8671-464F-A091-9E59EB47B80C', $data['ReferrerID']);
+        $this->assertSame('EN', $data['Language']);
         $this->assertSame('Vendor secret codes', $data['VendorData']);
         $this->assertSame('Mr E User', $data['CardHolder']);
         $this->assertSame(1, $data['CreateToken']);

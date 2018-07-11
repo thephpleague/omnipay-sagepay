@@ -49,6 +49,10 @@ class DirectAuthorizeRequest extends AbstractRequest
             $data['ReferrerID'] = $this->getReferrerId();
         }
 
+        if ($this->getLanguage()) {
+            $data['Language'] = $this->getLanguage();
+        }
+
         // billing details
         $data['BillingFirstnames'] = $card->getBillingFirstName();
         $data['BillingSurname'] = $card->getBillingLastName();
