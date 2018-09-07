@@ -19,7 +19,7 @@ class DirectGateway extends AbstractGateway
     public function getDefaultParameters()
     {
         return [
-            'vendor' => '',
+            'vendor' => null,
             'testMode' => false,
             'referrerId' => '',
             // Examples: EN, DE and FR.

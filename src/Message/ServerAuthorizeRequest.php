@@ -34,6 +34,7 @@ class ServerAuthorizeRequest extends DirectAuthorizeRequest
         // If a token is being used, then include the token data.
         // With a valid token or card reference, the user is just asked
         // for the CVV and not any remaining card details.
+
         $data = $this->getTokenData($data);
 
         // ReturnUrl is for legacy usage.
@@ -44,6 +45,8 @@ class ServerAuthorizeRequest extends DirectAuthorizeRequest
         if ($profile === static::PROFILE_NORMAL || $profile === static::PROFILE_LOW) {
             $data['Profile'] = $this->getProfile();
         }
+
+        $data['CreateToken'] = $this->getCreateToken() ?: $this->getCreateCard();
 
         return $data;
     }

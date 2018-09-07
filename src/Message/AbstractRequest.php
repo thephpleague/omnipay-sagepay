@@ -416,7 +416,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     /**
      * Use this flag to indicate you wish to have a token generated and stored in the Sage Pay
      * database and returned to you for future use.
-     * Values set in contants CREATE_TOKEN_*
+     * Values set in constants CREATE_TOKEN_*
      *
      * @param bool|int $createToken 0 = This will not create a token from the payment (default).
      * @return $this
@@ -437,6 +437,22 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     public function getCreateToken()
     {
         return $this->getParameter('createToken');
+    }
+
+    /**
+     * Alias for setCreateToken()
+     */
+    public function setCreateCard($value)
+    {
+        return $this->setCreateToken($value);
+    }
+
+    /**
+     * Alias for getCreateToken()
+     */
+    public function getCreateCard()
+    {
+        return $this->getCreateToken();
     }
 
     /**

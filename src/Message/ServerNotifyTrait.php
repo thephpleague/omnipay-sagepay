@@ -32,7 +32,9 @@ trait ServerNotifyTrait
 
         $VPSTxId = $this->getVPSTxId();
 
-        if ($this->getTxType() === Response::TXTYPE_TOKEN && $this->getStatus() === Response::SAGEPAY_STATUS_OK) {
+        if ($this->getTxType() === Response::TXTYPE_TOKEN
+            && $this->getStatus() === Response::SAGEPAY_STATUS_OK
+        ) {
             // For some bizarre reason, the VPSTxId is hashed at the Sage Pay gateway
             // without its curly brackets, so we must do the same to validate the hash.
             // This only happens for a valid TOKEN request, and not for an aborted
@@ -60,7 +62,9 @@ trait ServerNotifyTrait
             $this->getSecurityKey(),
         );
 
-        if ($this->getTxType() != Response::TXTYPE_TOKEN || $this->getStatus() != Response::SAGEPAY_STATUS_OK) {
+        if ($this->getTxType() != Response::TXTYPE_TOKEN
+            || $this->getStatus() != Response::SAGEPAY_STATUS_OK
+        ) {
             // Do not use any of these fields for a successful TOKEN transaction, even
             // though some of them may be present.
 

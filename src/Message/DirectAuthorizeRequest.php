@@ -134,6 +134,7 @@ class DirectAuthorizeRequest extends AbstractRequest
     public function getTokenData($data = array())
     {
         // Are there token details to add?
+
         if ($this->getToken() || $this->getCardReference()) {
             // A card token or reference has been provided.
             $data['Token'] = $this->getToken() ?: $this->getCardReference();
@@ -195,7 +196,8 @@ class DirectAuthorizeRequest extends AbstractRequest
 
         // If we want the card details to be saved on the gateway as a
         // token or card reference, then request for that to be done.
-        $data['CreateToken'] = $this->getCreateToken();
+
+        $data['CreateToken'] = $this->getCreateToken() ?: $this->getCreateCard();
 
         if ($this->getCard()->getCvv() !== null) {
             $data['CV2'] = $this->getCard()->getCvv();
