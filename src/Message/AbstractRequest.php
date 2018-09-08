@@ -9,9 +9,12 @@ namespace Omnipay\SagePay\Message;
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\SagePay\Extend\Item as ExtendItem;
 use Omnipay\Common\Message\AbstractRequest as OmnipayAbstractRequest;
+use Omnipay\SagePay\Traits\GatewayParamsTrait;
 
 abstract class AbstractRequest extends OmnipayAbstractRequest
 {
+    use GatewayParamsTrait;
+
     /**
      * @var string The transaction type, used in the request body.
      */
@@ -101,23 +104,6 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     protected $testEndpoint = 'https://test.sagepay.com/gateway/service';
 
     /**
-     * @return string The vendor name identified the account.
-     */
-    public function getVendor()
-    {
-        return $this->getParameter('vendor');
-    }
-
-    /**
-     * @param string $value The vendor name, as supplied in lower case.
-     * @return $this Provides a fluent interface.
-     */
-    public function setVendor($value)
-    {
-        return $this->setParameter('vendor', $value);
-    }
-
-    /**
      * Indicates whether a NORMAL or LOW profile page is to be used
      * for hosted forms.
      *
@@ -181,33 +167,6 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     }
 
     /**
-     * By default, the XML basket format will be used. This flag can be used to
-     * switch back to the older terminated-string format basket. Each basket
-     * format supports a different range of features, both in the basket itself
-     * and in the data collected and processed in the gateway backend.
-     *
-     * @param bool $value True to switch the old format basket.
-     * @return $this
-     */
-    public function setUseOldBasketFormat($value)
-    {
-        $value = (bool)$value;
-
-        return $this->setParameter('useOldBasketFormat', $value);
-    }
-
-    /**
-     * Returns the current basket format by indicating whether the older
-     * terminated-string format is being used.
-     *
-     * @return bool true for old format basket; false for newer XML format basket.
-     */
-    public function getUseOldBasketFormat()
-    {
-        return $this->getParameter('useOldBasketFormat');
-    }
-
-    /**
      * @return string One of static::ACCOUNT_TYPE_*
      */
     public function getAccountType()
@@ -230,39 +189,6 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     public function setAccountType($value)
     {
         return $this->setParameter('accountType', $value);
-    }
-
-    public function getReferrerId()
-    {
-        return $this->getParameter('referrerId');
-    }
-
-    /**
-     * Set the referrer ID for PAYMENT, DEFERRED and AUTHENTICATE transactions.
-     */
-    public function setReferrerId($value)
-    {
-        return $this->setParameter('referrerId', $value);
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getLanguage()
-    {
-        return $this->getParameter('language');
-    }
-
-    /**
-     * Set language to instruct sagepay, on which language will be seen
-     * on payment pages.
-     *
-     * @param string $value ISO 639 alpha-2 character language code.
-     * @return $this
-     */
-    public function setLanguage($value)
-    {
-        return $this->setParameter('language', $value);
     }
 
     public function getApplyAVSCV2()
@@ -336,6 +262,8 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
         $data['Vendor'] = $this->getVendor();
         $data['AccountType'] = $this->getAccountType() ?: static::ACCOUNT_TYPE_E;
 
+        // TODO: move this to getDerivedLanguage()
+
         if ($language = $this->getLanguage()) {
             // Although documented as ISO639, the gateway expects
             // the code to be upper case.
@@ -345,8 +273,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
             // If a locale has been passed in instead, then just take the first part.
             // e.g. both "en" and "en-gb" becomes "EN".
 
-            $parts = preg_split('/[-_]/', $language);
-            $language = $parts[0];
+            list($language) = preg_split('/[-_]/', $language);
 
             $data['Language'] = $language;
         }

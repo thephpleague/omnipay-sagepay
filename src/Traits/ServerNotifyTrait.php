@@ -1,9 +1,10 @@
 <?php
 
-namespace Omnipay\SagePay\Message;
+namespace Omnipay\SagePay\Traits;
 
 use Omnipay\Common\Exception\InvalidResponseException;
 use Omnipay\Common\Message\NotificationInterface;
+use Omnipay\SagePay\Message\Response;
 
 /**
  * Data access methods shared between the ServerNotificationRequest and

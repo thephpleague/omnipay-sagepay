@@ -72,7 +72,7 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['DeliveryPhone'] = $card->getShippingPhone();
         $data['CustomerEMail'] = $card->getEmail();
 
-        if ($this->getUseOldBasketFormat()) {
+        if ((bool)$this->getUseOldBasketFormat()) {
             $basket = $this->getItemDataNonXML();
             if (!empty($basket)) {
                 $data['Basket'] = $basket;

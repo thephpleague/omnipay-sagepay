@@ -3,6 +3,7 @@
 namespace Omnipay\SagePay\Message;
 
 use Omnipay\Common\Exception\InvalidResponseException;
+use Omnipay\SagePay\Traits\ServerNotifyTrait;
 
 /**
  * Sage Pay Server Notification Respons.

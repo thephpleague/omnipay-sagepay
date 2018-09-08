@@ -3,12 +3,16 @@
 namespace Omnipay\SagePay;
 
 use Omnipay\Common\AbstractGateway;
+use Omnipay\SagePay\Traits\GatewayParamsTrait;
 
 /**
  * Sage Pay Direct Gateway
  */
+
 class DirectGateway extends AbstractGateway
 {
+    use GatewayParamsTrait;
+
     // Gateway identification.
 
     public function getName()
@@ -16,79 +20,19 @@ class DirectGateway extends AbstractGateway
         return 'Sage Pay Direct';
     }
 
+    /**
+     * Examples for language: EN, DE and FR.
+     * Also supports a locale format.
+     */
     public function getDefaultParameters()
     {
         return [
             'vendor' => null,
             'testMode' => false,
-            'referrerId' => '',
-            // Examples: EN, DE and FR.
-            'language' => '',
+            'referrerId' => null,
+            'language' => null,
+            'useOldBasketFormat' => false,
         ];
-    }
-
-    /**
-     * Vendor identification.
-     */
-    public function getVendor()
-    {
-        return $this->getParameter('vendor');
-    }
-
-    public function setVendor($value)
-    {
-        return $this->setParameter('vendor', $value);
-    }
-
-    public function getReferrerId()
-    {
-        return $this->getParameter('referrerId');
-    }
-
-    public function setReferrerId($value)
-    {
-        return $this->setParameter('referrerId', $value);
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getLanguage()
-    {
-        return $this->getParameter('language');
-    }
-
-    /**
-     * @param string $value Language ISO639-1 alpha-2 code
-     * @return $this
-     */
-    public function setLanguage($value)
-    {
-        return $this->setParameter('language', $value);
-    }
-
-    /**
-     * Basket type control.
-     */
-    public function setUseOldBasketFormat($value)
-    {
-        $value = (bool)$value;
-
-        return $this->setParameter('useOldBasketFormat', $value);
-    }
-
-    public function getUseOldBasketFormat()
-    {
-        return $this->getParameter('useOldBasketFormat');
-    }
-
-    // Access to the HTTP client for debugging.
-    // NOTE: this is likely to be removed or replaced with something
-    // more appropriate.
-
-    public function getHttpClient()
-    {
-        return $this->httpClient;
     }
 
     /**
