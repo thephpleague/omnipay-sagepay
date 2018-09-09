@@ -22,7 +22,7 @@ class ServerAuthorizeResponseTest extends TestCase
         $this->assertSame('Server transaction registered successfully.', $response->getMessage());
         $this->assertSame('https://test.sagepay.com/Simulator/VSPServerPaymentPage.asp?TransactionID={1E7D9C70-DBE2-4726-88EA-D369810D801D}', $response->getRedirectUrl());
         $this->assertSame('GET', $response->getRedirectMethod());
-        $this->assertNull($response->getRedirectData());
+        $this->assertSame([], $response->getRedirectData());
     }
 
     public function testServerPurchaseRepeated()
