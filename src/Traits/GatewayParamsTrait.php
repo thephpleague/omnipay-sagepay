@@ -72,6 +72,28 @@ trait GatewayParamsTrait
         return $this->getParameter('useOldBasketFormat');
     }
 
+    /*
+     * Used in the notification handler to exist immediately once
+     * the response message is echoed. The older default was true,
+     * and this option allows it to be turned back on for legacy
+     * merchant sites.
+     *
+     * @param mixed true if the notify reponse exits the application.
+     * @return $this
+     */
+    public function setExitOnResponse($value)
+    {
+        return $this->setParameter('exitOnResponse', $value);
+    }
+
+    /**
+     * @return mixed true if the notify reponse exits the application.
+     */
+    public function getExitOnResponse()
+    {
+        return $this->getParameter('exitOnResponse');
+    }
+
     /**
      * @return string|null
      */

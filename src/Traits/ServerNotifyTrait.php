@@ -14,7 +14,7 @@ use Omnipay\SagePay\Message\Response;
 trait ServerNotifyTrait
 {
     /**
-     * The signature supplied with the data.
+     * The signature supplied with the data, made lower case.
      */
     public function getSignature()
     {
@@ -24,6 +24,7 @@ trait ServerNotifyTrait
     /**
      * Create the signature calculated from the POST data and the saved SecurityKey
      * (the SagePay one-use signature).
+     * This signature is lower case.
      */
     public function buildSignature()
     {
@@ -50,7 +51,7 @@ trait ServerNotifyTrait
         // Transaction types PAYMENT, DEFERRED and AUTHENTICATE (when suppoted)
         // and non-transaction TOKEN request.
 
-        $signature_data = array(
+        $signatureData = array(
             $VPSTxId,
             // VendorTxCode
             $this->getTransactionId(),
@@ -58,19 +59,19 @@ trait ServerNotifyTrait
             $this->getTxAuthNo(),
             strtolower($this->getVendor()),
             $this->getAVSCV2(),
-            $this->getToken(),
+            ($this->getTxType() === Response::TXTYPE_TOKEN ? $this->getToken() : ''),
             // As saved in the merchant application.
             $this->getSecurityKey(),
         );
 
-        if ($this->getTxType() != Response::TXTYPE_TOKEN
-            || $this->getStatus() != Response::SAGEPAY_STATUS_OK
+        if ($this->getTxType() !== Response::TXTYPE_TOKEN
+            || $this->getStatus() !== Response::SAGEPAY_STATUS_OK
         ) {
-            // Do not use any of these fields for a successful TOKEN transaction, even
-            // though some of them may be present.
+            // Do not use any of these fields for a successful TOKEN transaction,
+            // even though some of them may be present.
 
-            $signature_data = array_merge(
-                $signature_data,
+            $signatureData = array_merge(
+                $signatureData,
                 array(
                     // Details for AVSCV2:
                     $this->getAddressResult(),
@@ -93,7 +94,7 @@ trait ServerNotifyTrait
             );
         }
 
-        return md5(implode('', $signature_data));
+        return md5(implode('', $signatureData));
     }
 
     /**

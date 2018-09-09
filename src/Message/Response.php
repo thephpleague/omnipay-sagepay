@@ -198,7 +198,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
         $reference = array();
         $reference['VendorTxCode'] = $this->getRequest()->getTransactionId();
 
-        foreach (array('SecurityKey', 'TxAuthNo', 'VPSTxId') as $key) {
+        foreach (['SecurityKey', 'TxAuthNo', 'VPSTxId'] as $key) {
             $value = $this->{'get' . $key}();
             if ($value !== null) {
                 $reference[$key] = $value;
@@ -227,7 +227,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     public function getRedirectUrl()
     {
         if ($this->isRedirect()) {
-            return $this->data['ACSURL'];
+            return $this->getDataItem('ACSURL');
         }
     }
 
@@ -249,9 +249,9 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     {
         if ($this->isRedirect()) {
             return array(
-                'PaReq' => $this->data['PAReq'],
+                'PaReq' => $this->getDataItem('PAReq'),
                 'TermUrl' => $this->getRequest()->getReturnUrl(),
-                'MD' => $this->data['MD'],
+                'MD' => $this->getDataItem('MD'),
             );
         }
     }
@@ -268,10 +268,8 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     }
 
     /**
-     * A hash used to sign the notification request sent direct to your
+     * A secret used to sign the notification request sent direct to your
      * application.
-     * The documentation states that this is used by Sage Pay Direct, but
-     * I believe it is only used with Sage Pay Server.
      */
     public function getSecurityKey()
     {

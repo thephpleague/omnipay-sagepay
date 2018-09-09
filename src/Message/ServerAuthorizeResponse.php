@@ -16,7 +16,7 @@ class ServerAuthorizeResponse extends Response
     {
         return in_array(
             $this->getStatus(),
-            array(static::SAGEPAY_STATUS_OK, static::SAGEPAY_STATUS_OK_REPEATED)
+            [static::SAGEPAY_STATUS_OK, static::SAGEPAY_STATUS_OK_REPEATED]
         );
     }
 
@@ -32,6 +32,6 @@ class ServerAuthorizeResponse extends Response
 
     public function getRedirectData()
     {
-        return null;
+        return [];
     }
 }

@@ -225,6 +225,7 @@ $surchargeXml = '<surcharges>'
 
 // Send the authorize request.
 // Some optional parameters are shown commented out.
+
 $response = $gateway->authorize(array(
     'amount' => '9.99',
     'currency' => 'GBP',
@@ -244,6 +245,7 @@ $response = $gateway->authorize(array(
 // The reference given by `$response->getTransactionReference()` must be stored.
 
 // Now decide what to do next, based on the response.
+
 if ($response->isSuccessful()) {
     // The transaction is complete and successful and no further action is needed.
     // This may happen if a cardReference has been supplied, having captured
@@ -471,14 +473,15 @@ $items = array(
 # Sage Pay Server Notification Handler
 
 > **NOTE:** The notification handler was previously handled by the SagePay_Server `completeAuthorize`,
-  `completePurchase` and `completeRegistration` methods. The notification handler replaces all of these.
+  `completePurchase` and `completeRegistration` methods.
+  The notification handler replaces all of these.
   The old methods have been left - for the remaining life of OmniPay 2.x -
   for use in legacy applications.
   The recomendation is to use the newer `acceptNotification` handler
   now, which is simpler and will be more consistent with other gateways.
 
 The `SagePay_Server` gateway uses a notification callback to receive the results of a payment or authorisation.
-(Sage Pay Direct does not use the notification handler.)
+Sage Pay Direct does not use the notification handler.
 The URL for the notification handler is set in the authorize or payment message:
 
 ```php
@@ -506,30 +509,31 @@ $response = $gateway->purchase(array(
     'items' => $items,
 ))->send();
 
-// Before redirecting, save `$response->transactionReference()` in the database, indexed
-// by `$transactionId`.
-// Note that at this point `transactionReference` is not yet complete for the Server transaction,
-// but must be saved in the database for the notification handler to use.
+// Before redirecting, save `$response->getSecurityKey()` in the database,
+// retrievable by `$transactionId`.
 
 if ($response->isRedirect()) {
     // Go to Sage Pay to enter CC details.
-    // While your user is there, the notification handler will be called.
+    // While your user is there, the notification handler will be called
+    // to accept the result and provide the final URL for the user.
+
     $response->redirect();
 }
 ```
 
 Your notification handler needs to do four things:
 
-1. Look up the saved transaction in the database to retrieve the `transactionReference`.
-2. Validate the signature of the recieved notification to protect against tampering.
-3. Update your saved transaction with the results, including the updated - i.e. more complete -
-   `transactionReference` if successful.
+1. Look up the saved transaction in the database to retrieve the `securityKey`.
+2. Validate the signature of the received notification to protect against tampering.
+3. Update your saved transaction with the results.
 4. Respond to Sage Pay to indicate that you accept the result, reject the result or don't
-   believe the notifcation was valid. Also tell Sage Pay where to send the user next.
+   believe the notification was valid.
+   Also tell Sage Pay where to send the user next.
 
-This is a back-channel, so has no access to the end user's session.
+This is a back-channel (server-to-server), so has no access to the end user's session.
 
-The acceptNotification gateway is set up simply. The `$request` will capture the POST data sent by Sage Pay:
+The acceptNotification gateway is set up simply.
+The `$request` will capture the POST data sent by Sage Pay:
 
 ```php
 $gateway = OmniPay\OmniPay::create('SagePay_Server');
@@ -541,8 +545,11 @@ $request = $gateway->acceptNotification();
 Your original `transactionId` is available to look up the transaction in the database:
 
 ```php
-// Use this transaction ID to look up the `$transactionReference` you saved:
+// Use this transaction ID to look up the `$securityKey` you saved:
+
 $transactionId = $request->getTransactionId();
+$transaction = customFetchMyTransaction($transactionId); // Local storage
+$securityKey = $transaction->getSecurityKey(); // From your local storage
 ```
 
 Now the signature can be checked:
@@ -551,7 +558,8 @@ Now the signature can be checked:
 // The transactionReference contains a one-time token known as the `securitykey` that is
 // used in the signature hash. You can alternatively `setSecurityKey('...')` if you saved
 // that as a separate field.
-$request->setTransactionReference($transactionReference);
+
+$request->setSecurityKey($securityKey);
 
 // Get the response message ready for returning.
 $response = $request->send();
@@ -576,31 +584,43 @@ $response->error($nextUrl, 'This transaction does not exist on the system');
   by Sage Pay multiple times.
   If this happens, then return the same response you sent the first time.
   So if you have confirmed a successful payment, then if you get another
-  identical response for the transaction, then return `confirm()` again.
+  identical notification for the transaction, then return `confirm()` again.
 
 If you accept the notification, then you can update your local records and let Sage Pay know:
 
 ```php
 // All raw data - just log it for later analysis:
+
 $request->getData();
 
 // Save the final transactionReference against the transaction in the database. It will
 // be needed if you want to capture the payment (for an authorize) or void or refund or
 // repeat the payment later.
+
 $finalTransactionReference = $response->getTransactionReference();
 
 // The payment or authorisation result:
 // Result is $request::STATUS_COMPLETED, $request::STATUS_PENDING or $request::STATUS_FAILED
+
 $request->getTransactionStatus();
 
 // If you want more detail, look at the raw data. An error message may be found in:
+
 $request->getMessage();
 
-// Now let Sage Pay know you have got it and saved the details away safely:
+// The transaction may be the result of a `createCard()` request.
+// The cardReference can be found like this:
+
+if ($response->getTxType() === $response::TXTYPE_TOKEN) {
+    $cardReference = $response->getCardReference();
+}
+
+// Now let Sage Pay know you have accepted and saved the result:
+
 $response->confirm($nextUrl);
 ```
 
-That's it. The `$nextUrl` is where you want Sage Pay to send the user to next.
+The `$nextUrl` is where you want Sage Pay to send the user to next.
 It will often be the same URL whether the transaction was approved or not,
 since the result will be safely saved in the database.
 

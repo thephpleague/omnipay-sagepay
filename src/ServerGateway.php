@@ -78,16 +78,6 @@ class ServerGateway extends DirectGateway
     }
 
     /**
-     * Handle token registration notification callback.
-     * Please now use acceptNotification()
-     * @deprecated
-     */
-    public function completeRegistration(array $parameters = array())
-    {
-        return $this->createRequest(ServerTokenRegistrationCompleteRequest::class, $parameters);
-    }
-
-    /**
      * Handle authorize notification callback.
      * Please now use acceptNotification()
      * @deprecated

@@ -4,6 +4,17 @@ namespace Omnipay\SagePay;
 
 use Omnipay\Common\AbstractGateway;
 use Omnipay\SagePay\Traits\GatewayParamsTrait;
+use Omnipay\SagePay\Message\DirectAuthorizeRequest;
+use Omnipay\SagePay\Message\DirectCompleteAuthorizeRequest;
+use Omnipay\SagePay\Message\DirectPurchaseRequest;
+use Omnipay\SagePay\Message\SharedCaptureRequest;
+use Omnipay\SagePay\Message\SharedVoidRequest;
+use Omnipay\SagePay\Message\SharedAbortRequest;
+use Omnipay\SagePay\Message\SharedRefundRequest;
+use Omnipay\SagePay\Message\SharedRepeatAuthorizeRequest;
+use Omnipay\SagePay\Message\SharedRepeatPurchaseRequest;
+use Omnipay\SagePay\Message\DirectTokenRegistrationRequest;
+use Omnipay\SagePay\Message\SharedTokenRemovalRequest;
 
 /**
  * Sage Pay Direct Gateway
@@ -32,6 +43,7 @@ class DirectGateway extends AbstractGateway
             'referrerId' => null,
             'language' => null,
             'useOldBasketFormat' => false,
+            'exitOnResponse' => false,
         ];
     }
 
@@ -44,12 +56,12 @@ class DirectGateway extends AbstractGateway
      */
     public function authorize(array $parameters = [])
     {
-        return $this->createRequest(Message\DirectAuthorizeRequest::class, $parameters);
+        return $this->createRequest(DirectAuthorizeRequest::class, $parameters);
     }
 
     public function completeAuthorize(array $parameters = [])
     {
-        return $this->createRequest(Message\DirectCompleteAuthorizeRequest::class, $parameters);
+        return $this->createRequest(DirectCompleteAuthorizeRequest::class, $parameters);
     }
 
     /**
@@ -57,7 +69,7 @@ class DirectGateway extends AbstractGateway
      */
     public function purchase(array $parameters = [])
     {
-        return $this->createRequest(Message\DirectPurchaseRequest::class, $parameters);
+        return $this->createRequest(DirectPurchaseRequest::class, $parameters);
     }
 
     public function completePurchase(array $parameters = [])
@@ -74,7 +86,7 @@ class DirectGateway extends AbstractGateway
      */
     public function capture(array $parameters = [])
     {
-        return $this->createRequest(Message\SharedCaptureRequest::class, $parameters);
+        return $this->createRequest(SharedCaptureRequest::class, $parameters);
     }
 
     /**
@@ -82,7 +94,7 @@ class DirectGateway extends AbstractGateway
      */
     public function void(array $parameters = [])
     {
-        return $this->createRequest(Message\SharedVoidRequest::class, $parameters);
+        return $this->createRequest(SharedVoidRequest::class, $parameters);
     }
 
     /**
@@ -90,7 +102,7 @@ class DirectGateway extends AbstractGateway
      */
     public function abort(array $parameters = [])
     {
-        return $this->createRequest(Message\SharedAbortRequest::class, $parameters);
+        return $this->createRequest(SharedAbortRequest::class, $parameters);
     }
 
     /**
@@ -98,7 +110,7 @@ class DirectGateway extends AbstractGateway
      */
     public function refund(array $parameters = [])
     {
-        return $this->createRequest(Message\SharedRefundRequest::class, $parameters);
+        return $this->createRequest(SharedRefundRequest::class, $parameters);
     }
 
     /**
@@ -106,7 +118,7 @@ class DirectGateway extends AbstractGateway
      */
     public function repeatAuthorize(array $parameters = [])
     {
-        return $this->createRequest(Message\SharedRepeatAuthorizeRequest::class, $parameters);
+        return $this->createRequest(SharedRepeatAuthorizeRequest::class, $parameters);
     }
 
     /**
@@ -114,7 +126,7 @@ class DirectGateway extends AbstractGateway
      */
     public function repeatPurchase(array $parameters = [])
     {
-        return $this->createRequest(Message\SharedRepeatPurchaseRequest::class, $parameters);
+        return $this->createRequest(SharedRepeatPurchaseRequest::class, $parameters);
     }
 
     /**
@@ -135,7 +147,7 @@ class DirectGateway extends AbstractGateway
      */
     public function registerToken(array $parameters = [])
     {
-        return $this->createRequest(Message\DirectTokenRegistrationRequest::class, $parameters);
+        return $this->createRequest(DirectTokenRegistrationRequest::class, $parameters);
     }
 
     /**
@@ -152,7 +164,7 @@ class DirectGateway extends AbstractGateway
      */
     public function removeToken(array $parameters = [])
     {
-        return $this->createRequest(Message\SharedTokenRemovalRequest::class, $parameters);
+        return $this->createRequest(SharedTokenRemovalRequest::class, $parameters);
     }
 
     /**
@@ -160,6 +172,6 @@ class DirectGateway extends AbstractGateway
      */
     public function repeatPayment(array $parameters = [])
     {
-        return $this->createRequest(Message\SharedRepeatPurchaseRequest::class, $parameters);
+        return $this->createRequest(SharedRepeatPurchaseRequest::class, $parameters);
     }
 }

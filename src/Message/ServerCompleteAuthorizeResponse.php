@@ -6,6 +6,7 @@ use Omnipay\Common\Message\RequestInterface;
 
 /**
  * Sage Pay Server Complete Authorize Response
+ * DEPRECATED - use $gateway->notify()
  */
 class ServerCompleteAuthorizeResponse extends Response
 {

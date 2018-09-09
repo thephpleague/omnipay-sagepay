@@ -31,16 +31,19 @@ class SharedRepeatAuthorizeRequest extends AbstractRequest
         $data['Description'] = $this->getDescription();
 
         // SagePay's unique reference for the PREVIOUS transaction
+
         $data['RelatedVPSTxId'] = $this->getRelatedVPSTxId();
         $data['RelatedVendorTxCode'] = $this->getRelatedVendorTxCode();
         $data['RelatedSecurityKey'] = $this->getRelatedSecurityKey();
         $data['RelatedTxAuthNo'] = $this->getRelatedTxAuthNo();
 
         // Some details in the card can be changed for the repeat purchase.
+
         $card = $this->getCard();
 
         // If a card is provided, then assume all billing details are being updated.
         // TODO: move this construct to a separate method, as it is used several times.
+
         if ($card) {
             $data['BillingFirstnames'] = $card->getBillingFirstName();
             $data['BillingSurname'] = $card->getBillingLastName();
@@ -53,13 +56,16 @@ class SharedRepeatAuthorizeRequest extends AbstractRequest
             $data['BillingPhone'] = $card->getBillingPhone();
 
             // If the customer is present, then the CV2 can be supplied again for extra security.
+
             $cvv = $card->getCvv();
+
             if (isset($cvv) && $cvv != '') {
                 $data['CV2'] = $cvv;
             }
         }
 
-        // The documentation lists only BasketXML as supported for repeat transactions, and not Basklet.
+        // The documentation lists only BasketXML as supported for repeat transactions,
+        // and not the older CSV Basket.
         // CHECKME: is this a documentation error?
 
         $basketXML = $this->getItemData();
@@ -97,6 +103,7 @@ class SharedRepeatAuthorizeRequest extends AbstractRequest
 
         foreach ($unpackedReference as $parameter => $value) {
             $methodName = 'setRelated'.$parameter;
+
             if (method_exists($this, $methodName)) {
                 $this->$methodName($value);
             }
