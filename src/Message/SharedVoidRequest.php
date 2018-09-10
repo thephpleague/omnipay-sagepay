@@ -11,17 +11,17 @@ class SharedVoidRequest extends AbstractRequest
 
     public function getData()
     {
-        $this->validate('transactionReference');
-
-        $reference = json_decode($this->getTransactionReference(), true);
+        $this->validate('relatedTransactionId', 'vpsTxId', 'securityKey', 'txAuthNo');
 
         $data = $this->getBaseData();
 
         // Reference to the transaction to void.
-        $data['VendorTxCode'] = $reference['VendorTxCode'];
-        $data['VPSTxId'] = $reference['VPSTxId'];
-        $data['SecurityKey'] = $reference['SecurityKey'];
-        $data['TxAuthNo'] = $reference['TxAuthNo'];
+        // Supplied individually, or as a JSON transactionReference
+
+        $data['VendorTxCode'] = $this->getRelatedTransactionId();
+        $data['VPSTxId'] = $this->getVPSTxId();
+        $data['SecurityKey'] = $this->getSecurityKey();
+        $data['TxAuthNo'] = $this->getTxAuthNo();
 
         return $data;
     }

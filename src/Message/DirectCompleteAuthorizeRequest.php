@@ -5,7 +5,9 @@ namespace Omnipay\SagePay\Message;
 use Omnipay\Common\Exception\InvalidResponseException;
 
 /**
- * Sage Pay Direct Complete Authorize Request
+ * Sage Pay Direct Complete Authorize Request.
+ * TODO: support passing in MD and PaRes as parameters.
+ * TODO: support MDX as well as MD.
  */
 class DirectCompleteAuthorizeRequest extends AbstractRequest
 {
@@ -13,7 +15,8 @@ class DirectCompleteAuthorizeRequest extends AbstractRequest
     {
         $data = array(
             'MD' => $this->httpRequest->request->get('MD'),
-            'PARes' => $this->httpRequest->request->get('PaRes'), // inconsistent caps are intentional
+            // Inconsistent caps are intentional
+            'PARes' => $this->httpRequest->request->get('PaRes'),
         );
 
         if (empty($data['MD']) || empty($data['PARes'])) {

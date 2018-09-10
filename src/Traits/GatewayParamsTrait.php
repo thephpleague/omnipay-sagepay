@@ -106,13 +106,54 @@ trait GatewayParamsTrait
      * Set language to instruct sagepay, on which language will be seen
      * on payment pages.
      *
-     * TODO: support extracting language from locale.
-     *
      * @param string $value ISO 639 alpha-2 character language code.
      * @return $this
      */
     public function setLanguage($value)
     {
         return $this->setParameter('language', $value);
+    }
+
+    /**
+     * @return int|null One of APPLY_3DSECURE_*
+     */
+    public function getApply3DSecure()
+    {
+        return $this->getParameter('apply3DSecure');
+    }
+
+    /**
+     * Whether or not to apply 3D secure authentication.
+     *
+     * This is ignored for PAYPAL, EUROPEAN PAYMENT transactions.
+     * Values defined in APPLY_3DSECURE_* constant.
+     *
+     * For values see constants APPLY_3DSECURE_*
+     *
+     * @param int $value 0-3
+     * @return $this
+     */
+    public function setApply3DSecure($value)
+    {
+        return $this->setParameter('apply3DSecure', $value);
+    }
+
+    /**
+     * @return int|null One of APPLY_AVSCV2_*
+     */
+    public function getApplyAVSCV2()
+    {
+        return $this->getParameter('applyAVSCV2');
+    }
+
+    /**
+     * Set the apply AVSCV2 checks.
+     * Values defined in APPLY_AVSCV2_* constants.
+     *
+     * @param int $value 0-3
+     */
+    public function setApplyAVSCV2($value)
+    {
+        return $this->setParameter('applyAVSCV2', $value);
     }
 }

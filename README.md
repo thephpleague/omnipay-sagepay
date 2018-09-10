@@ -23,19 +23,22 @@ Table of Contents
    * [Basic Usage](#basic-usage)
    * [Supported Methods](#supported-methods)
       * [Sage Pay Direct Methods](#sage-pay-direct-methods)
-         * [Direct createCard()](#direct-createcard)
+         * [Direct Authorize/Purchase](#direct-authorizepurchase)
+         * [Direct Create Card](#direct-create-card)
       * [Sage Pay Server Methods](#sage-pay-server-methods)
          * [Server Gateway](#server-gateway)
-         * [Server authorize()/purchase()](#server-authorizepurchase)
-         * [Server createCard()](#server-createcard)
+         * [Server Authorize/Purchase](#server-authorizepurchase)
+         * [Server Create Card](#server-create-card)
+         * [Server Notification Handler](#server-notification-handler)
       * [Sage Pay Shared Methods (for both Direct and Server):](#sage-pay-shared-methods-for-both-direct-and-server)
-         * [Direct/Server deleteCard()](#directserver-deletecard)
+         * [Repeat Authorize/Purchase](#repeat-authorizepurchase)
+         * [Shared Delete Card](#shared-delete-card)
    * [Token Billing](#token-billing)
       * [Generating a Token or CardReference](#generating-a-token-or-cardreference)
       * [Using a Token or CardRererence](#using-a-token-or-cardrererence)
    * [Basket format](#basket-format)
    * [Account Types](#account-types)
-   * [Sage Pay Server Notification Handler](#sage-pay-server-notification-handler)
+   * [VAT](#vat)
    * [Support](#support)
 
 # Installation
@@ -79,9 +82,16 @@ if using this API.
 * purchase() - with completeAuthorize for 3D Secure and PayPal redirect
 * createCard() - explicit "standalone" creation of a cardReference or token
 
-*Note: PayPal is not implemented in this driver at this time.*
+*Note: PayPal is not yet implemented in this driver.*
 
-### Direct createCard()
+### Direct Authorize/Purchase
+
+Docs TODO: used for new authorizations (check PCI certification) and for offline
+repeat authorizations with a `cardReference`, so long as CVV is not required.
+Also suports 3D Secure when a user is present.
+A CVV can be provided if the user is present, even when using a card token.
+
+### Direct Create Card
 
 This will create a card reference with no authorisation.
 If you want to authorise an amount on the card *and* get a cardReference
@@ -145,8 +155,8 @@ notifications to. This makes development on a localhost server difficult.
 
 * authorize()
 * purchase()
-* acceptNotification() - Notification Handler for authorize, purchase and explicit cardReference registration
 * createCard() - explicit "standalone" creation of a cardReference or token
+* acceptNotification() - Notification Handler for authorize, purchase and explicit cardReference registration
 
 ### Server Gateway
 
@@ -166,7 +176,7 @@ $gateway->setVendor('your-vendor-code');
 $gateway->setTestMode(true); // For a test account
 ```
 
-### Server authorize()/purchase()
+### Server Authorize/Purchase
 
 This method authorises a payment against a credit or debit card.
 A `cardToken` or `cardReference` previously captured, can be used here, and only
@@ -272,7 +282,7 @@ if ($response->isSuccessful()) {
 }
 ```
 
-### Server createCard()
+### Server Create Card
 
 When creating a cardReference, for Sage Pay Server the reference will be available
 only in the notification callback.
@@ -321,156 +331,7 @@ If using an iframe for the hosted credit card form, then on return to the final
 redirect URL (provided by the notification handler) it is your site's responsibility
 to break out of the iframe.
 
-## Sage Pay Shared Methods (for both Direct and Server):
-
-* capture()
-* refund()
-* abort() - abort an authorization before it is captured
-* repeatAuthorize() - new authorization based on past transaction
-* repeatPurchase() - new purchase based on past transaction
-* void() - void a purchase
-* deleteCard() - remove a cardReference or token from the accout
-
-### Direct/Server deleteCard()
-
-This is one of the simpler messages:
-
-```php
-use Omnipay\Omnipay;
-use Omnipay\CreditCard;
-
-$gateway = OmniPay::create('SagePay\Direct');
-// or
-$gateway = OmniPay::create('SagePay\Server');
-
-$gateway->setVendor('your-vendor-code');
-$gateway->setTestMode(true); // For test account
-
-// Send the request.
-$request = $gateway->deleteCard([
-    'cardReference' => $cardReference,
-]);
-
-$response = $request->send();
-
-// There will be no need for any redirect (e.g. 3D Secure), since no
-// authorisation is being done.
-if ($response->isSuccessful()) {
-    $message = $response->getMessage();
-    // "2017 : Token removed successfully."
-}
-```
-
-# Token Billing
-
-Sage Pay Server and Direct support the ability to store a credit card detail on
-the gateway, referenced by a token, for later use or reuse.
-The token can be single-use, or permanently stored (until its expiry date or
-explicit removal).
-
-Whether a token is single-use or permanent, depends on how it is *used*, and not
-on how it is generated. This is important to understand, and is explained in more
-detail below.
-
-## Generating a Token or CardReference
-
-A token can be generated explicitly, with no authorisation, or it can be generated
-as a part of a transaction:
-
-* `$gateway->createCard()` - message used to create a card token explicitly/standalone.
-* `$request->setCreateToken()` - transaction option to generate a token with the transaction.
-
-If created explicitly, then a CVV can be provided, and that will be stored against the token
-until the token is first used to make a payment. If the cardReference is reused after the first
-payment, then a CVV must be supplied each time (assuming your rules require the CVV to be present).
-If using Sage Pay Server, then the user will be prompted for a CVV on subsequent uses of
-the cardReference.
-
-If creating a `token` or `cardReference` with a transaction, then the CVV will never be
-stored against the token.
-
-The transaction response (or notification request for Sage Pay Server) will provide
-the generated token. This is accessed using:
-
-* `$response->getToken()` or
-* `$response->getCardReference()`
-
-These are equivalent since there is no difference in the way tokens or cardRererences
-are generated.
-
-## Using a Token or CardRererence
-
-To use a token with Sage Pay Direct, you must leave the credit card details blank in
-the `CreditCard` object. Sage Pay Server does not use the credit card details anyway.
-To use the token as a single-use token, add it to the transaction request like this:
-
-`request->setToken($saved_token);`
-
-Once authorised, this token will be deleted by the gateway and so cannot be used again.
-Note that if the transaction is not authorised, then the token will remain.
-You should then delete the token explicitly to make sure it does not remain in the gateway
-(it will sit there until the card expires, maybe for several years).
-
-To use the token as a permanent cardReference, add it to the transaction request like this:
-
-`request->setCardReference($saved_token);`
-
-This CardReference will remain active on the gateway whether this transaction is authorised
-or not, so can be used multiple times.
-
-# Basket format
-
-Sagepay currently supports two different formats for sending cart/item information to them:  
- - [BasketXML](http://www.sagepay.co.uk/support/12/36/protocol-3-00-basket-xml)
- - [Basket](http://www.sagepay.co.uk/support/error-codes/3021-invalid-basket-format-invalid)
-
-These are incompatible with each other, and cannot be both sent in the same transaction.
-*BasketXML* is the most recent format, and is the default used by this driver.
-*Basket* is an older format which may be deprecated one day,
-but is also the only format currently supported by some of the Sage accounting products
-(e.g. Line 50) which can pull transaction data directly from Sage Pay.
-For applications that require this type of integration, an optional parameter `useOldBasketFormat`
-with a value of `true` can be passed in the driver's `initialize()` method.
-
-# Account Types
-
-Your Sage Pay account will use separate merchant accounts for difference transaction sources.
-The sources are specified by the `accountType` parameter, and take one of three values:
-
-* "E" Omnipay\SagePay\Message\AbstractRequest::ACCOUNT_TYPE_E (default)  
-  For ecommerce transactions, entered in your application by the end user.
-* "M" Omnipay\SagePay\Message\AbstractRequest::ACCOUNT_TYPE_M  
-  MOTO transactions taken by telephone or postal forms or faxes, entered by an operator.
-  The operator may ask for a CVV when taking a telephone order.
-* "C" Omnipay\SagePay\Message\AbstractRequest::ACCOUNT_TYPE_C  
-  For repeat transactions, generated by the merchant site without any human intervention.
-
-The "M" MOTO and "C" account types will also disable any 3D-Secure validation that may
-otherwise be triggered. The "C" account type will disable any CVV requirement.
-
-The "account type" is common across other gateways, but often with different names.
-Authorize.Net calls it the "business model" and includes "retail" as an option, linking
-to card machines and hand-held scanners. This is not yet standardised in Omnipay, but
-there are some moves to do so.
-
-# VAT
-
-If you want to include VAT amount in the item array you must use
-`\Omnipay\SagePay\Extend\Item` as follows.
-
-```php
-$items = array(
-    array(new \Omnipay\SagePay\Extend\Item(array(
-        'name' => 'My Product Name',
-        'description' => 'My Product Description',
-        'quantity' => 1,
-        'price' => 9.99,
-        'vat' => 1.665, // VAT amount, not percentage
-    ))
-);
-```
-
-# Sage Pay Server Notification Handler
+### Server Notification Handler
 
 > **NOTE:** The notification handler was previously handled by the SagePay_Server `completeAuthorize`,
   `completePurchase` and `completeRegistration` methods.
@@ -482,6 +343,11 @@ $items = array(
 
 The `SagePay_Server` gateway uses a notification callback to receive the results of a payment or authorisation.
 Sage Pay Direct does not use the notification handler.
+
+Unlike many newer gateways, this notification handler is not just an optional callback
+providing an additional channel for events.
+It is *required* for the Server gateway, and not used for the direct gateway at all.
+
 The URL for the notification handler is set in the authorize or payment message:
 
 ```php
@@ -623,6 +489,183 @@ $response->confirm($nextUrl);
 The `$nextUrl` is where you want Sage Pay to send the user to next.
 It will often be the same URL whether the transaction was approved or not,
 since the result will be safely saved in the database.
+
+## Sage Pay Shared Methods (for both Direct and Server):
+
+* capture()
+* refund()
+* void() - void a purchase
+* abort() - abort an authorization before it is captured
+* repeatAuthorize() - new authorization based on past transaction
+* repeatPurchase() - new purchase based on past transaction
+* deleteCard() - remove a cardReference or token from the accout
+
+### Repeat Authorize/Purchase
+
+An authorization or purchase can be created from a past authorisation or purchase.
+You will need the `transactionReference` of the original transation.
+The `transactionReference` will be a JSON string containing the four peices of
+information the gateway needs to reuse the transaction.
+
+```php
+// repeatAuthorize() or repeatPurchase()
+$repeatRequest = $gateway->repeatAuthorize([
+    'transactionReference' => $originalTransactionReference,
+    // or
+    'securityKey' => $originalSecurityKey,
+    'txAuthNo' => $originalTxAuthNo,
+    'vpsTxId' => $originalVPSTxId(),
+    'relatedTransactionId' => $originalTransactionId,
+    //
+    'amount' => '99.99',
+    'transactionId' => $newTransactionId.'C',
+    'currency' => 'GBP',
+    'description' => 'Buy it again, Sam',
+]);
+
+$repeatResponse = $repeatRequest->send();
+
+// Treat $repeatResponse like any new authorization or purchase response.
+```
+
+### Shared Delete Card
+
+This is one of the simpler messages:
+
+```php
+use Omnipay\Omnipay;
+use Omnipay\CreditCard;
+
+$gateway = OmniPay::create('SagePay\Direct');
+// or
+$gateway = OmniPay::create('SagePay\Server');
+
+$gateway->setVendor('your-vendor-code');
+$gateway->setTestMode(true); // For test account
+
+// Send the request.
+$request = $gateway->deleteCard([
+    'cardReference' => $cardReference,
+]);
+
+$response = $request->send();
+
+// There will be no need for any redirect (e.g. 3D Secure), since no
+// authorisation is being done.
+if ($response->isSuccessful()) {
+    $message = $response->getMessage();
+    // "2017 : Token removed successfully."
+}
+```
+
+# Token Billing
+
+Sage Pay Server and Direct support the ability to store a credit card detail on
+the gateway, referenced by a token, for later use or reuse.
+The token can be single-use, or permanently stored (until its expiry date or
+explicit removal).
+
+Whether a token is single-use or permanent, depends on how it is *used*, and not
+on how it is generated. This is important to understand, and is explained in more
+detail below.
+
+## Generating a Token or CardReference
+
+A token can be generated explicitly, with no authorisation, or it can be generated
+as a part of a transaction:
+
+* `$gateway->createCard()` - message used to create a card token explicitly/standalone.
+* `$request->setCreateToken()` - transaction option to generate a token with the transaction.
+
+If created explicitly, then a CVV can be provided, and that will be stored against the token
+until the token is first used to make a payment. If the cardReference is reused after the first
+payment, then a CVV must be supplied each time (assuming your rules require the CVV to be present).
+If using Sage Pay Server, then the user will be prompted for a CVV on subsequent uses of
+the cardReference.
+
+If creating a `token` or `cardReference` with a transaction, then the CVV will never be
+stored against the token.
+
+The transaction response (or notification request for Sage Pay Server) will provide
+the generated token. This is accessed using:
+
+* `$response->getToken()` or
+* `$response->getCardReference()`
+
+These are equivalent since there is no difference in the way tokens or cardRererences
+are generated.
+
+## Using a Token or CardRererence
+
+To use a token with Sage Pay Direct, you must leave the credit card details blank in
+the `CreditCard` object. Sage Pay Server does not use the credit card details anyway.
+To use the token as a single-use token, add it to the transaction request like this:
+
+`request->setToken($saved_token);`
+
+Once authorised, this token will be deleted by the gateway and so cannot be used again.
+Note that if the transaction is not authorised, then the token will remain.
+You should then delete the token explicitly to make sure it does not remain in the gateway
+(it will sit there until the card expires, maybe for several years).
+
+To use the token as a permanent cardReference, add it to the transaction request like this:
+
+`request->setCardReference($saved_token);`
+
+This CardReference will remain active on the gateway whether this transaction is authorised
+or not, so can be used multiple times.
+
+# Basket format
+
+Sagepay currently supports two different formats for sending cart/item information to them:  
+ - [BasketXML](http://www.sagepay.co.uk/support/12/36/protocol-3-00-basket-xml)
+ - [Basket](http://www.sagepay.co.uk/support/error-codes/3021-invalid-basket-format-invalid)
+
+These are incompatible with each other, and cannot be both sent in the same transaction.
+*BasketXML* is the most recent format, and is the default used by this driver.
+*Basket* is an older format which may be deprecated one day,
+but is also the only format currently supported by some of the Sage accounting products
+(e.g. Line 50) which can pull transaction data directly from Sage Pay.
+For applications that require this type of integration, an optional parameter `useOldBasketFormat`
+with a value of `true` can be passed in the driver's `initialize()` method.
+
+# Account Types
+
+Your Sage Pay account will use separate merchant accounts for difference transaction sources.
+The sources are specified by the `accountType` parameter, and take one of three values:
+
+* "E" Omnipay\SagePay\Message\AbstractRequest::ACCOUNT_TYPE_E (default)  
+  For ecommerce transactions, entered in your application by the end user.
+* "M" Omnipay\SagePay\Message\AbstractRequest::ACCOUNT_TYPE_M  
+  MOTO transactions taken by telephone or postal forms or faxes, entered by an operator.
+  The operator may ask for a CVV when taking a telephone order.
+* "C" Omnipay\SagePay\Message\AbstractRequest::ACCOUNT_TYPE_C  
+  For repeat transactions, generated by the merchant site without any human intervention.
+
+The "M" MOTO and "C" account types will also disable any 3D-Secure validation that may
+otherwise be triggered. The "C" account type will disable any CVV requirement.
+
+The "account type" is common across other gateways, but often with different names.
+Authorize.Net calls it the "business model" and includes "retail" as an option, linking
+to card machines and hand-held scanners. This is not yet standardised in Omnipay, but
+there are some moves to do so.
+
+# VAT
+
+If you want to include VAT amount in the item array you must use
+`\Omnipay\SagePay\Extend\Item` as follows.
+
+```php
+$items = array(
+    array(new \Omnipay\SagePay\Extend\Item(array(
+        'name' => 'My Product Name',
+        'description' => 'My Product Description',
+        'quantity' => 1,
+        'price' => 9.99,
+        'vat' => 1.665, // VAT amount, not percentage
+    ))
+);
+```
 
 # Support
 

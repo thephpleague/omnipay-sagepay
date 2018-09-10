@@ -29,7 +29,8 @@ class SharedRepeatPurchaseRequestTest extends TestCase
     {
         $relatedTransactionRef =
             '{"SecurityKey":"F6AF4AIB1G","TxAuthNo":"1518884596","VPSTxId":"{9EC5D0BC-A816-E8C3-859A-55C1E476E7C2}","VendorTxCode":"D6429BY7x2217743"}';
-        $this->request->setRelatedTransactionReference($relatedTransactionRef);
+        $this->request->setTransactionReference($relatedTransactionRef);
+        $this->request->setDescription('testSettingOfRelatedTransaction');
         $data = $this->request->getData();
 
         $this->assertEquals('12.00', $data['Amount'], 'Transaction amount does not match');

@@ -20,7 +20,7 @@ use Omnipay\SagePay\Message\SharedTokenRemovalRequest;
  * Sage Pay Direct Gateway
  */
 
-class DirectGateway extends AbstractGateway
+class DirectGateway extends AbstractGateway implements ConstantsInterface
 {
     use GatewayParamsTrait;
 
@@ -44,6 +44,7 @@ class DirectGateway extends AbstractGateway
             'language' => null,
             'useOldBasketFormat' => false,
             'exitOnResponse' => false,
+            'apply3DSecure' => null,
         ];
     }
 

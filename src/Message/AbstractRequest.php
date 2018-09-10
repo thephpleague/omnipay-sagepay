@@ -10,8 +10,9 @@ use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\SagePay\Extend\Item as ExtendItem;
 use Omnipay\Common\Message\AbstractRequest as OmnipayAbstractRequest;
 use Omnipay\SagePay\Traits\GatewayParamsTrait;
+use Omnipay\SagePay\ConstantsInterface;
 
-abstract class AbstractRequest extends OmnipayAbstractRequest
+abstract class AbstractRequest extends OmnipayAbstractRequest implements ConstantsInterface
 {
     use GatewayParamsTrait;
 
@@ -29,73 +30,6 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
      * @var string The protocol version number.
      */
     protected $VPSProtocol = '3.00';
-
-    /**
-     * Supported 3D Secure values for Apply3DSecure.
-     * 0: APPLY - If 3D-Secure checks are possible and rules allow,
-     *      perform the checks and apply the authorisation rules.
-     *      (default)
-     * 1: FORCE - Force 3D-Secure checks for this transaction if
-     *      possible and apply rules for authorisation.
-     * 2: NONE - Do not perform 3D-Secure checks for this
-     *      transaction and always authorise.
-     * 3: AUTH - Force 3D-Secure checks for this transaction if
-     *      possible but ALWAYS obtain an auth code, irrespective
-     *      of rule base.
-     *
-     * @var integer
-     */
-    const APPLY_3DSECURE_APPLY  = 0;
-    const APPLY_3DSECURE_FORCE  = 1;
-    const APPLY_3DSECURE_NONE   = 2;
-    const APPLY_3DSECURE_AUTH   = 3;
-
-    /**
-     * Supported AVS/CV2 values.
-     *
-     * DEFAULT will use the account settings for checks and applying of rules.
-     * FORCE_CHECKS will force checks to be made.
-     * NO_CHECKS will force no checks to be performed.
-     * NO_RULES will force no rules to be applied.
-     *
-     * @var integer
-     */
-    const APPLY_AVSCV2_DEFAULT      = 0;
-    const APPLY_AVSCV2_FORCE_CHECKS = 1;
-    const APPLY_AVSCV2_NO_CHECKS    = 2;
-    const APPLY_AVSCV2_NO_RULES     = 3;
-
-    /**
-     * Flag whether to store a cardReference or token for multiple use.
-     */
-    const STORE_TOKEN_YES   = 1;
-    const STORE_TOKEN_NO    = 0;
-
-    /**
-     * Flag whether to create a cardReference or token for the CC supplied.
-     */
-    const CREATE_TOKEN_YES   = 1;
-    const CREATE_TOKEN_NO    = 0;
-
-    /**
-     * Profile for Sage Pay Server hosted forms.
-     * - NORMAL for full page forms.
-     * - LOW for use in iframes.
-     */
-    const PROFILE_NORMAL    = 'NORMAL';
-    const PROFILE_LOW       = 'LOW';
-
-    /**
-     * The values for the AccountType field.
-     * E – for ecommerce transactions (default)
-     * M – for telephone (MOTO) transactions
-     * C – for repeat transactions
-     *
-     * @var string
-     */
-    const ACCOUNT_TYPE_E = 'E';
-    const ACCOUNT_TYPE_M = 'M';
-    const ACCOUNT_TYPE_C = 'C';
 
     /**
      * @var string Endpoint base URLs.
@@ -189,56 +123,6 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     public function setAccountType($value)
     {
         return $this->setParameter('accountType', $value);
-    }
-
-    public function getApplyAVSCV2()
-    {
-        return $this->getParameter('applyAVSCV2');
-    }
-
-    /**
-     * Set the apply AVSCV2 checks.
-     * Values defined in APPLY_AVSCV2_* constant.
-     *
-     * @param  int $value 0: If AVS/CV2 enabled then check them. If rules apply, use rules. (default)
-     *                    1: Force AVS/CV2 checks even if not enabled for the account. If rules apply
-     *                       use rules.
-     *                    2: Force NO AVS/CV2 checks even if enabled on account.
-     *                    3: Force AVS/CV2 checks even if not enabled for account but DON'T apply any
-     *                       rules.
-     */
-    public function setApplyAVSCV2($value)
-    {
-        return $this->setParameter('applyAVSCV2', $value);
-    }
-
-    /**
-     * @return string Once of static::APPLY_3DSECURE_*
-     */
-    public function getApply3DSecure()
-    {
-        return $this->getParameter('apply3DSecure');
-    }
-
-    /**
-     * Whether or not to apply 3D secure authentication.
-     *
-     * This is ignored for PAYPAL, EUROPEAN PAYMENT transactions.
-     * Values defined in APPLY_3DSECURE_* constant.
-     *
-     * @param  int $value 0: If 3D-Secure checks are possible and rules allow, perform the
-     *                       checks and apply the authorisation rules. (default)
-     *                    1: Force 3D-Secure checks for this transaction if possible and
-     *                       apply rules for authorisation.
-     *                    2: Do not perform 3D-Secure checks for this transactios and always
-     *                       authorise.
-     *                    3: Force 3D-Secure checks for this transaction if possible but ALWAYS
-     *                       obtain an auth code, irrespective of rule base.
-     * @return $this
-     */
-    public function setApply3DSecure($value)
-    {
-        return $this->setParameter('apply3DSecure', $value);
     }
 
     public function getTxType()
@@ -399,7 +283,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     {
         $storeToken = (bool)$storeToken;
 
-        $this->setParameter(
+        return $this->setParameter(
             'storeToken',
             ($storeToken ? static::STORE_TOKEN_YES : static::STORE_TOKEN_NO)
         );
@@ -411,6 +295,74 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     public function getStoreToken()
     {
         return $this->getParameter('storeToken');
+    }
+
+    /**
+     * @param string the original VPS transaction ID; used to capture/void
+     * @return $this
+     */
+    public function setVpsTxId($value)
+    {
+        return $this->setParameter('vpsTxId', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getVpsTxId()
+    {
+        return $this->getParameter('vpsTxId');
+    }
+
+    /**
+     * @param string the original SecurityKey; used to capture/void
+     * @return $this
+     */
+    public function setSecurityKey($value)
+    {
+        return $this->setParameter('securityKey', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSecurityKey()
+    {
+        return $this->getParameter('securityKey');
+    }
+
+    /**
+     * @param string the original txAuthNo; used to capture/void
+     * @return $this
+     */
+    public function setTxAuthNo($value)
+    {
+        return $this->setParameter('txAuthNo', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTxAuthNo()
+    {
+        return $this->getParameter('txAuthNo');
+    }
+
+    /**
+     * @param string the original txAuthNo; used to capture/void
+     * @return $this
+     */
+    public function setRelatedTransactionId($value)
+    {
+        return $this->setParameter('relatedTransactionId', $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getRelatedTransactionId()
+    {
+        return $this->getParameter('relatedTransactionId');
     }
 
     /**
@@ -561,5 +513,36 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
         $result = $count . $result;
 
         return $result;
+    }
+
+    /**
+     * A JSON transactionReference passed in is split into its
+     * component parts.
+     *
+     * @param string $value original transactionReference in JSON format.
+     */
+    public function setTransactionReference($value)
+    {
+        $reference = json_decode($value, true);
+
+        if (json_last_error() === 0) {
+            if (isset($reference['VendorTxCode'])) {
+                $this->setRelatedTransactionId($reference['VendorTxCode']);
+            }
+
+            if (isset($reference['VPSTxId'])) {
+                $this->setVpsTxId($reference['VPSTxId']);
+            }
+
+            if (isset($reference['SecurityKey'])) {
+                $this->setSecurityKey($reference['SecurityKey']);
+            }
+
+            if (isset($reference['TxAuthNo'])) {
+                $this->setTxAuthNo($reference['TxAuthNo']);
+            }
+        }
+
+        return parent::setTransactionReference($value);
     }
 }
