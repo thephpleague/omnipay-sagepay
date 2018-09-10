@@ -274,23 +274,16 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
      * Note: this is just an override method. It is best to leave this unset, and
      * use either setToken or setCardReference. This flag will then be set automatically.
      *
-     * @param bool|int $storeToken  0 = The Token will be deleted from the SagePay database if
-     *                                  authorised by the bank.
-     *                              1 = Continue to store the Token in the SagePay database for future use.
+     * @param bool|int|null $value Will be cast to bool when used
      * @return $this
      */
-    public function setStoreToken($storeToken)
+    public function setStoreToken($value)
     {
-        $storeToken = (bool)$storeToken;
-
-        return $this->setParameter(
-            'storeToken',
-            ($storeToken ? static::STORE_TOKEN_YES : static::STORE_TOKEN_NO)
-        );
+        return $this->setParameter('storeToken', $value);
     }
 
     /**
-     * @return int static::STORE_TOKEN_YES or static::STORE_TOKEN_NO
+     * @return bool|int|null
      */
     public function getStoreToken()
     {

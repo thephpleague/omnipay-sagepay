@@ -149,7 +149,7 @@ class DirectAuthorizeRequest extends AbstractRequest
                 // If we are using the token as a cardReference, then keep it stored
                 // after this transaction for future use.
 
-                $storeToken = $this->getCardReference()
+                $storeToken = (bool)$this->getCardReference()
                     ? static::STORE_TOKEN_YES
                     : static::STORE_TOKEN_NO;
             }
