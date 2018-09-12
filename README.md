@@ -66,8 +66,8 @@ The following gateways are provided by this package:
 * SagePay_Direct
 * SagePay_Server
 
-For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
-repository.
+For general Omnipay usage instructions, please see the main
+[Omnipay](https://github.com/thephpleague/omnipay) repository.
 
 # Supported Methods
 
@@ -78,6 +78,8 @@ needing to pass through your application for forwarding on to the gateway.
 You must be aware of the PCI implications of handling credit card details
 if using this API.
 
+The Direct gateway methods for handling cards are:
+
 * authorize() - with completeAuthorize for 3D Secure and PayPal redirect
 * purchase() - with completeAuthorize for 3D Secure and PayPal redirect
 * createCard() - explicit "standalone" creation of a cardReference or token
@@ -86,15 +88,100 @@ if using this API.
 
 ### Direct Authorize/Purchase
 
-Docs TODO: used for new authorizations (check PCI certification) and for offline
-repeat authorizations with a `cardReference`, so long as CVV is not required.
-Also suports 3D Secure when a user is present.
-A CVV can be provided if the user is present, even when using a card token.
+```php
+use Omnipay\Omnipay;
+use Omnipay\Common\CreditCard;
+
+// Create the gateway object.
+
+$gateway = OmniPay::create('SagePay\Direct')->initialize([
+    'vendor' => 'vendorname',
+    'testMode' => true,
+]);
+
+// Create the credit card object from details entered by the user.
+
+$card = new CreditCard([
+    'firstName' => 'Card',
+    'lastName' => 'User',
+
+    'number' => '4929000000006',
+    'expiryMonth' => '12',
+    'expiryYear' => '2019',
+    'CVV' => '123',
+
+    // Billing address details are required.
+    ...
+]);
+
+// Create the minimal request message.
+
+$requestMessage = $gateway->purchase([
+    'amount' => '99.99',
+    'currency' => 'GBP',
+    'card' => $card,
+    'transactionId' => $transactionId,
+    'description' => 'Pizzas for everyone',
+
+    // If 3D Secure is enabled, then provide a return URL for
+    // when the user comes back from 3D Secure authentication.
+
+    'returnUrl' => 'https://example.co.uk/sagepay-complete',
+]);
+
+// Send the request message.
+
+$responseMessage = $requestMessage->send();
+```
+
+At this point you will have either a final result or a redirect.
+
+If `$responseMessage->isSuccessful()` is `true`, then the authorization is
+complete and successful. If `false` then check for a redirect, otherwise
+the authorization was not successful.
+
+#### Redirect (3D Secure)
+
+If the authorization result is a redirect, then a quick and dirty way to redirect is:
+
+```php
+if ($responseMessage->isRedirect()) {
+    $responseMessage->redirect();
+}
+```
+
+That redirect method is intended just for testing.
+Create your own instead, within the rules of your framework, using:
+
+* $responseMessage->getRedirectUrl()
+* $responseMessage->getRedirectMethod()
+* $responseMessage->getRedirectData()
+
+#### Redirect Return
+
+After the user has performed their 3D Secure authentication, they will
+be redirected (via `POST`) back to your `returnUrl` endpoint.
+The transaction is not yet complete.
+It must be completed like this:
+
+```php
+$completeRequest = $gateway->completeAuthorize([
+    'transactionId' => $transactionId,
+]);
+$completeResponse = $completeRequest->send();
+```
+
+The `$transactionId` (same as created for the original `purchase()`)
+is only needed if you want to save `getTransactionReference()`
+for future repeat payments.
+
+The normal getters will be available here to check the result,
+get the `cardReference` for saving etc.
 
 ### Direct Create Card
 
-This will create a card reference with no authorisation.
-If you want to authorise an amount on the card *and* get a cardReference
+This will create a card reference with no authorization.
+If you want to authorize an amount on the card *and* get a cardReference
 for repeated use of the card, then use the `authorize()` method with the
 `createToken` flag set.
 
@@ -134,7 +221,7 @@ $request = $gateway->createCard([
 $response = $request->send();
 
 // There will be no need for any redirect (e.g. 3D Secure), since the
-// card is not being authorised at this point.
+// card is not being authorized at this point.
 
 if ($response->isSuccessful()) {
     $cardReference = $response->getCardReference();
@@ -147,7 +234,7 @@ if ($response->isSuccessful()) {
 
 Sage Pay Server captures any credit card details in forms hosted by the
 Sage Pay gateway, either by sending the user to the gateway or loading the
-hosted forms in iframes. This is the preferred and safest API to use.
+hosted forms in an iframe. This is the preferred and safest API to use.
 
 Sage Pay Server uses your IP address to authenticate backend access to the
 gateway, and it also needs to a public URL that it can send back-channel
@@ -178,9 +265,9 @@ $gateway->setTestMode(true); // For a test account
 
 ### Server Authorize/Purchase
 
-This method authorises a payment against a credit or debit card.
+This method authorizes a payment against a credit or debit card.
 A `cardToken` or `cardReference` previously captured, can be used here, and only
-the user's CVV will be captured, but the overall flow will remain the same.
+the user's CVV will be asked for, but the overall flow will remain the same.
 
 The `$creditCard` object will provide the billing and shipping details:
 
@@ -211,21 +298,24 @@ $creditCard = new CreditCard([
 ]);
 ```
 
-* The country must be a twe-character ISO 3166 code.
+* The country must be a two-character ISO 3166 code.
 * The state will be a two-character ISO code, and is mandatory if the country is "US".
 * The state will be ignored if the country is not "US".
 * Adddress2 is optional, but all other fields are mandatory.
-* The postcode is optional for Republic of Ireland "IE".
-* You can use UTF-8. Only joking! This gateway lives on an extended ASCII ISO 8859-1 back end. Really.
-  Do any characterset conversions in your merchant site to avoid surprises.
+* The postcode is optional for Republic of Ireland "IE",
+  though *some* banks insist it is present and valid.
+* This gateway lives on an extended ASCII ISO 8859-1 back end.
+  Really. Do any characterset conversions in your merchant site to avoid surprises.
 
 ```php
 // Create a unique transaction ID to track this transaction.
+
 $transactionId = {create a unique transaction id};
 
 // Custom surcharges can be added here.
 // You must construct the XML string; there is no XML builder in this driver
 // at this time. Length is very limited, so keep it compact.
+
 $surchargeXml = '<surcharges>'
         . '<surcharge>'
             . '<paymentType>VISA</paymentType>'
@@ -260,7 +350,7 @@ if ($response->isSuccessful()) {
     // The transaction is complete and successful and no further action is needed.
     // This may happen if a cardReference has been supplied, having captured
     // the card reference with a CVV and using it for the first time. The CVV will
-    // only be kept by the gateway for this first authorisation. This also assumes
+    // only be kept by the gateway for this first authorization. This also assumes
     // 3D Secure is turned off.
 } elseif ($response->isRedirect()) {
     // Redirect to offsite payment gateway to capture the users credit card
@@ -336,12 +426,8 @@ to break out of the iframe.
 > **NOTE:** The notification handler was previously handled by the SagePay_Server `completeAuthorize`,
   `completePurchase` and `completeRegistration` methods.
   The notification handler replaces all of these.
-  The old methods have been left - for the remaining life of OmniPay 2.x -
-  for use in legacy applications.
-  The recomendation is to use the newer `acceptNotification` handler
-  now, which is simpler and will be more consistent with other gateways.
 
-The `SagePay_Server` gateway uses a notification callback to receive the results of a payment or authorisation.
+The `SagePay_Server` gateway uses a notification callback to receive the results of a payment or authorization.
 Sage Pay Direct does not use the notification handler.
 
 Unlike many newer gateways, this notification handler is not just an optional callback
@@ -354,7 +440,7 @@ The URL for the notification handler is set in the authorize or payment message:
 // The Server response will be a redirect to the Sage Pay CC form.
 // This is a Sage Pay Server Purchase request.
 
-$transactionId = time(); // Your transaction id
+$transactionId = {create a unique transaction id};
 
 $items = array(
     array(
@@ -368,8 +454,10 @@ $items = array(
 $response = $gateway->purchase(array(
     'amount' => 9.99,
     'currency' => 'GBP',
-    'card' => $card, // Just the name and address, NOT CC details.
-    'notifyUrl' => route('sagepay.server.notify'), // The route to your application's notification handler.
+    // Just the name and address, NOT CC details.
+    'card' => $card,
+    // The route to your application's notification handler.
+    'notifyUrl' => 'https://example.com/notify',
     'transactionId' => $transactionId,
     'description' => 'test',
     'items' => $items,
@@ -402,7 +490,7 @@ The acceptNotification gateway is set up simply.
 The `$request` will capture the POST data sent by Sage Pay:
 
 ```php
-$gateway = OmniPay\OmniPay::create('SagePay_Server');
+$gateway = Omnipay\Omnipay::create('SagePay_Server');
 $gateway->setVendor('your-vendor-name');
 $gateway->setTestMode(true); // To access your test account.
 $request = $gateway->acceptNotification();
@@ -544,6 +632,7 @@ $gateway->setVendor('your-vendor-code');
 $gateway->setTestMode(true); // For test account
 
 // Send the request.
+
 $request = $gateway->deleteCard([
     'cardReference' => $cardReference,
 ]);
@@ -551,7 +640,8 @@ $request = $gateway->deleteCard([
 $response = $request->send();
 
 // There will be no need for any redirect (e.g. 3D Secure), since no
-// authorisation is being done.
+// authorization is being done.
+
 if ($response->isSuccessful()) {
     $message = $response->getMessage();
     // "2017 : Token removed successfully."
@@ -571,7 +661,7 @@ detail below.
 
 ## Generating a Token or CardReference
 
-A token can be generated explicitly, with no authorisation, or it can be generated
+A token can be generated explicitly, with no authorization, or it can be generated
 as a part of a transaction:
 
 * `$gateway->createCard()` - message used to create a card token explicitly/standalone.
@@ -647,7 +737,7 @@ otherwise be triggered. The "C" account type will disable any CVV requirement.
 
 The "account type" is common across other gateways, but often with different names.
 Authorize.Net calls it the "business model" and includes "retail" as an option, linking
-to card machines and hand-held scanners. This is not yet standardised in Omnipay, but
+to card machines and hand-held scanners. This is not yet standardized in Omnipay, but
 there are some moves to do so.
 
 # VAT
