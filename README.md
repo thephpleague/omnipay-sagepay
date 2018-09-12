@@ -24,6 +24,8 @@ Table of Contents
    * [Supported Methods](#supported-methods)
       * [Sage Pay Direct Methods](#sage-pay-direct-methods)
          * [Direct Authorize/Purchase](#direct-authorizepurchase)
+            * [Redirect (3D Secure)](#redirect-3d-secure)
+            * [Redirect Return](#redirect-return)
          * [Direct Create Card](#direct-create-card)
       * [Sage Pay Server Methods](#sage-pay-server-methods)
          * [Server Gateway](#server-gateway)
