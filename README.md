@@ -555,7 +555,7 @@ $request->getData();
 
 $finalTransactionReference = $response->getTransactionReference();
 
-// The payment or authorisation result:
+// The payment or authorization result:
 // Result is $request::STATUS_COMPLETED, $request::STATUS_PENDING or $request::STATUS_FAILED
 
 $request->getTransactionStatus();
@@ -592,13 +592,14 @@ since the result will be safely saved in the database.
 
 ### Repeat Authorize/Purchase
 
-An authorization or purchase can be created from a past authorisation or purchase.
+An authorization or purchase can be created from a past authorization or purchase.
 You will need the `transactionReference` of the original transation.
 The `transactionReference` will be a JSON string containing the four peices of
 information the gateway needs to reuse the transaction.
 
 ```php
 // repeatAuthorize() or repeatPurchase()
+
 $repeatRequest = $gateway->repeatAuthorize([
     'transactionReference' => $originalTransactionReference,
     // or
@@ -687,7 +688,7 @@ the generated token. This is accessed using:
 These are equivalent since there is no difference in the way tokens or cardRererences
 are generated.
 
-## Using a Token or CardRererence
+## Using a Token or CardReference
 
 To use a token with Sage Pay Direct, you must leave the credit card details blank in
 the `CreditCard` object. Sage Pay Server does not use the credit card details anyway.
@@ -695,8 +696,8 @@ To use the token as a single-use token, add it to the transaction request like t
 
 `request->setToken($saved_token);`
 
-Once authorised, this token will be deleted by the gateway and so cannot be used again.
-Note that if the transaction is not authorised, then the token will remain.
+Once authorized, this token will be deleted by the gateway and so cannot be used again.
+Note that if the transaction is not authorized, then the token will remain.
 You should then delete the token explicitly to make sure it does not remain in the gateway
 (it will sit there until the card expires, maybe for several years).
 
@@ -704,7 +705,7 @@ To use the token as a permanent cardReference, add it to the transaction request
 
 `request->setCardReference($saved_token);`
 
-This CardReference will remain active on the gateway whether this transaction is authorised
+This CardReference will remain active on the gateway whether this transaction is authorized
 or not, so can be used multiple times.
 
 # Basket format
