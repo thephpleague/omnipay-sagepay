@@ -38,27 +38,8 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     protected $testEndpoint = 'https://test.sagepay.com/gateway/service';
 
     /**
-     * Indicates whether a NORMAL or LOW profile page is to be used
-     * for hosted forms.
-     *
-     * @return string|null
-     */
-    public function getProfile()
-    {
-        return $this->getParameter('profile');
-    }
-
-    /**
-     * @param string $value One of static::PROFILE_NORMAL or static::PROFILE_LOW
-     * @return $this
-     */
-    public function setProfile($value)
-    {
-        return $this->setParameter('profile', $value);
-    }
-
-    /**
      * Convenience method to switch iframe mode on or off.
+     * This sets the profile parameter.
      *
      * @param bool $value True to use an iframe profile for hosted forms.
      * @return $this
@@ -68,24 +49,6 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
         $profile = ((bool)$value ? static::PROFILE_LOW : static::PROFILE_NORMAL);
 
         return $this->setParameter('profile', $profile);
-    }
-
-    /**
-     * @return string The custom vendor data.
-     */
-    public function getVendorData()
-    {
-        return $this->getParameter('vendorData');
-    }
-
-    /**
-     * Set custom vendor data that will be stored against the gateway account.
-     *
-     * @param string $value ASCII alphanumeric and spaces, max 200 characters.
-     */
-    public function setVendorData($value)
-    {
-        return $this->setParameter('vendorData', $value);
     }
 
     /**
@@ -101,30 +64,8 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     }
 
     /**
-     * @return string One of static::ACCOUNT_TYPE_*
+     * @return string the transaction type, if one is relevant for this message.
      */
-    public function getAccountType()
-    {
-        return $this->getParameter('accountType');
-    }
-
-    /**
-     * Set account type.
-     * Neither 'M' nor 'C' offer the 3D-Secure checks that the "E" customer
-     * experience offers.
-     *
-     * This is ignored for all PAYPAL transactions.
-     *
-     * @param string $value E: Use the e-commerce merchant account. (default)
-     *                      M: Use the mail/telephone order account. (if present)
-     *                      C: Use the continuous authority merchant account. (if present)
-     * @return $this
-     */
-    public function setAccountType($value)
-    {
-        return $this->setParameter('accountType', $value);
-    }
-
     public function getTxType()
     {
         if (isset($this->action)) {
@@ -225,6 +166,69 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     }
 
     /**
+     * Indicates whether a NORMAL or LOW profile page is to be used
+     * for hosted forms.
+     *
+     * @return string|null
+     */
+    public function getProfile()
+    {
+        return $this->getParameter('profile');
+    }
+
+    /**
+     * @param string $value One of static::PROFILE_NORMAL or static::PROFILE_LOW
+     * @return $this
+     */
+    public function setProfile($value)
+    {
+        return $this->setParameter('profile', $value);
+    }
+
+    /**
+     * @return string One of static::ACCOUNT_TYPE_*
+     */
+    public function getAccountType()
+    {
+        return $this->getParameter('accountType');
+    }
+
+    /**
+     * Set account type.
+     * Neither 'M' nor 'C' offer the 3D-Secure checks that the "E" customer
+     * experience offers. See constants ACCOUNT_TYPE_*
+     *
+     * This is ignored for all PAYPAL transactions.
+     *
+     * @param string $value E: Use the e-commerce merchant account. (default)
+     *                      M: Use the mail/telephone order account. (if present)
+     *                      C: Use the continuous authority merchant account. (if present)
+     * @return $this
+     */
+    public function setAccountType($value)
+    {
+        return $this->setParameter('accountType', $value);
+    }
+
+    /**
+     * @return string The custom vendor data.
+     */
+    public function getVendorData()
+    {
+        return $this->getParameter('vendorData');
+    }
+
+    /**
+     * Set custom vendor data that will be stored against the gateway account.
+     *
+     * @param string $value ASCII alphanumeric and spaces, max 200 characters.
+     */
+    public function setVendorData($value)
+    {
+        return $this->setParameter('vendorData', $value);
+    }
+
+    /**
      * Use this flag to indicate you wish to have a token generated and stored in the Sage Pay
      * database and returned to you for future use.
      * Values set in constants CREATE_TOKEN_*
@@ -232,14 +236,9 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
      * @param bool|int $createToken 0 = This will not create a token from the payment (default).
      * @return $this
      */
-    public function setCreateToken($createToken)
+    public function setCreateToken($value)
     {
-        $createToken = (bool)$createToken;
-
-        return $this->setParameter(
-            'createToken',
-            ($createToken ? static::CREATE_TOKEN_YES : static::CREATE_TOKEN_NO)
-        );
+        return $this->setParameter('createToken', $value);
     }
 
     /**
@@ -267,12 +266,13 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     }
 
     /**
-     * An optional flag to indicate if you wish to continue to store the Token in the SagePay
-     * token database for future use.
+     * An optional flag to indicate if you wish to continue to store the
+     * Token in the SagePay token database for future use.
      * Values set in contants SET_TOKEN_*
      *
-     * Note: this is just an override method. It is best to leave this unset, and
-     * use either setToken or setCardReference. This flag will then be set automatically.
+     * Note: this is just an override method. It is best to leave this unset,
+     * and use either setToken or setCardReference. This flag will then be
+     * set automatically.
      *
      * @param bool|int|null $value Will be cast to bool when used
      * @return $this

@@ -14,6 +14,14 @@ interface ConstantsInterface
     //
 
     /**
+     * Flag whether to allow the gift aid acceptance box to appear for this
+     * transaction on the payment page. This only appears if your vendor
+     * account is Gift Aid enabled.
+     */
+    const ALLOW_GIFT_AID_YES = 1;
+    const ALLOW_GIFT_AID_NO  = 0;
+
+    /**
      * Supported 3D Secure values for Apply3DSecure.
      * 0: APPLY - If 3D-Secure checks are possible and rules allow,
      *      perform the checks and apply the authorisation rules.

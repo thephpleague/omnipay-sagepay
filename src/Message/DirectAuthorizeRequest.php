@@ -197,7 +197,11 @@ class DirectAuthorizeRequest extends AbstractRequest
         // If we want the card details to be saved on the gateway as a
         // token or card reference, then request for that to be done.
 
-        $data['CreateToken'] = $this->getCreateToken() ?: $this->getCreateCard();
+        $createCard = $this->getCreateToken() ?: $this->getCreateCard();
+
+        if ($createCard !== null) {
+            $data['CreateToken'] = $createCard ? static::CREATE_TOKEN_YES : static::CREATE_TOKEN_NO;
+        }
 
         if ($this->getCard()->getCvv() !== null) {
             $data['CV2'] = $this->getCard()->getCvv();
