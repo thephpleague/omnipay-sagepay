@@ -72,7 +72,7 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['DeliveryPhone'] = $card->getShippingPhone();
         $data['CustomerEMail'] = $card->getEmail();
 
-        if ($this->getUseOldBasketFormat()) {
+        if ((bool)$this->getUseOldBasketFormat()) {
             $basket = $this->getItemDataNonXML();
             if (!empty($basket)) {
                 $data['Basket'] = $basket;
@@ -134,6 +134,7 @@ class DirectAuthorizeRequest extends AbstractRequest
     public function getTokenData($data = array())
     {
         // Are there token details to add?
+
         if ($this->getToken() || $this->getCardReference()) {
             // A card token or reference has been provided.
             $data['Token'] = $this->getToken() ?: $this->getCardReference();
@@ -148,7 +149,7 @@ class DirectAuthorizeRequest extends AbstractRequest
                 // If we are using the token as a cardReference, then keep it stored
                 // after this transaction for future use.
 
-                $storeToken = $this->getCardReference()
+                $storeToken = (bool)$this->getCardReference()
                     ? static::STORE_TOKEN_YES
                     : static::STORE_TOKEN_NO;
             }
@@ -195,7 +196,12 @@ class DirectAuthorizeRequest extends AbstractRequest
 
         // If we want the card details to be saved on the gateway as a
         // token or card reference, then request for that to be done.
-        $data['CreateToken'] = $this->getCreateToken();
+
+        $createCard = $this->getCreateToken() ?: $this->getCreateCard();
+
+        if ($createCard !== null) {
+            $data['CreateToken'] = $createCard ? static::CREATE_TOKEN_YES : static::CREATE_TOKEN_NO;
+        }
 
         if ($this->getCard()->getCvv() !== null) {
             $data['CV2'] = $this->getCard()->getCvv();

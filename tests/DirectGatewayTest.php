@@ -190,7 +190,7 @@ class DirectGatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('SharedRepeatAuthorize.txt');
 
-        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send(); // FIXME: repeat
+        $response = $this->gateway->repeatAuthorize($this->repeatOptions)->send(); // FIXME: repeat
 
         $this->assertTrue($response->isSuccessful());
         $this->assertSame('Successful repeat.', $response->getMessage());
@@ -200,7 +200,7 @@ class DirectGatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('SharedRepeatAuthorizeFailure.txt');
 
-        $response = $this->gateway->repeatAuthorize($this->captureOptions)->send(); // FIXME: repeat
+        $response = $this->gateway->repeatAuthorize($this->repeatOptions)->send(); // FIXME: repeat
 
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('Not authorized.', $response->getMessage());
@@ -212,7 +212,7 @@ class DirectGatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('SharedRepeatAuthorize.txt');
 
-        $response = $this->gateway->repeatPurchase($this->captureOptions)->send(); // FIXME: "capture"
+        $response = $this->gateway->repeatPurchase($this->repeatOptions)->send(); // FIXME: "capture"
 
         $this->assertTrue($response->isSuccessful());
         $this->assertSame('Successful repeat.', $response->getMessage());
@@ -222,7 +222,7 @@ class DirectGatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('SharedRepeatAuthorizeFailure.txt');
 
-        $response = $this->gateway->repeatPurchase($this->captureOptions)->send(); // FIXME: "capture"
+        $response = $this->gateway->repeatPurchase($this->repeatOptions)->send(); // FIXME: "capture"
 
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('Not authorized.', $response->getMessage());

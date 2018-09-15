@@ -6,6 +6,10 @@ namespace Omnipay\SagePay;
 use Omnipay\SagePay\Message\ServerAuthorizeRequest;
 use Omnipay\SagePay\Message\ServerCompleteAuthorizeRequest;
 use Omnipay\SagePay\Message\ServerPurchaseRequest;
+use Omnipay\SagePay\Message\ServerNotifyRequest;
+use Omnipay\SagePay\Message\SharedTokenRemovalRequest;
+use Omnipay\SagePay\Message\ServerTokenRegistrationRequest;
+use Omnipay\SagePay\Message\ServerTokenRegistrationCompleteRequest;
 
 /**
  * Sage Pay Server Gateway
@@ -22,7 +26,7 @@ class ServerGateway extends DirectGateway
      */
     public function authorize(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\ServerAuthorizeRequest', $parameters);
+        return $this->createRequest(ServerAuthorizeRequest::class, $parameters);
     }
 
     /**
@@ -30,7 +34,7 @@ class ServerGateway extends DirectGateway
      */
     public function purchase(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\ServerPurchaseRequest', $parameters);
+        return $this->createRequest(ServerPurchaseRequest::class, $parameters);
     }
 
     /**
@@ -39,7 +43,7 @@ class ServerGateway extends DirectGateway
      */
     public function acceptNotification(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\ServerNotifyRequest', $parameters);
+        return $this->createRequest(ServerNotifyRequest::class, $parameters);
     }
 
     /**
@@ -59,7 +63,7 @@ class ServerGateway extends DirectGateway
      */
     public function deleteCard(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\SharedTokenRemovalRequest', $parameters);
+        return $this->createRequest(SharedTokenRemovalRequest::class, $parameters);
     }
 
     /**
@@ -70,17 +74,7 @@ class ServerGateway extends DirectGateway
      */
     public function registerToken(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\ServerTokenRegistrationRequest', $parameters);
-    }
-
-    /**
-     * Handle token registration notification callback.
-     * Please now use acceptNotification()
-     * @deprecated
-     */
-    public function completeRegistration(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\SagePay\Message\ServerTokenRegistrationCompleteRequest', $parameters);
+        return $this->createRequest(ServerTokenRegistrationRequest::class, $parameters);
     }
 
     /**
@@ -90,7 +84,7 @@ class ServerGateway extends DirectGateway
      */
     public function completeAuthorize(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\SagePay\Message\ServerCompleteAuthorizeRequest', $parameters);
+        return $this->createRequest(ServerCompleteAuthorizeRequest::class, $parameters);
     }
 
     /**
