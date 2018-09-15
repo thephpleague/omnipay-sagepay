@@ -6,8 +6,6 @@ use Omnipay\Common\Exception\InvalidResponseException;
 
 /**
  * Sage Pay Direct Complete Authorize Request.
- * TODO: support passing in MD and PaRes as parameters.
- * TODO: support MDX as well as MD.
  */
 class DirectCompleteAuthorizeRequest extends AbstractRequest
 {

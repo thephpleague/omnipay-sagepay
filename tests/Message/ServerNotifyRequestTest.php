@@ -5,6 +5,11 @@ namespace Omnipay\SagePay\Message;
 use Omnipay\Tests\TestCase;
 use Mockery as m;
 
+/**
+ * If anybody has any clues here just what this is supposed to be testing and how,
+ * then please dive in.
+ */
+
 class ServerNotifyRequestTest extends TestCase
 {
     public function testServerNotifyResponseSuccess()
