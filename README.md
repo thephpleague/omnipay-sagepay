@@ -34,6 +34,7 @@ Table of Contents
       * [Generating a Token or CardReference](#generating-a-token-or-cardreference)
       * [Using a Token or CardRererence](#using-a-token-or-cardrererence)
    * [Basket format](#basket-format)
+      * [Sage 50 Accounts Software Integration](#sage-50-accounts-software-integration)
    * [Account Types](#account-types)
    * [Sage Pay Server Notification Handler](#sage-pay-server-notification-handler)
    * [Support](#support)
@@ -429,6 +430,26 @@ but is also the only format currently supported by some of the Sage accounting p
 (e.g. Line 50) which can pull transaction data directly from Sage Pay.
 For applications that require this type of integration, an optional parameter `useOldBasketFormat`
 with a value of `true` can be passed in the driver's `initialize()` method.
+
+
+## Sage 50 Accounts Software Integration
+
+The Basket format can be used for Sage 50 Accounts Software Integration:
+
+> It is possible to integrate your Sage Pay account with Sage Accounting products to ensure you can
+> reconcile the transactions on your account within your financial software.
+> If you wish to link a transaction to a specific product record this can be done through the Basket field
+  in the transaction registration post.
+> Please note the following integration is not currently available when using BasketXML fields. 
+> In order for the download of transactions to affect a product record the first entry in a basket line needs
+  to be the product code of the item within square brackets. For example:
+  
+```
+4:[PR001]Pioneer NSDV99 DVD-Surround Sound System:1:424.68:74.32:499.00:499.00
+```
+
+You can either prepend this onto the description or using `\Omnipay\SagePay\Extend\Item` you can use `setProductCode`
+which will take care of pre-pending `[]` for you. 
 
 # Account Types
 
