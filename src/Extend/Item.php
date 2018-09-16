@@ -25,4 +25,24 @@ class Item extends CommonItem implements ItemInterface
     {
         return $this->setParameter('vat', $value);
     }
+
+    /**
+     * Product Code is used for the Product Sage 50 Accounts Software Integration
+     * It allows reconcile the transactions on your account within the financial software
+     * by linking the product record to a specific transaction.
+     * This is not available for BasketXML and only Basket Integration. See docs for more info.
+     * {@inheritDoc}
+     */
+    public function getProductRecord()
+    {
+        return $this->getParameter('product_code');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setProductCode($value)
+    {
+        return $this->setParameter('product_code', $value);
+    }
 }

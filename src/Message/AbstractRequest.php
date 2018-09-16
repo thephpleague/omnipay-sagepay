@@ -500,6 +500,23 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
     }
 
     /**
+     * Filters out any characters that SagePay does not support from the item name for
+     * the non-xml basket integration
+     *
+     * @param string $name
+     * @return string
+     */
+    protected function filterNonXmlItemName($name)
+    {
+        $standardChars = '0-9a-zA-Z';
+        $allowedSpecialChars = " +'/\\,.-{};_@()^\"~$=!#?|[]";
+        $pattern = '`[^'.$standardChars.preg_quote($allowedSpecialChars, '/').']`';
+        $name = trim(substr(preg_replace($pattern, '', $name), 0, 100));
+
+        return $name;
+    }
+
+    /**
      * Filters out any characters that SagePay does not support from the discount name.
      *
      * Believe it or not, SagePay actually have separate rules for allowed characters
@@ -591,18 +608,25 @@ abstract class AbstractRequest extends OmnipayAbstractRequest
         $count = 0;
 
         foreach ($items as $basketItem) {
+            $description = $this->filterNonXmlItemName($basketItem->getName());
             $vat = '0.00';
+
             if ($basketItem instanceof ExtendItem) {
                 $vat = $basketItem->getVat();
+
+                /**
+                 * Product Code is used for the Product Sage 50 Accounts Software Integration
+                 * It allows reconcile the transactions on your account within the financial software
+                 * by linking the product record to a specific transaction.
+                 * This is not available for BasketXML and only Basket Integration. See docs for more info.
+                 */
+                if (!is_null($basketItem->getProductRecord())) {
+                    $description = '[' . $basketItem->getProductRecord() . ']' . $description;
+                }
             }
 
             $lineTotal = ($basketItem->getQuantity() * ($basketItem->getPrice() + $vat));
 
-            $description = $this->filterItemName($basketItem->getName());
-
-            // Make sure there aren't any colons in the name
-            // Perhaps ":" should be replaced with '-' or other symbol?
-            $description = str_replace(':', ' ', $description);
             $result .= ':' . $description .    // Item name
                 ':' . $basketItem->getQuantity() . // Quantity
                 ':' . number_format($basketItem->getPrice(), 2, '.', '') . // Unit cost (without tax)
