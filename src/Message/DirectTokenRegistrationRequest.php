@@ -8,12 +8,20 @@ namespace Omnipay\SagePay\Message;
 
 class DirectTokenRegistrationRequest extends AbstractRequest
 {
-    protected $action = 'TOKEN';
-
     protected $cardBrandMap = array(
         'mastercard' => 'mc',
         'diners_club' => 'dc'
     );
+
+    public function getService()
+    {
+        return static::SERVICE_TOKEN;
+    }
+
+    public function getTxType()
+    {
+        return static::TXTYPE_TOKEN;
+    }
 
     public function getData()
     {
@@ -33,11 +41,6 @@ class DirectTokenRegistrationRequest extends AbstractRequest
         unset($data['AccountType']);
 
         return $data;
-    }
-
-    public function getService()
-    {
-        return 'directtoken';
     }
 
     protected function getCardBrand()

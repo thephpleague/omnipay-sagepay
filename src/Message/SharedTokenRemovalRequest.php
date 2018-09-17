@@ -4,7 +4,10 @@ namespace Omnipay\SagePay\Message;
 
 class SharedTokenRemovalRequest extends AbstractRequest
 {
-    protected $action = 'REMOVETOKEN';
+    public function getTxType()
+    {
+        return static::TXTYPE_REMOVETOKEN;
+    }
 
     /**
      * @return mixed

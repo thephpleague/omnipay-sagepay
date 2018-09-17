@@ -88,18 +88,37 @@ interface ConstantsInterface
     const ACCOUNT_TYPE_M = 'M';
     const ACCOUNT_TYPE_C = 'C';
 
-    //
-    // Then the response constants.
-    //
-
     /**
-     * The raw transaction type the response is a part of
+     * The transaction type.
+     * These will usually be returned in the response matching the
+     * request.
      * @var string
      */
     const TXTYPE_PAYMENT        = 'PAYMENT';
     const TXTYPE_DEFERRED       = 'DEFERRED';
     const TXTYPE_AUTHENTICATE   = 'AUTHENTICATE';
+    const TXTYPE_REMOVETOKEN    = 'REMOVETOKEN';
     const TXTYPE_TOKEN          = 'TOKEN';
+    const TXTYPE_RELEASE        = 'RELEASE';
+    const TXTYPE_AUTHORISE      = 'AUTHORISE';
+    const TXTYPE_VOID           = 'VOID';
+    const TXTYPE_ABORT          = 'ABORT';
+    const TXTYPE_REFUND         = 'REFUND';
+    const TXTYPE_REPEAT         = 'REPEAT';
+    const TXTYPE_REPEATDEFERRED = 'REPEATDEFERRED';
+
+    /** 
+     *
+     */
+    const SERVICE_SERVER_REGISTER   = 'vspserver-register';
+    const SERVICE_DIRECT_REGISTER   = 'vspdirect-register';
+    const SERVICE_REPEAT            = 'repeat';
+    const SERVICE_TOKEN             = 'directtoken';
+    const SERVICE_DIRECT3D          = 'direct3dcallback';
+
+    //
+    // Then the response constants.
+    //
 
     /**
      * There are a wide range of status codes across the different gatweay types

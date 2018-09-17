@@ -4,7 +4,10 @@ namespace Omnipay\SagePay\Message;
 
 class ServerTokenRegistrationRequest extends AbstractRequest
 {
-    protected $action = 'TOKEN';
+    public function getTxType()
+    {
+        return static::TXTYPE_TOKEN;
+    }
 
     /**
      * @return mixed

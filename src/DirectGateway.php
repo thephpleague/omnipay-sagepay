@@ -45,6 +45,7 @@ class DirectGateway extends AbstractGateway implements ConstantsInterface
             'useOldBasketFormat' => false,
             'exitOnResponse' => false,
             'apply3DSecure' => null,
+            'useAuthenticate' => null,
         ];
     }
 

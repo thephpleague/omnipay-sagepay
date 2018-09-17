@@ -17,11 +17,6 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     use GatewayParamsTrait;
 
     /**
-     * @var string The transaction type, used in the request body.
-     */
-    protected $action;
-
-    /**
      * @var string The service name, used in the endpoint URL.
      */
     protected $service;
@@ -53,24 +48,25 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
 
     /**
      * The name of the service used in the endpoint to send the message.
-     * For most services, the URL fragment will be the lower case version
+     * For MANY services, the URL fragment will be the lower case version
      * of the action.
      *
      * @return string Sage Pay endpoint service name.
      */
     public function getService()
     {
-        return ($this->service ?: strtolower($this->action));
+        return strtolower($this->getTxType());
     }
 
     /**
-     * @return string the transaction type, if one is relevant for this message.
+     * If it is used, i.e. needed for an enpoint, then it must be defined.
+     *
+     * @return string the transaction type.
+     * @throws InvalidRequestException
      */
     public function getTxType()
     {
-        if (isset($this->action)) {
-            return $this->action;
-        }
+        throw new InvalidRequestException('Transactino type not defined.');
     }
 
     /**
@@ -128,27 +124,43 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
                 'POST',
                 $this->getEndpoint(),
                 [
-                    'Content-Type' => 'application/x-www-form-urlencoded'
+                    'Content-Type' => 'application/x-www-form-urlencoded',
                 ],
                 http_build_query($data)
             );
 
-        // The body is a string.
-        $body = $httpResponse->getBody();
+        // We might want to check $httpResponse->getStatusCode()
 
-        // Split into lines.
-        $lines = preg_split('/[\n\r]+/', $body);
+        $responseData = static::parseBodyData($httpResponse);
 
-        $responseData = array();
+        return $this->createResponse($responseData);
+    }
+
+    /**
+     * The payload consists of name=>value pairs, each on a separate line.
+     *
+     * @param ??? $httpResponse
+     * @return array
+     */
+    public static function parseBodyData($httpResponse)
+    {
+        $bodyText = (string)$httpResponse->getBody();
+
+        // Split the bodyText into lines.
+
+        $lines = preg_split('/[\n\r]+/', $bodyText);
+
+        $responseData = [];
 
         foreach ($lines as $line) {
             $line = explode('=', $line, 2);
-            if (!empty($line[0])) {
+
+            if (! empty($line[0])) {
                 $responseData[trim($line[0])] = isset($line[1]) ? trim($line[1]) : '';
             }
         }
 
-        return $this->createResponse($responseData);
+        return $responseData;
     }
 
     /**

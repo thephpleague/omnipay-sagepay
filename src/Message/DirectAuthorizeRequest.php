@@ -8,9 +8,6 @@ namespace Omnipay\SagePay\Message;
 
 class DirectAuthorizeRequest extends AbstractRequest
 {
-    protected $action = 'DEFERRED';
-    protected $service = 'vspdirect-register';
-
     /**
      * @var array Some mapping from Omnipay card brand codes to Sage Pay card branc codes.
      */
@@ -18,6 +15,23 @@ class DirectAuthorizeRequest extends AbstractRequest
         'mastercard' => 'MC',
         'diners_club' => 'DC'
     );
+
+    /**
+     * @return string the transaction type
+     */
+    public function getTxType()
+    {
+        if ($this->getUseAuthenticate()) {
+            return static::TXTYPE_AUTHENTICATE;
+        } else {
+            return static::TXTYPE_DEFERRED;
+        }
+    }
+
+    public function getService()
+    {
+        return static::SERVICE_DIRECT_REGISTER;
+    }
 
     /**
      * The required fields concerning what is being authorised and who

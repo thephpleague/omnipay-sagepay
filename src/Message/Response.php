@@ -16,41 +16,15 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
     use ResponseFieldsTrait;
 
     /**
-     * FIXME: The response should never be directly passed the raw HTTP
-     * body like this. The body should be parsed to data before instantiation.
-     * However, the tests do not do that. I believe it is the tests that are broken,
-     * but the tests are how the interface has been implemented so we cannot break
-     * that for people who may rely on it.
-     */
-    public function __construct(RequestInterface $request, $data)
-    {
-        $this->request = $request;
-
-        if (!is_array($data)) {
-            // Split the data (string or guzzle body object) into lines.
-            $lines = preg_split('/[\n\r]+/', (string)$data);
-
-            $data = array();
-
-            foreach ($lines as $line) {
-                $line = explode('=', $line, 2);
-                if (!empty($line[0])) {
-                    $data[trim($line[0])] = isset($line[1]) ? trim($line[1]) : '';
-                }
-            }
-        }
-
-        $this->data = $data;
-    }
-
-    /**
      * CHECKME: should we include "OK REPEATED" as a successful status too?
      *
      * @return bool True if the transaction is successful and complete.
      */
     public function isSuccessful()
     {
-        return $this->getStatus() === static::SAGEPAY_STATUS_OK;
+        return $this->getStatus() === static::SAGEPAY_STATUS_OK
+            || $this->getStatus() === static::SAGEPAY_STATUS_REGISTERED
+            || $this->getStatus() === static::SAGEPAY_STATUS_AUTHENTICATED;
     }
 
     /**

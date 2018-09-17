@@ -10,8 +10,15 @@ use Omnipay\Common\Helper;
  */
 class SharedRepeatAuthorizeRequest extends AbstractRequest
 {
-    protected $action = 'REPEATDEFERRED';
-    protected $service = 'repeat';
+    public function getService()
+    {
+        return static::SERVICE_REPEAT;
+    }
+
+    public function getTxType()
+    {
+        return static::TXTYPE_REPEATDEFERRED;
+    }
 
     /**
      * @return array The message body data.

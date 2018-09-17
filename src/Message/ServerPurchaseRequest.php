@@ -7,12 +7,18 @@ namespace Omnipay\SagePay\Message;
  */
 class ServerPurchaseRequest extends ServerAuthorizeRequest
 {
-    protected $action = 'PAYMENT';
-
     public function getData()
     {
         $data = parent::getData();
 
         return $data;
+    }
+
+    /**
+     * @return string the transaction type
+     */
+    public function getTxType()
+    {
+        return static::TXTYPE_PAYMENT;
     }
 }

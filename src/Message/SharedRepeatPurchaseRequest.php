@@ -9,5 +9,8 @@ use Omnipay\Common\Helper;
  */
 class SharedRepeatPurchaseRequest extends SharedRepeatAuthorizeRequest
 {
-    protected $action = 'REPEAT';
+    public function getTxType()
+    {
+        return static::TXTYPE_REPEAT;
+    }
 }

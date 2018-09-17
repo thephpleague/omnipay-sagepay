@@ -14,7 +14,10 @@ class ServerTokenRegistrationResponseTest extends TestCase
     public function testTokenRegistrationSuccess()
     {
         $httpResponse = $this->getMockHttpResponse('ServerTokenRegistrationSuccess.txt');
-        $response = new ServerTokenRegistrationResponse($this->getMockRequest(), $httpResponse->getBody());
+        $response = new ServerTokenRegistrationResponse(
+            $this->getMockRequest(),
+            AbstractRequest::parseBodyData($httpResponse)
+        );
 
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
@@ -28,7 +31,10 @@ class ServerTokenRegistrationResponseTest extends TestCase
     public function testTokenRegistrationFailure()
     {
         $httpResponse = $this->getMockHttpResponse('ServerTokenRegistrationFailure.txt');
-        $response = new ServerTokenRegistrationResponse($this->getMockRequest(), $httpResponse->getBody());
+        $response = new ServerTokenRegistrationResponse(
+            $this->getMockRequest(),
+            AbstractRequest::parseBodyData($httpResponse)
+        );
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());

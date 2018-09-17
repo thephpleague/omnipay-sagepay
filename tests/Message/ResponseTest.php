@@ -14,7 +14,10 @@ class ResponseTest extends TestCase
     public function testDirectPurchaseSuccess()
     {
         $httpResponse = $this->getMockHttpResponse('DirectPurchaseSuccess.txt');
-        $response = new Response($this->getMockRequest(), $httpResponse->getBody());
+        $response = new Response(
+            $this->getMockRequest(),
+            AbstractRequest::parseBodyData($httpResponse)
+        );
 
         $this->assertSame('OK', $response->getCode());
 
@@ -27,7 +30,10 @@ class ResponseTest extends TestCase
     public function testDirectPurchaseFailure()
     {
         $httpResponse = $this->getMockHttpResponse('DirectPurchaseFailure.txt');
-        $response = new Response($this->getMockRequest(), $httpResponse->getBody());
+        $response = new Response(
+            $this->getMockRequest(),
+            AbstractRequest::parseBodyData($httpResponse)
+        );
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
@@ -38,7 +44,10 @@ class ResponseTest extends TestCase
     public function testDirectPurchase3dSecure()
     {
         $httpResponse = $this->getMockHttpResponse('DirectPurchase3dSecure.txt');
-        $response = new Response($this->getMockRequest(), $httpResponse->getBody());
+        $response = new Response(
+            $this->getMockRequest(),
+            AbstractRequest::parseBodyData($httpResponse)
+        );
 
         $this->getMockRequest()->shouldReceive('getReturnUrl')->once()->andReturn('https://www.example.com/return');
 
@@ -57,7 +66,10 @@ class ResponseTest extends TestCase
     public function testCaptureSuccess()
     {
         $httpResponse = $this->getMockHttpResponse('SharedCaptureSuccess.txt');
-        $response = new Response($this->getMockRequest(), $httpResponse->getBody());
+        $response = new Response(
+            $this->getMockRequest(),
+            AbstractRequest::parseBodyData($httpResponse)
+        );
 
         $this->assertTrue($response->isSuccessful());
         $this->assertSame('{"VendorTxCode":"123456"}', $response->getTransactionReference());
@@ -67,7 +79,10 @@ class ResponseTest extends TestCase
     public function testCaptureFailure()
     {
         $httpResponse = $this->getMockHttpResponse('SharedCaptureFailure.txt');
-        $response = new Response($this->getMockRequest(), $httpResponse->getBody());
+        $response = new Response(
+            $this->getMockRequest(),
+            AbstractRequest::parseBodyData($httpResponse)
+        );
 
         $this->assertFalse($response->isSuccessful());
         $this->assertSame('{"VendorTxCode":"123456"}', $response->getTransactionReference());
@@ -77,7 +92,10 @@ class ResponseTest extends TestCase
     public function testDirectPurchaseWithToken()
     {
         $httpResponse = $this->getMockHttpResponse('DirectPurchaseWithToken.txt');
-        $response = new Response($this->getMockRequest(), $httpResponse->getBody());
+        $response = new Response(
+            $this->getMockRequest(),
+            AbstractRequest::parseBodyData($httpResponse)
+        );
 
         $this->assertTrue($response->isSuccessful());
         $this->assertSame('{ABCDEFGH-ABCD-ABCD-ABCD-ABCDEFGHIJKL}', $response->getToken());

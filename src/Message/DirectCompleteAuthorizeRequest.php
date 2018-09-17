@@ -11,7 +11,7 @@ class DirectCompleteAuthorizeRequest extends AbstractRequest
 {
     public function getService()
     {
-        return 'direct3dcallback';
+        return static::SERVICE_DIRECT3D;
     }
 
     public function getData()

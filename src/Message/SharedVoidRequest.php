@@ -7,7 +7,10 @@ namespace Omnipay\SagePay\Message;
  */
 class SharedVoidRequest extends AbstractRequest
 {
-    protected $action = 'VOID';
+    public function getTxType()
+    {
+        return static::TXTYPE_VOID;
+    }
 
     public function getData()
     {

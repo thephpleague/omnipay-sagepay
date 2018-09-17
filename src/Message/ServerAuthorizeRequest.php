@@ -7,7 +7,10 @@ namespace Omnipay\SagePay\Message;
  */
 class ServerAuthorizeRequest extends DirectAuthorizeRequest
 {
-    protected $service = 'vspserver-register';
+    public function getService()
+    {
+        return static::SERVICE_SERVER_REGISTER;
+    }
 
     /**
      * Add the optional token details to the base data.

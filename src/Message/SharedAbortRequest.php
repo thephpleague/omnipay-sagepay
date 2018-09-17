@@ -7,5 +7,8 @@ namespace Omnipay\SagePay\Message;
  */
 class SharedAbortRequest extends SharedVoidRequest
 {
-    protected $action = 'ABORT';
+    public function getTxType()
+    {
+        return static::TXTYPE_ABORT;
+    }
 }

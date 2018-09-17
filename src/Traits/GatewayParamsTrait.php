@@ -156,4 +156,24 @@ trait GatewayParamsTrait
     {
         return $this->setParameter('applyAVSCV2', $value);
     }
+
+    /**
+     * Set this parameter to use AUTHENTICATE/AUTHORISE instead
+     * of DEFERRED/RELEASE for the authorize() function.
+     *
+     * @param mixed $value Casts to true to switch to the authenticate model.
+     * @return $this
+     */
+    public function setUseAuthenticate($value)
+    {
+        return $this->setParameter('useAuthenticate', $value);
+    }
+
+    /**
+     * @return mixed true for old format basket; false for newer XML format basket.
+     */
+    public function getUseAuthenticate()
+    {
+        return $this->getParameter('useAuthenticate');
+    }
 }

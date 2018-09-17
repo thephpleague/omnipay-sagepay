@@ -7,7 +7,10 @@ namespace Omnipay\SagePay\Message;
  */
 class SharedRefundRequest extends AbstractRequest
 {
-    protected $action = 'REFUND';
+    public function getTxType()
+    {
+        return static::TXTYPE_REFUND;
+    }
 
     /**
      * @return array The message body data.

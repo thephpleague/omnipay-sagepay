@@ -14,7 +14,10 @@ class ServerAuthorizeResponseTest extends TestCase
     public function testServerPurchaseSuccess()
     {
         $httpResponse = $this->getMockHttpResponse('ServerPurchaseSuccess.txt');
-        $response = new ServerAuthorizeResponse($this->getMockRequest(), $httpResponse->getBody());
+        $response = new ServerAuthorizeResponse(
+            $this->getMockRequest(),
+            AbstractRequest::parseBodyData($httpResponse)
+        );
 
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
@@ -27,7 +30,10 @@ class ServerAuthorizeResponseTest extends TestCase
 
     public function testServerPurchaseRepeated()
     {
-        $response = new ServerAuthorizeResponse($this->getMockRequest(), 'Status=OK REPEATED');
+        $response = new ServerAuthorizeResponse(
+            $this->getMockRequest(),
+            ['Status' => 'OK REPEATED']
+        );
 
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
@@ -36,7 +42,10 @@ class ServerAuthorizeResponseTest extends TestCase
     public function testServerPurchaseFailure()
     {
         $httpResponse = $this->getMockHttpResponse('ServerPurchaseFailure.txt');
-        $response = new ServerAuthorizeResponse($this->getMockRequest(), $httpResponse->getBody());
+        $response = new ServerAuthorizeResponse(
+            $this->getMockRequest(),
+            AbstractRequest::parseBodyData($httpResponse)
+        );
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
@@ -47,7 +56,10 @@ class ServerAuthorizeResponseTest extends TestCase
     public function testServerPurchaseWithToken()
     {
         $httpResponse = $this->getMockHttpResponse('ServerPurchaseWithToken.txt');
-        $response = new ServerAuthorizeResponse($this->getMockRequest(), $httpResponse->getBody());
+        $response = new ServerAuthorizeResponse(
+            $this->getMockRequest(),
+            AbstractRequest::parseBodyData($httpResponse)
+        );
 
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());

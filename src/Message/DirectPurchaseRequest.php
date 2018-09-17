@@ -7,5 +7,8 @@ namespace Omnipay\SagePay\Message;
  */
 class DirectPurchaseRequest extends DirectAuthorizeRequest
 {
-    protected $action = 'PAYMENT';
+    public function getService()
+    {
+        return static::SERVICE_DIRECT_REGISTER; 
+    }
 }
