@@ -3,7 +3,6 @@
 namespace Omnipay\SagePay\Message;
 
 use Omnipay\Tests\TestCase;
-//use Money\Money;
 
 class DirectAuthorizeRequestTest extends TestCase
 {
@@ -13,7 +12,7 @@ class DirectAuthorizeRequestTest extends TestCase
         . '</surcharge></surcharges>';
 
     /**
-     * @var \Omnipay\Common\Message\AbstractRequest $request
+     * @var DirectAuthorizeRequest
      */
     protected $request;
 
@@ -325,9 +324,87 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertContains($expected, $data['BasketXML'], 'Basket XML does not match the expected output');
     }
 
-    /**
-     * 
-     */
+    public function testNonXmlBasket()
+    {
+        $this->request->setUseOldBasketFormat(true);
+
+        $items = new \Omnipay\Common\ItemBag(array(
+            new \Omnipay\SagePay\Extend\Item(array(
+                'name' => "Pioneer NSDV99 DVD-Surround Sound System",
+                'quantity' => 3,
+                'price' => 4.35,
+            )),
+        ));
+
+        $this->request->setItems($items);
+        $data = $this->request->getData();
+
+        $this->assertArrayNotHasKey('BasketXML', $data);
+        $this->assertSame('1:Pioneer NSDV99 DVD-Surround Sound System:3:4.35::4.35:13.05', $data['Basket']);
+    }
+
+    public function testNonXmlBasketWithVat()
+    {
+        $this->request->setUseOldBasketFormat(true);
+
+        $items = new \Omnipay\Common\ItemBag(array(
+            new \Omnipay\SagePay\Extend\Item(array(
+                'name' => "Pioneer NSDV99 DVD-Surround Sound System",
+                'quantity' => 3,
+                'price' => 4.35,
+                'vat' => 2
+            )),
+        ));
+
+        $this->request->setItems($items);
+        $data = $this->request->getData();
+
+        $this->assertArrayHasKey('Basket', $data);
+        $this->assertArrayNotHasKey('BasketXML', $data);
+
+        $this->assertSame('1:Pioneer NSDV99 DVD-Surround Sound System:3:4.35:2:6.35:19.05', $data['Basket']);
+    }
+
+    public function testNonXmlBasketWithProductCode()
+    {
+        $this->request->setUseOldBasketFormat(true);
+
+        $items = new \Omnipay\Common\ItemBag(array(
+            new \Omnipay\SagePay\Extend\Item(array(
+                'name' => "Pioneer NSDV99 DVD-Surround Sound System",
+                'quantity' => 3,
+                'price' => 4.35,
+                'vat' => 2,
+                'productCode' => 'DVD-123'
+            )),
+        ));
+
+        $this->request->setItems($items);
+        $data = $this->request->getData();
+
+        $this->assertSame('1:[DVD-123]Pioneer NSDV99 DVD-Surround Sound System:3:4.35:2:6.35:19.05', $data['Basket']);
+    }
+
+    public function testNonXmlBasketWithSpecialAndNonSpecialCharacters()
+    {
+        $this->request->setUseOldBasketFormat(true);
+
+        $items = new \Omnipay\Common\ItemBag(array(
+            new \Omnipay\SagePay\Extend\Item(array(
+                // [] and ::: are reserved
+                'name' => "[SKU-ABC]Pioneer::: NSDV99 DVD-Surround Sound System .-{};_@()",
+                'quantity' => 3,
+                'price' => 4.35,
+                'vat' => 2,
+            )),
+        ));
+
+        $this->request->setItems($items);
+        $data = $this->request->getData();
+
+        $this->assertSame('1:[SKU-ABC]Pioneer NSDV99 DVD-Surround Sound System .-{};_@():3:4.35:2:6.35:19.05', $data['Basket']);
+    }
+
     public function testCreateTokenCanBeSetInRequest()
     {
         $this->request->setCreateToken(true);
