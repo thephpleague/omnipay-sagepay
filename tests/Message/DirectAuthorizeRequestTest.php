@@ -375,7 +375,7 @@ class DirectAuthorizeRequestTest extends TestCase
                 'quantity' => 3,
                 'price' => 4.35,
                 'vat' => 2,
-                'product_code' => 'DVD-123'
+                'productRecord' => 'DVD-123'
             )),
         ));
 

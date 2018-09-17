@@ -35,14 +35,14 @@ class Item extends CommonItem implements ItemInterface
      */
     public function getProductRecord()
     {
-        return $this->getParameter('productCode');
+        return $this->getParameter('productRecord');
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setProductCode($value)
+    public function setProductRecord($value)
     {
-        return $this->setParameter('productCode', $value);
+        return $this->setParameter('productRecord', $value);
     }
 }
