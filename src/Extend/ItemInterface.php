@@ -19,4 +19,14 @@ interface ItemInterface extends CommonItemInterface
      * Get the item VAT.
      */
     public function getVat();
+
+    /**
+     * Set the item Product Code.
+     */
+    public function setProductCode($value);
+
+    /**
+     * Get the item Product Code.
+     */
+    public function getProductCode();
 }
