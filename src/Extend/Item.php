@@ -35,7 +35,7 @@ class Item extends CommonItem implements ItemInterface
      */
     public function getProductRecord()
     {
-        return $this->getParameter('product_code');
+        return $this->getParameter('productCode');
     }
 
     /**
@@ -43,6 +43,6 @@ class Item extends CommonItem implements ItemInterface
      */
     public function setProductCode($value)
     {
-        return $this->setParameter('product_code', $value);
+        return $this->setParameter('productCode', $value);
     }
 }
