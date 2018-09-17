@@ -11,6 +11,7 @@ use Omnipay\SagePay\Extend\Item as ExtendItem;
 use Omnipay\Common\Message\AbstractRequest as OmnipayAbstractRequest;
 use Omnipay\SagePay\Traits\GatewayParamsTrait;
 use Omnipay\SagePay\ConstantsInterface;
+use Psr\Http\Message\ResponseInterface;
 
 abstract class AbstractRequest extends OmnipayAbstractRequest implements ConstantsInterface
 {
@@ -112,6 +113,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     public function sendData($data)
     {
         // Issue #20 no data values should be null.
+
         array_walk($data, function (&$value) {
             if (! isset($value)) {
                 $value = '';
@@ -139,10 +141,10 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     /**
      * The payload consists of name=>value pairs, each on a separate line.
      *
-     * @param ??? $httpResponse
+     * @param ResponseInterface $httpResponse
      * @return array
      */
-    public static function parseBodyData($httpResponse)
+    public static function parseBodyData(ResponseInterface $httpResponse)
     {
         $bodyText = (string)$httpResponse->getBody();
 
