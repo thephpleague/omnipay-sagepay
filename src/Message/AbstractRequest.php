@@ -508,8 +508,8 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
                  * by linking the product record to a specific transaction.
                  * This is not available for BasketXML and only Basket Integration. See docs for more info.
                  */
-                if (!is_null($basketItem->getProductRecord())) {
-                    $description = '[' . $basketItem->getProductRecord() . ']' . $description;
+                if (!is_null($basketItem->getProductCode())) {
+                    $description = '[' . $basketItem->getProductCode() . ']' . $description;
                 }
             }
 

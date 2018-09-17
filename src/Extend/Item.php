@@ -33,16 +33,16 @@ class Item extends CommonItem implements ItemInterface
      * This is not available for BasketXML and only Basket Integration. See docs for more info.
      * {@inheritDoc}
      */
-    public function getProductRecord()
+    public function getProductCode()
     {
-        return $this->getParameter('productRecord');
+        return $this->getParameter('productCode');
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setProductRecord($value)
+    public function setProductCode($value)
     {
-        return $this->setParameter('productRecord', $value);
+        return $this->setParameter('productCode', $value);
     }
 }
