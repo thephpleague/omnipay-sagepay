@@ -14,18 +14,19 @@ class SharedCaptureRequest extends AbstractRequest
      */
     public function getData()
     {
-        $this->validate('amount', 'transactionReference');
-        $reference = json_decode($this->getTransactionReference(), true);
+        $this->validate('amount', 'relatedTransactionId', 'vpsTxId', 'securityKey', 'txAuthNo');
 
         $data = $this->getBaseData();
 
         $data['ReleaseAmount'] = $this->getAmount();
 
         // Reference to the transaction to capture.
-        $data['VendorTxCode'] = $reference['VendorTxCode'];
-        $data['VPSTxId'] = $reference['VPSTxId'];
-        $data['SecurityKey'] = $reference['SecurityKey'];
-        $data['TxAuthNo'] = $reference['TxAuthNo'];
+        // Supplied individually, or as a JSON transactionReference
+
+        $data['VendorTxCode'] = $this->getRelatedTransactionId();
+        $data['VPSTxId'] = $this->getVPSTxId();
+        $data['SecurityKey'] = $this->getSecurityKey();
+        $data['TxAuthNo'] = $this->getTxAuthNo();
 
         return $data;
     }

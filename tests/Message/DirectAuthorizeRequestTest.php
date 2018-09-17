@@ -51,7 +51,7 @@ class DirectAuthorizeRequestTest extends TestCase
         // according to whether we are using a single-use token or a more
         // permanent cardReference.
 
-        $this->assertNull($data['CreateToken']);
+        $this->assertArrayNotHasKey('CreateToken', $data);
 
         $this->assertSame('EN', $data['Language']);
     }
@@ -415,8 +415,11 @@ class DirectAuthorizeRequestTest extends TestCase
 
     /**
      * @dataProvider tokenSetterProvider
+     * Now disabled for consistency of getters and setters.
+     * The token can be any value that can be cast to boolean,
+     * and is set to 0 or 1 only at time of use.
      */
-    public function testCreateTokenCanOnlyBeOneOrZeroInRequest($parameter, $expectation)
+    public function DISABLED_testCreateTokenCanOnlyBeOneOrZeroInRequest($parameter, $expectation)
     {
         $this->request->setCreateToken($parameter);
         $data = $this->request->getData();
@@ -468,8 +471,8 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->setToken('{ABCDEF}');
         $this->request->setStoreToken(true);
         $data = $this->request->getData();
-        
-        $this->assertSame(1, $data['StoreToken']);
+
+        $this->assertSame(true, $data['StoreToken']);
     }
 
     public function testStoreTokenIsUnsetIfThereIsNoExistingTokenSetInRequest()
@@ -482,8 +485,9 @@ class DirectAuthorizeRequestTest extends TestCase
 
     /**
      * @dataProvider tokenSetterProvider
+     * No longer applies; the storeToken value is cast to bool on use.
      */
-    public function testStoreTokenCanOnlyBeOneOrZeroIfSetInRequest($parameter, $expectation)
+    public function DISABLED_testStoreTokenCanOnlyBeOneOrZeroIfSetInRequest($parameter, $expectation)
     {
         $this->request->setToken('{ABCDEF}');
         $this->request->setStoreToken($parameter);

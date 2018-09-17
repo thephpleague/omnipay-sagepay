@@ -6,6 +6,7 @@ use Omnipay\Common\Exception\InvalidResponseException;
 
 /**
  * Sage Pay Server Complete Authorize Request
+ * DEPRECATED - use $gateway->notify()
  */
 class ServerCompleteAuthorizeRequest extends AbstractRequest
 {

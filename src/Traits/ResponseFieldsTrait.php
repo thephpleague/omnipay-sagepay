@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\SagePay\Message;
+namespace Omnipay\SagePay\Traits;
 
 /**
  * Response fields shared between the Direct/Server response class and

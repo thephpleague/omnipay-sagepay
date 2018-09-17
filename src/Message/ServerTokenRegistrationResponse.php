@@ -11,8 +11,8 @@ class ServerTokenRegistrationResponse extends Response
 
     public function isRedirect()
     {
-        return isset($this->data['Status']) &&
-        in_array($this->data['Status'], array('OK', 'OK REPEATED'));
+        return isset($this->data['Status'])
+            && in_array($this->data['Status'], array('OK', 'OK REPEATED'));
     }
 
     public function getRedirectUrl()
@@ -27,6 +27,6 @@ class ServerTokenRegistrationResponse extends Response
 
     public function getRedirectData()
     {
-        return null;
+        return [];
     }
 }
