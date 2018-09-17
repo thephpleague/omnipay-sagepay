@@ -22,8 +22,7 @@ trait ServerNotifyTrait
     }
 
     /**
-     * Create the signature calculated from the POST data and the saved SecurityKey
-     * (the SagePay one-use signature).
+     * Create the signature calculated from the POST data and the saved SecurityKey.
      * This signature is lower case.
      */
     public function buildSignature()
@@ -86,7 +85,7 @@ trait ServerNotifyTrait
                     $this->getCardType(),
                     $this->getLast4Digits(),
                     // New for protocol v3.00
-                    $this->getDataItem('DeclineCode'),
+                    $this->getDeclineCode(),
                     $this->getExpiryDate(),
                     $this->getFraudResponse(),
                     $this->getBankAuthCode(),
@@ -116,13 +115,18 @@ trait ServerNotifyTrait
     public function getTransactionStatus()
     {
         // If the signature check fails, then all bets are off - the POST cannot be trusted.
+
         if (! $this->isValid()) {
             return static::STATUS_FAILED;
         }
 
         $status = $this->getStatus();
 
-        if ($status === Response::SAGEPAY_STATUS_OK) {
+        if ($status === Response::SAGEPAY_STATUS_OK
+            || $status === SAGEPAY_STATUS_OK_REPEATED
+            || $status === SAGEPAY_STATUS_AUTHENTICATED
+            || $status === SAGEPAY_STATUS_REGISTERED
+        ) {
             return static::STATUS_COMPLETED;
         }
 
@@ -162,7 +166,7 @@ trait ServerNotifyTrait
      */
     public function getTransactionReference()
     {
-        $reference = array();
+        $reference = [];
         $reference['SecurityKey'] = $this->getSecurityKey();
 
         foreach (array('VendorTxCode', 'TxAuthNo', 'VPSTxId') as $key) {

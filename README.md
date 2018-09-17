@@ -34,10 +34,11 @@ Table of Contents
          * [Server Notification Handler](#server-notification-handler)
       * [Sage Pay Shared Methods (for both Direct and Server):](#sage-pay-shared-methods-for-both-direct-and-server)
          * [Repeat Authorize/Purchase](#repeat-authorizepurchase)
-         * [Shared Delete Card](#shared-delete-card)
+         * [Capture](#capture)
+         * [Delete Card](#delete-card)
    * [Token Billing](#token-billing)
       * [Generating a Token or CardReference](#generating-a-token-or-cardreference)
-      * [Using a Token or CardRererence](#using-a-token-or-cardrererence)
+      * [Using a Token or CardReference](#using-a-token-or-cardreference)
    * [Basket format](#basket-format)
       * [Sage 50 Accounts Software Integration](#sage-50-accounts-software-integration)
    * [Account Types](#account-types)
@@ -341,7 +342,14 @@ $response = $gateway->authorize(array(
     // 'surchargeXml' => $surchargeXml,
     // 'token' => $token,
     // 'cardReference' => $cardReference,
+    // 'useAuthenticate' => true,
 ))->send();
+
+If `useAuthenticate` is set, then the `authorize` will use the `AUTHENTICATE`/`AUTHORISE`
+method of reserving the transaction details.
+If `useAuthenticate` is not set (the default) then the `DEFERRED`/`RELEASE`
+method of reserving the transaction details will be used.
+The same method must be used when capturing the transaction.
 
 // Create storage for this transaction now, indexed by the transaction ID.
 // We will need to access it in the notification handler.
@@ -620,7 +628,12 @@ $repeatResponse = $repeatRequest->send();
 // Treat $repeatResponse like any new authorization or purchase response.
 ```
 
-### Shared Delete Card
+### Capture
+
+If the `useAuthenticate` parameter was set when the transaction was originally
+authorized, then it must be used in the capture too.
+
+### Delete Card
 
 This is one of the simpler messages:
 

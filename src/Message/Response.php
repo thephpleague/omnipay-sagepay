@@ -16,13 +16,12 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
     use ResponseFieldsTrait;
 
     /**
-     * CHECKME: should we include "OK REPEATED" as a successful status too?
-     *
      * @return bool True if the transaction is successful and complete.
      */
     public function isSuccessful()
     {
         return $this->getStatus() === static::SAGEPAY_STATUS_OK
+            || $this->getStatus() === static::SAGEPAY_STATUS_OK_REPEATED
             || $this->getStatus() === static::SAGEPAY_STATUS_REGISTERED
             || $this->getStatus() === static::SAGEPAY_STATUS_AUTHENTICATED;
     }
