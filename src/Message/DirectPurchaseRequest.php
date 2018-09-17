@@ -9,6 +9,6 @@ class DirectPurchaseRequest extends DirectAuthorizeRequest
 {
     public function getService()
     {
-        return static::SERVICE_DIRECT_REGISTER; 
+        return static::SERVICE_DIRECT_REGISTER;
     }
 }

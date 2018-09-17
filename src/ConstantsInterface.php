@@ -107,7 +107,7 @@ interface ConstantsInterface
     const TXTYPE_REPEAT         = 'REPEAT';
     const TXTYPE_REPEATDEFERRED = 'REPEATDEFERRED';
 
-    /** 
+    /**
      *
      */
     const SERVICE_SERVER_REGISTER   = 'vspserver-register';
