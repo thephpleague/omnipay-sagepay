@@ -83,7 +83,7 @@ if using this API.
 The Direct gateway methods for handling cards are:
 
 * authorize() - with completeAuthorize for 3D Secure and PayPal redirect
-* purchase() - with completeAuthorize for 3D Secure and PayPal redirect
+* purchase() - with completePurchase for 3D Secure and PayPal redirect
 * createCard() - explicit "standalone" creation of a cardReference or token
 
 *Note: PayPal is not yet implemented in this driver.*
