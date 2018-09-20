@@ -526,14 +526,11 @@ Now the signature can be checked:
 
 $request->setSecurityKey($securityKey);
 
-// Get the response message ready for returning.
-$response = $request->send();
-
 if (! $request->isValid()) {
     // Respond to Sage Pay indicating we are not accepting anything about this message.
     // You might want to log `$request->getData()` first, for later analysis.
 
-    $response->invalid($nextUrl, 'Signature not valid - goodbye');
+    $request->invalid($nextUrl, 'Signature not valid - goodbye');
 }
 ```
 
@@ -542,7 +539,7 @@ then indicate this with an error. Note an "error" is to indicate that although t
 appears to be legitimate, you do not accept it or cannot handle it for any reason:
 
 ```php
-$response->error($nextUrl, 'This transaction does not exist on the system');
+$request->error($nextUrl, 'This transaction does not exist on the system');
 ```
 
 > **Note:** it has been observed that the same notification message may be sent
@@ -562,7 +559,7 @@ $request->getData();
 // be needed if you want to capture the payment (for an authorize) or void or refund or
 // repeat the payment later.
 
-$finalTransactionReference = $response->getTransactionReference();
+$finalTransactionReference = $request->getTransactionReference();
 
 // The payment or authorization result:
 // Result is $request::STATUS_COMPLETED, $request::STATUS_PENDING or $request::STATUS_FAILED
@@ -576,13 +573,13 @@ $request->getMessage();
 // The transaction may be the result of a `createCard()` request.
 // The cardReference can be found like this:
 
-if ($response->getTxType() === $response::TXTYPE_TOKEN) {
-    $cardReference = $response->getCardReference();
+if ($request->getTxType() === $request::TXTYPE_TOKEN) {
+    $cardReference = $request->getCardReference();
 }
 
 // Now let Sage Pay know you have accepted and saved the result:
 
-$response->confirm($nextUrl);
+$request->confirm($nextUrl);
 ```
 
 The `$nextUrl` is where you want Sage Pay to send the user to next.
