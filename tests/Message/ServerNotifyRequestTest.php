@@ -16,7 +16,10 @@ class ServerNotifyRequestTest extends TestCase
     {
         parent::setUp();
 
-        $this->request = new ServerNotifyRequest($this->getHttpClient(), $this->getHttpRequest());
+        $this->request = new ServerNotifyRequest(
+            $this->getHttpClient(),
+            $this->getHttpRequest()
+        );
 
         $this->request->initialize(
             array(
@@ -55,7 +58,8 @@ class ServerNotifyRequestTest extends TestCase
 
     public function DISABLED_testServerNotifyResponseFailure()
     {
-        $response = new ServerNotifyResponse($this->getMockRequest(), array('Status' => 'INVALID'));
+        $response = new ServerNotifyRequest($this->getMockRequest(), array('Status' => 'INVALID'));
+
         $this->assertFalse($response->isSuccessful());
 
         $this->assertFalse($response->isRedirect());
