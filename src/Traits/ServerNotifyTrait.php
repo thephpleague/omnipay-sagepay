@@ -123,9 +123,9 @@ trait ServerNotifyTrait
         $status = $this->getStatus();
 
         if ($status === Response::SAGEPAY_STATUS_OK
-            || $status === SAGEPAY_STATUS_OK_REPEATED
-            || $status === SAGEPAY_STATUS_AUTHENTICATED
-            || $status === SAGEPAY_STATUS_REGISTERED
+            || $status === Response::SAGEPAY_STATUS_OK_REPEATED
+            || $status === Response::SAGEPAY_STATUS_AUTHENTICATED
+            || $status === Response::SAGEPAY_STATUS_REGISTERED
         ) {
             return static::STATUS_COMPLETED;
         }
