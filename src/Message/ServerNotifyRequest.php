@@ -144,7 +144,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     public function error($nextUrl, $detail = null)
     {
         // If the signature is invalid, then do not allow the reject.
-        // CHECKME: why?
+
         if (! $this->isValid()) {
             throw new InvalidResponseException('Cannot reject an invalid notification');
         }

@@ -160,13 +160,17 @@ trait ServerNotifyTrait
     }
 
     /**
-     * Gateway Reference
+     * Gateway Reference.
      *
-     * @return string A reference provided by the gateway to represent this transaction
+     * @return string|null A reference provided by the gateway to represent this transaction
      */
     public function getTransactionReference()
     {
         $reference = [];
+
+        // The security key is passed in as a parameter by the application,
+        // and not POSTed from the gateway.
+
         $reference['SecurityKey'] = $this->getSecurityKey();
 
         foreach (array('VendorTxCode', 'TxAuthNo', 'VPSTxId') as $key) {

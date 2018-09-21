@@ -41,11 +41,13 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
      */
     public function getTransactionReference()
     {
-        $reference = array();
+        $reference = [];
+
         $reference['VendorTxCode'] = $this->getRequest()->getTransactionId();
 
         foreach (['SecurityKey', 'TxAuthNo', 'VPSTxId'] as $key) {
-            $value = $this->{'get' . $key}();
+            $value = $this->getDataItem($key);
+
             if ($value !== null) {
                 $reference[$key] = $value;
             }
