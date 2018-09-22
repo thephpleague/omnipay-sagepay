@@ -630,6 +630,15 @@ $repeatResponse = $repeatRequest->send();
 If the `useAuthenticate` parameter was set when the transaction was originally
 authorized, then it must be used in the capture too.
 
+* Setting the `useAuthenticate` parameter will cause the capture to send
+  an `AUTHORISE` request. You must supply an `amount` and `description`
+  when doing this. You can capture multiple amounts up to 115% of the
+  original `AUTHENTICATED` amount.
+* Resetting the `useAuthenticate` parameter (the default) will cause the
+  capture to send a `RELEASE` request. This will release the total amount
+  that was originally `DEFERRED`. You can only capture a deferred payment
+  once, and it will be for the full amount.
+
 ### Delete Card
 
 This is one of the simpler messages:
