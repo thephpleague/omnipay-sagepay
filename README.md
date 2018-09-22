@@ -631,13 +631,65 @@ If the `useAuthenticate` parameter was set when the transaction was originally
 authorized, then it must be used in the capture too.
 
 * Setting the `useAuthenticate` parameter will cause the capture to send
-  an `AUTHORISE` request. You must supply an `amount` and `description`
-  when doing this. You can capture multiple amounts up to 115% of the
-  original `AUTHENTICATED` amount.
-* Resetting the `useAuthenticate` parameter (the default) will cause the
-  capture to send a `RELEASE` request. This will release the total amount
-  that was originally `DEFERRED`. You can only capture a deferred payment
-  once, and it will be for the full amount.
+  an `AUTHORISE` request. You must supply an `amount`, a `description`
+  and a new `transactionId` when doing this.
+  You can capture multiple amounts up to 115% of the
+  original `AUTHENTICATED` (with 3D Secure) or `REGISTERED` (without 3D Secure)
+  amount.
+* Resetting the `useAuthenticate` parameter (false, the default mode) will cause
+  the capture to send a `RELEASE` request. This will release the provided amount
+  (up to the original deferred amount, but no higher) that was originally `DEFERRED`.
+  You can only capture a deferred payment once, then the deferred payment will be
+  closed.
+
+Examples of each:
+
+```php
+$captureRequest = $gateway->capture([
+    // authenticate is not set
+    'useAuthenticate' => false,
+    // Provide either the original transactionReference:
+    'transactionReference' => $deferredTransactionReference,
+    // Or the individual items:
+    'securityKey' => $savedSecurityKey(),
+    'txAuthNo' => $savedTxAuthNo(),
+    'vpsTxId' => $savedVPSTxId(),
+    'relatedTransactionId' => $savedTransactionId,
+    // Up to the original amount, one chance only.
+    'amount' => '99.99',
+]);
+```
+
+```php
+$captureRequest = $gateway->capture([
+    // authenticate is set
+    'useAuthenticate' => true,
+    // Provide either the original transactionReference:
+    'transactionReference' => $deferredTransactionReference,
+    // Or the individual items:
+    'securityKey' => $savedSecurityKey(),
+    'txAuthNo' => $savedTxAuthNo(),
+    'vpsTxId' => $savedVPSTxId(),
+    'relatedTransactionId' => $savedTransactionId,
+    // Up to 115% of the original amount, in as many chunks as you like.
+    'amount' => '9.99',
+    // The capture becomes a transaction in its own right.
+    'transactionId' => $newTransactionId,
+    'currency' => 'GBP',
+    'description' => 'Take staged payment number 1',
+]);
+```
+
+In both cases, send the message and check the result.
+
+```php
+$captureResponse = $captureRequest->send();
+
+if ($captureResponse->isSuccessful()) {
+    // The capture will successful.
+    // There will never be a redirect here.
+}
+```
 
 ### Delete Card
 
