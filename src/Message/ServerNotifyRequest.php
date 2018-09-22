@@ -185,10 +185,10 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
      */
     public function getResponseBody($status, $nextUrl, $detail = null)
     {
-        $body = array(
+        $body = [
             'Status=' . $status,
             'RedirectUrl=' . $nextUrl,
-        );
+        ];
 
         if ($detail !== null) {
             $body[] = 'StatusDetail=' . $detail;

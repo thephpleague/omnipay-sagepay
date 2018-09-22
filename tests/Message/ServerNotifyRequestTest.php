@@ -77,6 +77,29 @@ class ServerNotifyRequestTest extends TestCase
         $this->assertNull($this->request->getMessage());
 
         $this->assertSame('0722', $this->request->getExpiryDate());
+
+        // The request can be "sent" and you just get back the same request,
+        // with all the same detgails.
+
+        $response = $this->request->send();
+
+        $this->assertSame(
+            '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
+            $response->getTransactionReference()
+        );
+
+        $this->assertNull($response->getMessage());
+
+        $this->assertSame('0722', $response->getExpiryDate());
+
+        $this->assertSame($this->request, $response);
+
+        // Confirm will work if the signature is valid.
+
+        $this->expectOutputString(
+            "Status=OK\r\nRedirectUrl=https://www.example.com/\r\nStatusDetail=detail"
+        );
+        $this->request->confirm('https://www.example.com/', 'detail');
     }
 
     public function testServerNotifyRequestFailure()
@@ -105,62 +128,20 @@ class ServerNotifyRequestTest extends TestCase
         $this->assertNull($this->request->getMessage());
     }
 
-    public function DISABLED_testConfirm()
+    public function testError()
     {
-        $response = m::mock('\Omnipay\SagePay\Message\ServerNotifyResponse', array('isValid' => 1))->makePartial();
-        $response->shouldReceive('sendResponse')->once()->with('OK', 'https://www.example.com/', 'detail');
+        parent::setUp();
 
-        $response->confirm('https://www.example.com/', 'detail');
-        //$response->sendResponse('OK', 'https://www.example.com/', 'detail');
-    }
+        // Mock up the server request with first, as ServerNotifyRequest
+        // only grabs the POST data once on instantiation.
 
-    public function DISABLED_testError()
-    {
-        $response = m::mock('\Omnipay\SagePay\Message\ServerNotifyResponse', array('isValid' => 1))->makePartial();
-        $response->shouldReceive('sendResponse')->once()->with('ERROR', 'https://www.example.com/', 'detail');
-
-        $response->error('https://www.example.com/', 'detail');
-        //$response->sendResponse('ERROR', 'https://www.example.com/', 'detail');
-    }
-
-    public function DISABLED_testInvalid()
-    {
-        $response = m::mock('\Omnipay\SagePay\Message\ServerNotifyResponse', array('isValid' => 0))->makePartial();
-        $response->shouldReceive('sendResponse')->once()->with('INVALID', 'https://www.example.com/', 'detail');
-
-        $response->invalid('https://www.example.com/', 'detail');
-        //$response->sendResponse('INVALID', 'https://www.example.com/', 'detail');
-    }
-
-    public function DISABLED_testSendResponse()
-    {
-        $response = m::mock('\Omnipay\SagePay\Message\ServerCompleteAuthorizeResponse')->makePartial();
-        $response->shouldReceive('exitWith')->once()->with("Status=FOO\r\nRedirectUrl=https://www.example.com/");
-
-        $response->sendResponse('FOO', 'https://www.example.com/');
-    }
-
-    public function DISABLED_testSendResponseDetail()
-    {
-        $response = m::mock('\Omnipay\SagePay\Message\ServerCompleteAuthorizeResponse')->makePartial();
-        $response->shouldReceive('exitWith')->once()->with("Status=FOO\r\nRedirectUrl=https://www.example.com/\r\nStatusDetail=Bar");
-
-        $response->sendResponse('FOO', 'https://www.example.com/', 'Bar');
-    }
-
-    public function DISABLED_testServerNotifyResponseSuccess()
-    {
-        $VPSTxId = '{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}';
-
-        $transactionReference = '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"'.$VPSTxId.'","VendorTxCode":"438791"}';
-
-        $response = new ServerNotifyResponse(
-            $this->getMockRequest(),
-            array(
+        $this->getHttpRequest()->initialize(
+            [], // GET
+            [
+                'VendorTxCode' => '438791',
                 'Status' => 'OK',
                 'TxAuthNo' => '4255',
-                'VendorTxCode' => '438791',
-                'VPSTxId' => $VPSTxId,
+                'VPSTxId' => '{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}',
                 'AVSCV2' => 'c',
                 'AddressResult' => 'd',
                 'PostCodeResult' => 'e',
@@ -175,29 +156,95 @@ class ServerNotifyRequestTest extends TestCase
                 'DeclineCode' => '00',
                 'ExpiryDate' => '0722',
                 'BankAuthCode' => '999777',
-                'VPSSignature' => '54b1939f699b6d71c756b701d96baa06',
-                // Parameter values (for calculating the signature).
-                'vendor' => 'academe',
-                'securityKey' => 'JEUPDN1N7E',
-            )
+                'VPSSignature' => '285765407193faa9b8e432e6b55f5849',
+            ] // POST
         );
 
-        //$this->getMockRequest()->shouldReceive('getTransactionReference')->once()->andReturn($transactionReference);
+        $this->request = new ServerNotifyRequest(
+            $this->getHttpClient(),
+            $this->getHttpRequest()
+        );
 
-        $this->assertSame('OK', $response->getCode());
+        $this->request->setSecurityKey('JEUPDN1N7E');
 
-        $this->assertTrue($response->isSuccessful());
-        $this->assertFalse($response->isRedirect());
-        $this->assertSame($transactionReference, $response->getTransactionReference());
-        $this->assertNull($response->getMessage());
+        // This transaction is valid and the signature is okay, but we
+        // don't want to accept it for some internal reason.
 
-        $this->assertSame('0722', $response->getExpiryDate());
-        $this->assertSame('2022-07', $response->getExpiryDate('Y-m'));
-        $this->assertSame(7, $response->getExpiryMonth());
-        $this->assertSame(2022, $response->getExpiryYear());
-        $this->assertSame('1234', $response->getNumberLastFour());
-        $this->assertSame('1234', $response->getLast4Digits());
+        $this->expectOutputString(
+            "Status=ERROR\r\nRedirectUrl=https://www.example.com/\r\nStatusDetail=detail"
+        );
+        $this->request->error('https://www.example.com/', 'detail');
+    }
 
-        $this->assertSame('completed', $response->getTransactionStatus());
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidResponseException
+     */
+    public function testConfirmInvalidSignature()
+    {
+        $this->request = new ServerNotifyRequest(
+            $this->getHttpClient(),
+            $this->getHttpRequest()
+        );
+
+        // Since there is no valid signature, trying to confirm should
+        // throw an exception.
+
+        $this->request->confirm('https://www.example.com/', 'detail');
+    }
+
+    /**
+     * @expectedException \Omnipay\Common\Exception\InvalidResponseException
+     */
+    public function testErrorInvalidSignature()
+    {
+        $this->request = new ServerNotifyRequest(
+            $this->getHttpClient(),
+            $this->getHttpRequest()
+        );
+
+        $this->request->error('https://www.example.com/', 'detail');
+    }
+
+    public function testInvalid()
+    {
+        $this->request = new ServerNotifyRequest(
+            $this->getHttpClient(),
+            $this->getHttpRequest()
+        );
+
+        $this->expectOutputString(
+            "Status=INVALID\r\nRedirectUrl=https://www.example.com/\r\nStatusDetail=detail"
+        );
+        $this->request->invalid('https://www.example.com/', 'detail');
+    }
+
+    /**
+     * sendRequest lets you return a raw message with no additinal
+     * checks on the validity of what was received.
+     */
+    public function testSendResponse()
+    {
+        $this->request = new ServerNotifyRequest(
+            $this->getHttpClient(),
+            $this->getHttpRequest()
+        );
+
+        $this->expectOutputString(
+            "Status=FOO\r\nRedirectUrl=https://www.example.com/"
+        );
+        $this->request->sendResponse('FOO', 'https://www.example.com/');
+    }
+
+    public function testSendResponseDetail()
+    {
+        $this->request = new ServerNotifyRequest(
+            $this->getHttpClient(),
+            $this->getHttpRequest()
+        );
+
+        $this->expectOutputString(
+            "Status=FOO\r\nRedirectUrl=https://www.example.com/\r\nStatusDetail=Bar"
+        );
+        $this->request->sendResponse('FOO', 'https://www.example.com/', 'Bar');
     }
 }
