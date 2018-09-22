@@ -87,7 +87,7 @@ class ServerGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertNull($response->getTransactionReference());
         $this->assertSame($this->error_3082_text, $response->getMessage());
     }
 
@@ -158,7 +158,7 @@ class ServerGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertNull($response->getTransactionReference());
         $this->assertSame($this->error_3082_text, $response->getMessage());
     }
 
@@ -219,7 +219,7 @@ class ServerGatewayTest extends GatewayTestCase
         $response = $this->gateway->capture($this->captureOptions)->send();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertNull($response->getTransactionReference());
         $this->assertSame('The transaction was RELEASEed successfully.', $response->getMessage());
     }
 
@@ -230,7 +230,7 @@ class ServerGatewayTest extends GatewayTestCase
         $response = $this->gateway->capture($this->captureOptions)->send();
 
         $this->assertFalse($response->isSuccessful());
-        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertNull($response->getTransactionReference());
         $this->assertSame('You are trying to RELEASE a transaction that has already been RELEASEd or ABORTed.', $response->getMessage());
     }
 
@@ -275,7 +275,7 @@ class ServerGatewayTest extends GatewayTestCase
         $response = $this->gateway->void($this->voidOptions)->send();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertNull($response->getTransactionReference());
         $this->assertSame('2005 : The Void was Successful.', $response->getMessage());
     }
 
@@ -286,7 +286,7 @@ class ServerGatewayTest extends GatewayTestCase
         $response = $this->gateway->void($this->voidOptions)->send();
 
         $this->assertFalse($response->isSuccessful());
-        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertNull($response->getTransactionReference());
         $this->assertSame('4041 : The Transaction type does not support the requested operation.', $response->getMessage());
     }
 
@@ -299,7 +299,7 @@ class ServerGatewayTest extends GatewayTestCase
         $response = $this->gateway->abort($this->abortOptions)->send();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertNull($response->getTransactionReference());
         $this->assertSame('2005 : The Abort was Successful.', $response->getMessage());
     }
 
@@ -310,7 +310,7 @@ class ServerGatewayTest extends GatewayTestCase
         $response = $this->gateway->abort($this->abortOptions)->send();
 
         $this->assertFalse($response->isSuccessful());
-        $this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
+        $this->assertNull($response->getTransactionReference());
         $this->assertSame('4041 : The Transaction type does not support the requested operation.', $response->getMessage());
     }
 

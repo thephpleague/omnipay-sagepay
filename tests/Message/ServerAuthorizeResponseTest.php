@@ -49,7 +49,7 @@ class ServerAuthorizeResponseTest extends TestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertSame('{"VendorTxCode":"123456"}', $response->getTransactionReference());
+        $this->assertNull($response->getTransactionReference());
         $this->assertSame('3082 : The Description value is too long.', $response->getMessage());
     }
 

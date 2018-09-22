@@ -94,11 +94,11 @@ class ServerNotifyRequestTest extends TestCase
             $this->getHttpRequest()
         );
 
-        // Fix this - the transactino reference in Response and ServerNotifyTrait
-        // needs to a) return null if there is no data; and b) be consistent in
-        // format and order of fields.
+        // The transactino reference in Response and ServerNotifyTrait
+        // will return null if there is no transaction data provided
+        // by the gateway.
 
-        //$this->assertNull($this->request->getTransactionReference());
+        $this->assertNull($this->request->getTransactionReference());
 
         $this->assertSame('failed', $this->request->getTransactionStatus());
 

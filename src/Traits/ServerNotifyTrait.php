@@ -168,14 +168,27 @@ trait ServerNotifyTrait
     {
         $reference = [];
 
+        foreach (['TxAuthNo', 'VPSTxId'] as $key) {
+            $value = $this->getDataItem($key);
+
+            if ($value !== null) {
+                $reference[$key] = $value;
+            }
+        }
+
+        // If there is no auth number or VPS transaction ID, then
+        // there is no reference to speak of; return null.
+
+        if (empty($reference)) {
+            return;
+        }
+
         // The security key is passed in as a parameter by the application,
         // and not POSTed from the gateway.
 
         $reference['SecurityKey'] = $this->getSecurityKey();
 
-        foreach (array('VendorTxCode', 'TxAuthNo', 'VPSTxId') as $key) {
-            $reference[$key] = $this->getDataItem($key);
-        }
+        $reference['VendorTxCode'] = $this->getDataItem('VendorTxCode');
 
         ksort($reference);
 

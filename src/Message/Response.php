@@ -33,17 +33,15 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
      * fields from the response object to capture or refund transactions at a later date.
      *
      * Active Merchant solves this dilemma by returning the gateway reference in the following
-     * custom format: VendorTxCode;VPSTxId;TxAuthNo;SecurityKey
+     * format: VendorTxCode;VPSTxId;TxAuthNo;SecurityKey
      *
      * We have opted to return this reference as JSON, as the keys are much more explicit.
      *
-     * @return string JSON formatted data.
+     * @return string|null JSON formatted data.
      */
     public function getTransactionReference()
     {
         $reference = [];
-
-        $reference['VendorTxCode'] = $this->getRequest()->getTransactionId();
 
         foreach (['SecurityKey', 'TxAuthNo', 'VPSTxId'] as $key) {
             $value = $this->getDataItem($key);
@@ -52,6 +50,16 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
                 $reference[$key] = $value;
             }
         }
+
+        // The reference is null if we have no transaction details.
+
+        if (empty($reference)) {
+            return;
+        }
+
+        // Remaining transaction details supplied by the merchant site.
+
+        $reference['VendorTxCode'] = $this->getRequest()->getTransactionId();
 
         ksort($reference);
 

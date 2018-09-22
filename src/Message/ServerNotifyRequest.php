@@ -19,14 +19,14 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     use ServerNotifyTrait;
 
     /**
-     * Valid status responses.
+     * Valid status responses, to return to the gateway.
      */
     const RESPONSE_STATUS_OK        = 'OK';
     const RESPONSE_STATUS_ERROR     = 'ERROR';
     const RESPONSE_STATUS_INVALID   = 'INVALID';
 
     /**
-     * Live separator for return message to Sage Pay.
+     * Line separator for return message to the gateway.
      */
     const LINE_SEP = "\r\n";
 
