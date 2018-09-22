@@ -415,16 +415,20 @@ class DirectAuthorizeRequestTest extends TestCase
 
     /**
      * @dataProvider tokenSetterProvider
+     *
      * Now disabled for consistency of getters and setters.
      * The token can be any value that can be cast to boolean,
      * and is set to 0 or 1 only at time of use.
      */
-    public function DISABLED_testCreateTokenCanOnlyBeOneOrZeroInRequest($parameter, $expectation)
+    public function testCreateTokenCanOnlyBeOneOrZeroInRequest($parameter, $expectation)
     {
         $this->request->setCreateToken($parameter);
         $data = $this->request->getData();
 
-        $this->assertSame($expectation, $data['CreateToken']);
+        $this->assertSame(
+            $expectation,
+            isset($data['CreateToken']) ? $data['CreateToken'] : null
+        );
     }
 
     public function testExistingTokenCanBeSet()
@@ -436,7 +440,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->assertSame($token, $data['Token']);
 
         // If using a "token" then it is assumed to be single-use by default.
-        $this->assertSame(0, $data['StoreToken']);
+        $this->assertSame(0, isset($data['StoreToken']) ? $data['StoreToken'] : 0);
     }
 
     public function testExistingCardReferenceCanBeSet()
@@ -472,7 +476,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $this->request->setStoreToken(true);
         $data = $this->request->getData();
 
-        $this->assertSame(true, $data['StoreToken']);
+        $this->assertSame(1, $data['StoreToken']);
     }
 
     public function testStoreTokenIsUnsetIfThereIsNoExistingTokenSetInRequest()
@@ -487,13 +491,14 @@ class DirectAuthorizeRequestTest extends TestCase
      * @dataProvider tokenSetterProvider
      * No longer applies; the storeToken value is cast to bool on use.
      */
-    public function DISABLED_testStoreTokenCanOnlyBeOneOrZeroIfSetInRequest($parameter, $expectation)
+    public function testStoreTokenCanOnlyBeOneOrZeroIfSetInRequest($parameter, $expectation)
     {
         $this->request->setToken('{ABCDEF}');
+
         $this->request->setStoreToken($parameter);
         $data = $this->request->getData();
 
-        $this->assertSame($expectation, $data['StoreToken']);
+        $this->assertSame($expectation, isset($data['StoreToken']) ? $data['StoreToken'] : null);
     }
 
     public function tokenSetterProvider()
@@ -508,7 +513,7 @@ class DirectAuthorizeRequestTest extends TestCase
             array('0', 0),
             array(false, 0),
             array('', 0),
-            array(null, 0),
+            array(null, null),
             array(array(), 0)
         );
     }

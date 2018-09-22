@@ -160,15 +160,27 @@ class DirectAuthorizeRequest extends AbstractRequest
             $storeToken = $this->getStoreToken();
 
             if ($storeToken === null) {
-                // If we are using the token as a cardReference, then keep it stored
+                // If we are using a cardReference, then keep it stored
                 // after this transaction for future use.
+                // We consider a cardReference as long term, and a token
+                // as single-use.
 
-                $storeToken = (bool)$this->getCardReference()
+                if ((bool)$this->getCardReference()) {
+                    $data['StoreToken'] = static::STORE_TOKEN_YES;
+                }
+            } elseif ($storeToken !== static::STORE_TOKEN_YES
+                && $storeToken !== static::STORE_TOKEN_NO
+            ) {
+                // A store token to treat as a boolean has been supplied.
+
+                $data['StoreToken'] = (bool)$storeToken
                     ? static::STORE_TOKEN_YES
                     : static::STORE_TOKEN_NO;
-            }
+            } else {
+                // A valid store token to use directly has been supplied.
 
-            $data['StoreToken'] = $storeToken;
+                $data['StoreToken'] = $storeToken;
+            }
         }
 
         return $data;
