@@ -247,4 +247,96 @@ class ServerNotifyRequestTest extends TestCase
         );
         $this->request->sendResponse('FOO', 'https://www.example.com/', 'Bar');
     }
+
+    /**
+     * @dataProvider statusDataProvider
+     */
+    public function testTransactionStatusMapping($status, $txStatus)
+    {
+        parent::setUp();
+
+        $postData = [
+            'VendorTxCode' => '438791',
+            'Status' => $status,
+            'TxAuthNo' => '4255',
+            'VPSTxId' => '{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}',
+            'AVSCV2' => 'c',
+            'AddressResult' => 'd',
+            'PostCodeResult' => 'e',
+            'CV2Result' => 'f',
+            'GiftAid' => 'g',
+            '3DSecureStatus' => 'h',
+            'CAVV' => 'i',
+            'AddressStatus' => 'j',
+            'PayerStatus' => 'k',
+            'CardType' => 'l',
+            'Last4Digits' => '1234',
+            'DeclineCode' => '00',
+            'ExpiryDate' => '0722',
+            'BankAuthCode' => '999777',
+            'VPSSignature' => null,
+        ];
+
+        // First build a notification request without a signature.
+
+        $this->getHttpRequest()->initialize(
+            [], // GET
+            $postData
+        );
+
+        $this->request = new ServerNotifyRequest(
+            $this->getHttpClient(),
+            $this->getHttpRequest()
+        );
+
+        $this->request->setSecurityKey('JEUPDN1N7E');
+
+        // With an invalid signature the status will always be 'failed'.
+
+        $this->assertSame(
+            'failed',
+            $this->request->getTransactionStatus()
+        );
+
+        // Calculate what the signature should have been.
+
+        $postData['VPSSignature'] = $this->request->buildSignature();
+
+        // Then rebuild the same notification with the signature this time.
+
+        $this->getHttpRequest()->initialize(
+            [], // GET
+            $postData
+        );
+
+        $this->request = new ServerNotifyRequest(
+            $this->getHttpClient(),
+            $this->getHttpRequest()
+        );
+
+        $this->request->setSecurityKey('JEUPDN1N7E');
+
+        // Test the result again.
+
+        $this->assertSame(
+            $txStatus,
+            $this->request->getTransactionStatus()
+        );
+    }
+
+    public function statusDataProvider()
+    {
+        return [
+            ['OK', 'completed'],
+            ['OK REPEATED', 'completed'],
+            ['AUTHENTICATED', 'completed'],
+            ['REGISTERED', 'completed'],
+            //
+            ['PENDING', 'pending'],
+            //
+            ['REJECTED', 'failed'],
+            ['ABORT', 'failed'],
+            ['ERROR', 'failed'],
+        ];
+    }
 }

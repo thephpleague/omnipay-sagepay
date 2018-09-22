@@ -44,7 +44,7 @@ trait ServerNotifyTrait
             // though they are present. The ABORTed token request does include the address
             // result details in the signature, even though they are no relevant.
 
-            $VPSTxId = str_replace(array('{', '}'), '', $VPSTxId);
+            $VPSTxId = str_replace(['{', '}'], '', $VPSTxId);
         }
 
         // Transaction types PAYMENT, DEFERRED and AUTHENTICATE (when suppoted)
