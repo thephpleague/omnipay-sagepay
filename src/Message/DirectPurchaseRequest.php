@@ -7,8 +7,8 @@ namespace Omnipay\SagePay\Message;
  */
 class DirectPurchaseRequest extends DirectAuthorizeRequest
 {
-    public function getService()
+    public function getTxType()
     {
-        return static::SERVICE_DIRECT_REGISTER;
+        return static::TXTYPE_PAYMENT;
     }
 }

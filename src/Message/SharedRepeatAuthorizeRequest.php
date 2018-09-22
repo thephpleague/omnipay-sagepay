@@ -38,6 +38,14 @@ class SharedRepeatAuthorizeRequest extends AbstractRequest
 
         $data = $this->getBaseData();
 
+        // If no explicit account type has been supplied (set and defaulted
+        // in getBaseData), then override the default.
+
+        if ($this->getAccountType() === null) {
+            // C – for repeat transactions
+            $data['AccountType'] = static::ACCOUNT_TYPE_C;
+        }
+
         // Merchant's unique reference to THIS new authorization or payment
 
         $data['VendorTxCode'] = $this->getTransactionId();

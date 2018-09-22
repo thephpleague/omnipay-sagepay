@@ -31,6 +31,7 @@ class SharedRepeatAuthorizeRequestTest extends TestCase
             '{"SecurityKey":"F6AF4AIB1G","TxAuthNo":"1518884596","VPSTxId":"{9EC5D0BC-A816-E8C3-859A-55C1E476E7C2}","VendorTxCode":"D6429BY7x2217743"}';
         $this->request->setTransactionReference($relatedTransactionRef);
         $this->request->setDescription('testSettingOfRelatedTransaction');
+
         $data = $this->request->getData();
 
         $this->assertEquals('12.00', $data['Amount'], 'Transaction amount does not match');
@@ -44,5 +45,27 @@ class SharedRepeatAuthorizeRequestTest extends TestCase
 
         $this->assertEquals('REPEATDEFERRED', $data['TxType']);
         $this->assertEquals('repeat', $this->request->getService());
+    }
+
+    public function testAccountType()
+    {
+        $relatedTransactionRef =
+            '{"SecurityKey":"F6AF4AIB1G","TxAuthNo":"1518884596","VPSTxId":"{9EC5D0BC-A816-E8C3-859A-55C1E476E7C2}","VendorTxCode":"D6429BY7x2217743"}';
+        $this->request->setTransactionReference($relatedTransactionRef);
+        $this->request->setDescription('testSettingOfRelatedTransaction');
+
+        // The account type will default to 'C' for repeat payments.
+
+        $data = $this->request->getData();
+
+        $this->assertSame('C', $data['AccountType']);
+
+        // It can be overridden.
+
+        $this->request->setAccountType('E');
+
+        $data = $this->request->getData();
+
+        $this->assertSame('E', $data['AccountType']);
     }
 }

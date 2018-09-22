@@ -686,7 +686,7 @@ In both cases, send the message and check the result.
 $captureResponse = $captureRequest->send();
 
 if ($captureResponse->isSuccessful()) {
-    // The capture will successful.
+    // The capture was successful.
     // There will never be a redirect here.
 }
 ```

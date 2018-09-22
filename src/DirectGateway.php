@@ -46,6 +46,7 @@ class DirectGateway extends AbstractGateway implements ConstantsInterface
             'exitOnResponse' => false,
             'apply3DSecure' => null,
             'useAuthenticate' => null,
+            'accountType' => null,
         ];
     }
 

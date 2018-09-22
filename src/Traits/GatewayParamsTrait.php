@@ -176,4 +176,29 @@ trait GatewayParamsTrait
     {
         return $this->getParameter('useAuthenticate');
     }
+
+    /**
+     * @return string One of static::ACCOUNT_TYPE_*
+     */
+    public function getAccountType()
+    {
+        return $this->getParameter('accountType');
+    }
+
+    /**
+     * Set account type.
+     * Neither 'M' nor 'C' offer the 3D-Secure checks that the "E" customer
+     * experience offers. See constants ACCOUNT_TYPE_*
+     *
+     * This is ignored for all PAYPAL transactions.
+     *
+     * @param string $value E: Use the e-commerce merchant account. (default)
+     *                      M: Use the mail/telephone order account. (if present)
+     *                      C: Use the continuous authority merchant account. (if present)
+     * @return $this
+     */
+    public function setAccountType($value)
+    {
+        return $this->setParameter('accountType', $value);
+    }
 }
