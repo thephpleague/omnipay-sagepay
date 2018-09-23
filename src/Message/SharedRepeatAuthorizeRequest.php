@@ -57,7 +57,7 @@ class SharedRepeatAuthorizeRequest extends AbstractRequest
 
         $data['Description'] = $this->getDescription();
 
-        // SagePay's unique reference for the PREVIOUS transaction
+        // Sage Pay's unique reference for the ORIGINAL transaction
 
         $data['RelatedVendorTxCode'] = $this->getRelatedTransactionId();
         $data['RelatedVPSTxId'] = $this->getVpsTxId();

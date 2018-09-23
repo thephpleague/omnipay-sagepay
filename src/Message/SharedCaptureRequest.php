@@ -44,7 +44,11 @@ class SharedCaptureRequest extends AbstractRequest
 
             // The documentation (2015) says this is required. But it can't be, because
             // we won't have it for authenticate, as the bank has not been visited.
-            //$data['RelatedTxAuthNo'] = $this->getTxAuthNo();
+            // We will follow the spec though, but treat it as optional here.
+
+            if ($this->getTxAuthNo() !== null) {
+                $data['RelatedTxAuthNo'] = $this->getTxAuthNo();
+            }
         } else {
             $this->validate('txAuthNo');
 
