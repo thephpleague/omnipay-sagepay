@@ -12,7 +12,10 @@ class FormGatewayTest extends GatewayTestCase
     {
         parent::setUp();
 
-        $this->gateway = new ServerGateway($this->getHttpClient(), $this->getHttpRequest());
+        $this->gateway = new FormGateway(
+            $this->getHttpClient(),
+            $this->getHttpRequest()
+        );
         $this->gateway->setVendor('example');
 
         $this->purchaseOptions = array(
@@ -20,6 +23,7 @@ class FormGatewayTest extends GatewayTestCase
             'transactionId' => '123',
             'card' => $this->getValidCard(),
             'returnUrl' => 'https://www.example.com/return',
+            'encryptionKey' => '12345678abcdeabc',
         );
 
         $this->captureOptions = array(
@@ -32,6 +36,7 @@ class FormGatewayTest extends GatewayTestCase
             'amount' => '10.00',
             'transactionId' => '123',
             'transactionReference' => '{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}',
+            'encryptionKey' => '12345678abcdeabc',
         );
 
         $this->voidOptions = array(
@@ -63,7 +68,7 @@ class FormGatewayTest extends GatewayTestCase
 
     public function testInheritsDirectGateway()
     {
-        $this->assertInstanceOf('Omnipay\SagePay\DirectGateway', $this->gateway);
+        $this->assertInstanceOf(\Omnipay\SagePay\FormGateway::class, $this->gateway);
     }
 
     public function testAuthorizeSuccess()
@@ -74,9 +79,8 @@ class FormGatewayTest extends GatewayTestCase
 
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
-        $this->assertSame('{"SecurityKey":"IK776BWNHN","VPSTxId":"{1E7D9C70-DBE2-4726-88EA-D369810D801D}","VendorTxCode":"123"}', $response->getTransactionReference());
-        $this->assertSame('Server transaction registered successfully.', $response->getMessage());
-        $this->assertSame('https://test.sagepay.com/Simulator/VSPServerPaymentPage.asp?TransactionID={1E7D9C70-DBE2-4726-88EA-D369810D801D}', $response->getRedirectUrl());
+
+        // TODO: look at the redirect data.
     }
 
     public function testAuthorizeFailure()
@@ -86,11 +90,9 @@ class FormGatewayTest extends GatewayTestCase
         $response = $this->gateway->authorize($this->purchaseOptions)->send();
 
         $this->assertFalse($response->isSuccessful());
-        $this->assertFalse($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
-        $this->assertSame($this->error_3082_text, $response->getMessage());
+        $this->assertTrue($response->isRedirect());
     }
-
+/*
     public function testCompleteAuthorizeSuccess()
     {
         $this->getHttpRequest()->request->replace(
@@ -128,10 +130,11 @@ class FormGatewayTest extends GatewayTestCase
         );
         $this->assertNull($response->getMessage());
     }
-
+*/
     /**
      * @expectedException Omnipay\Common\Exception\InvalidResponseException
      */
+/*
     public function testCompleteAuthorizeInvalid()
     {
         $response = $this->gateway->completeAuthorize($this->completePurchaseOptions)->send();
@@ -189,10 +192,11 @@ class FormGatewayTest extends GatewayTestCase
         $this->assertSame('{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"b","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertNull($response->getMessage());
     }
-
+*/
     /**
      * @expectedException Omnipay\Common\Exception\InvalidResponseException
      */
+/*
     public function testCompletePurchaseInvalid()
     {
         $response = $this->gateway->completePurchase($this->completePurchaseOptions)->send();
@@ -337,4 +341,5 @@ class FormGatewayTest extends GatewayTestCase
         $this->assertSame('{"VPSTxId":"{869BC439-1904-DF8A-DDC6-D13E3599FB98}","VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('3013 : The Description is missing.', $response->getMessage());
     }
+*/
 }

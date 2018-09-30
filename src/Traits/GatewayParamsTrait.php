@@ -201,4 +201,40 @@ trait GatewayParamsTrait
     {
         return $this->setParameter('accountType', $value);
     }
+
+    /**
+     * @return string|null Encryption key for Sage Pay Form
+     */
+    public function getEncryptionKey()
+    {
+        return $this->getParameter('encryptionKey');
+    }
+
+    /**
+     * @param string $value Encryption key for Sage Pay Form; aka form password
+     * @return $this
+     */
+    public function setEncryptionKey($value)
+    {
+        return $this->setParameter('encryptionKey', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBillingForShipping()
+    {
+        return $this->getParameter('billingForShipping');
+    }
+
+    /**
+     * Set to force the billing address to be used as the shipping address.
+     *
+     * @param mixed $value Will be evaluated as boolean.
+     * @return $this
+     */
+    public function setBillingForShipping($value)
+    {
+        return $this->setParameter('billingForShipping', $value);
+    }
 }
