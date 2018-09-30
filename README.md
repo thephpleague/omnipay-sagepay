@@ -35,7 +35,7 @@ Table of Contents
       * [Sage Pay Form Methods](#sage-pay-form-methods)
          * [Form Authorize](#form-authorize)
          * [Form Purchase](#form-purchase)
-      * [Sage Pay Shared Methods (for both Direct and Server)](#sage-pay-shared-methods-for-both-direct-and-server)
+      * [Sage Pay Shared Methods (Direct and Server)](#sage-pay-shared-methods-for-both-direct-and-server)
          * [Repeat Authorize/Purchase](#repeat-authorizepurchase)
          * [Capture](#capture)
          * [Delete Card](#delete-card)
@@ -655,7 +655,7 @@ $result->isSuccessful();
 This is the same as `authorize()`, but the `purchase()` request is used instead,
 and the `completePurchase()` request is used to complete the transaction on return.
 
-## Sage Pay Shared Methods (for both Direct and Server)
+## Sage Pay Shared Methods (Direct and Server)
 
 Note: these functions do not work for the `Form` API.
 These actions are performed through the "My Sage Pay" admin panel.

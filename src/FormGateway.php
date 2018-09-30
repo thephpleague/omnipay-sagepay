@@ -6,10 +6,6 @@ use Omnipay\SagePay\Message\Form\AuthorizeRequest;
 use Omnipay\SagePay\Message\Form\CompleteAuthorizeRequest;
 use Omnipay\SagePay\Message\Form\CompletePurchaseRequest;
 use Omnipay\SagePay\Message\Form\PurchaseRequest;
-//use Omnipay\SagePay\Message\ServerNotifyRequest;
-//use Omnipay\SagePay\Message\SharedTokenRemovalRequest;
-//use Omnipay\SagePay\Message\ServerTokenRegistrationRequest;
-//use Omnipay\SagePay\Message\ServerTokenRegistrationCompleteRequest;
 
 /**
  * Sage Pay Server Gateway
