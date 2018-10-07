@@ -43,7 +43,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
     {
         $reference = [];
 
-        foreach (['SecurityKey', 'TxAuthNo', 'VPSTxId'] as $key) {
+        foreach (['SecurityKey', 'TxAuthNo', 'VPSTxId', 'VendorTxCode'] as $key) {
             $value = $this->getDataItem($key);
 
             if ($value !== null) {
@@ -57,9 +57,12 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
             return;
         }
 
-        // Remaining transaction details supplied by the merchant site.
+        // Remaining transaction details supplied by the merchant site
+        // if not already in the response (it will be for Sage Pay Form).
 
-        $reference['VendorTxCode'] = $this->getRequest()->getTransactionId();
+        if (! array_key_exists('VendorTxCode', $reference)) {
+            $reference['VendorTxCode'] = $this->getRequest()->getTransactionId();
+        }
 
         ksort($reference);
 

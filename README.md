@@ -647,6 +647,7 @@ To get the result, the transaction is "completed":
 $result = $gateway->completeAuthorize()->send();
 
 $result->isSuccessful();
+$result->getTransactionReference();
 // etc.
 ```
 
@@ -658,7 +659,8 @@ and the `completePurchase()` request is used to complete the transaction on retu
 ## Sage Pay Shared Methods (Direct and Server)
 
 Note: these functions do not work for the `Form` API.
-These actions are performed through the "My Sage Pay" admin panel.
+These actions for `Sage Pay Form` must be performed manually through the "My Sage Pay"
+admin panel.
 
 * capture()
 * refund()
