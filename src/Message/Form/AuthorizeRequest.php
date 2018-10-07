@@ -97,7 +97,39 @@ class AuthorizeRequest extends DirectAuthorizeRequest
             $data = $this->getTokenData($data);
         }
 
-        // TODO: lots more fields in here.
+        // Some parameers specific to Sage Pay Form..
+
+        if ($this->getCustomerName() !== null) {
+            $data['CustomerName'] = $this->getCustomerName();
+        }
+
+        if ($this->getVendorEmail() !== null) {
+            $data['VendorEmail'] = $this->getVendorEmail();
+        }
+
+        if ($this->getEmailMessage() !== null) {
+            $data['EmailMessage'] = $this->getEmailMessage();
+        }
+
+        if ($this->getAllowGiftAid() !== null) {
+            $data['AllowGiftAid'] = (bool)$this->getAllowGiftAid()
+                ? static::ALLOW_GIFT_AID_YES : static::ALLOW_GIFT_AID_NO;
+        }
+
+        if ($this->getWebsite() !== null) {
+            $data['Website'] = $this->getWebsite();
+        }
+
+        if ($sendEmail = $this->getSendEmail() !== null) {
+            if ($sendEmail != static::SEND_EMAIL_NONE
+                && $sendEmail != static::SEND_EMAIL_BOTH
+                && $sendEmail != static::SEND_EMAIL_VENDOR
+            ) {
+                $sendEmail = static::SEND_EMAIL_BOTH;
+            }
+
+            $data['SendEmail'] = $this->getSendEmail();
+        }
 
         // TxType: only PAYMENT, DEFERRED or AUTHENTICATE
 
@@ -125,6 +157,8 @@ class AuthorizeRequest extends DirectAuthorizeRequest
 
         // Two conditional checks on the "state" fields.
         // We don't check if it is a valid two-character state code.
+        // Maybe this can be moved to the construction of the addresses
+        // in AbstractRequest.
 
         if ($data['BillingCountry'] === 'US' && empty($data['BillingState'])
             || $data['DeliveryCountry'] === 'US' && empty($data['DeliveryState'])
@@ -217,5 +251,92 @@ class AuthorizeRequest extends DirectAuthorizeRequest
     public function getFailureUrl()
     {
         return $this->getParameter('failureUrl');
+    }
+
+    /**
+     * @param string|null $value Customer's name will be included in the confirmation emails
+     * @return $this
+     */
+    public function setCustomerName($value)
+    {
+        return $this->setParameter('customerName', $value);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCustomerName()
+    {
+        return $this->getParameter('customerName');
+    }
+
+    /**
+     * @param string|null $value An email will be sent to this address when each transaction completes
+     * @return $this
+     */
+    public function setVendorEmail($value)
+    {
+        return $this->setParameter('vendorEmail', $value);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getVendorEmail()
+    {
+        return $this->getParameter('vendorEmail');
+    }
+
+    /**
+     * @param string|null $value 0, 1, or 2, see 
+     * @return $this
+     */
+    public function setSendEmail($value)
+    {
+        return $this->setParameter('sendEmail', $value);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSendEmail()
+    {
+        return $this->getParameter('sendEmail');
+    }
+
+    /**
+     * This message can be formatted using HTML, up to 1000 bytes.
+     *
+     * @param string|null $value A message to the customer, inserted into successful emails
+     * @return $this
+     */
+    public function setEmailMessage($value)
+    {
+        return $this->setParameter('EmailMessage', $value);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEmailMessage()
+    {
+        return $this->getParameter('EmailMessage');
+    }
+
+    /**
+     * @param string|null $value
+     * @return $this
+     */
+    public function setWebsite($value)
+    {
+        return $this->setParameter('website', $value);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getWebsite()
+    {
+        return $this->getParameter('website');
     }
 }

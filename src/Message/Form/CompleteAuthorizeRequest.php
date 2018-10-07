@@ -50,14 +50,25 @@ class CompleteAuthorizeRequest extends AbstractRequest
      */
     public function sendData($data)
     {
+        // The Response in the current namespace conflicts with
+        // the Response in the namespace one level down, but only
+        // for PHP 5.6. This alias works around it.
+
         return $this->response = new GenericResponse($this, $data);
     }
 
+    /**
+     * @return string The crypt set as an override for the query parameter.
+     */
     public function getCrypt()
     {
         return $this->getParameter('cryptx');
     }
 
+    /**
+     * @param string $value If set, then used in preference to the current query parameter.
+     * @return $this
+     */
     public function setCrypt($value)
     {
         return $this->setParameter('cryptx', $value);

@@ -423,6 +423,28 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     }
 
     /**
+     * @return int static::ALLOW_GIFT_AID_YES or static::ALLOW_GIFT_AID_NO
+     */
+    public function getAllowGiftAid()
+    {
+        return $this->getParameter('allowGiftAid');
+    }
+
+    /**
+     * This flag allows the gift aid acceptance box to appear for this transaction
+     * on the payment page. This only appears if your vendor account is Gift Aid enabled.
+     *
+     * Values defined in static::ALLOW_GIFT_AID_* constant.
+     *
+     * @param bool|int $allowGiftAid value that casts to boolean
+     * @return $this
+     */
+    public function setAllowGiftAid($value)
+    {
+        $this->setParameter('allowGiftAid', $value);
+    }
+
+    /**
      * Return the Response object, initialised with the parsed response data.
      * @param  array $data The data parsed from the response gateway body.
      * @return Response
