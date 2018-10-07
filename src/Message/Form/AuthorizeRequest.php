@@ -288,7 +288,7 @@ class AuthorizeRequest extends DirectAuthorizeRequest
     }
 
     /**
-     * @param string|null $value 0, 1, or 2, see 
+     * @param string|null $value 0, 1, or 2, see constants SEND_EMAIL_*
      * @return $this
      */
     public function setSendEmail($value)
