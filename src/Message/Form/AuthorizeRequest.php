@@ -7,12 +7,14 @@ namespace Omnipay\SagePay\Message\Form;
  */
 
 use Omnipay\SagePay\Message\DirectAuthorizeRequest;
+use Omnipay\Common\Exception\InvalidRequestException;
 
 class AuthorizeRequest extends DirectAuthorizeRequest
 {
     /**
      * Fields accepted by the Form API.
-     * "true" fields are mandatory.
+     * "true" fields are mandatory, "false" fields are optional.
+     * The DeliveryState is conditionally mandatory.
      */
     protected $validFields = [
         'VendorTxCode' => true,
@@ -89,20 +91,43 @@ class AuthorizeRequest extends DirectAuthorizeRequest
 
         $data = array_intersect_key($data, $this->validFields);
 
-        // TODO: throw exception if any mandatory fields are missing.
+        // Throw exception if any mandatory fields are missing.
         // We need to catch it here before sending the user to an
-        // unexpected on the gateway site.
+        // generic (and useless) error on the gateway site.
 
-        // ...
+        foreach ($this->validFields as $fieldName => $mandatoryFlag) {
+            if ($mandatoryFlag && ! isset($data[$fieldName])) {
+                throw new InvalidRequestException(sprintf(
+                    'The %s parameter is required',
+                    $fieldName
+                ));
+            }
+        }
+
+        // Two conditional checks on the "state" fields.
+        // We don't check if it is a valid two-character state code.
+
+        if ($data['BillingCountry'] === 'US' && empty ($data['BillingState'])
+            || $data['DeliveryCountry'] === 'US' && empty ($data['DeliveryState'])
+        ) {
+            throw new InvalidRequestException(
+                'Missing state code for billing or shipping address'
+            );
+        }
 
         return $data;
     }
 
     /**
      * Add the Form-specific details to the base data.
+     * @reurn array
      */
     public function getData()
     {
+        $this->validate('currency', 'description');
+
+        // The test mode is included to determine the redirect URL.
+
         return [
             'VPSProtocol' => $this->VPSProtocol,
             'TxType' => $this->getTxType(),
@@ -114,6 +139,8 @@ class AuthorizeRequest extends DirectAuthorizeRequest
 
     /**
      * Generate the crypt field from the source data.
+     * @param array $data the name/value pairs to be encrypted
+     * @return string encrypted data
      */
     public function generateCrypt(array $data)
     {

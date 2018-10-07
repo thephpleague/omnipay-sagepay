@@ -114,7 +114,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     {
         $card = $this->getCard();
 
-        // Mapping is Sage Pay name => Omnipay Nname
+        // Mapping is Sage Pay name => Omnipay Name
 
         $mapping = [
             'Firstnames'    => 'FirstName',

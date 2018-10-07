@@ -20,24 +20,36 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
 
     /**
      * Always a redirect, so not yet successful.
+     * @return @inherit
      */
     public function isSuccessful()
     {
         return false;
     }
 
+    /**
+     * @return @inherit
+     */
     public function isRedirect()
     {
         return true;
     }
 
+    /**
+     * @return @inherit
+     */
     public function getRedirectMethod()
     {
         return 'POST';
     }
 
+    /**
+     * @return @inherit
+     */
     public function getRedirectData()
     {
+        // Pull out just these four fields from the data supplied.
+
         return array_intersect_key(
             $this->getData(),
             array_flip([
@@ -61,6 +73,9 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
         return $this->liveEndpoint;
     }
 
+    /**
+     * @return @inherit
+     */
     public function getTestMode()
     {
         $data =  $this->getData();

@@ -17,6 +17,7 @@ class FormGatewayTest extends GatewayTestCase
             $this->getHttpRequest()
         );
         $this->gateway->setVendor('example');
+        $this->gateway->setCurrency('EUR');
 
         $this->purchaseOptions = array(
             'amount' => '10.00',
@@ -24,6 +25,7 @@ class FormGatewayTest extends GatewayTestCase
             'card' => $this->getValidCard(),
             'returnUrl' => 'https://www.example.com/return',
             'encryptionKey' => '12345678abcdeabc',
+            'description' => 'Some message',
         );
 
         $this->captureOptions = array(
