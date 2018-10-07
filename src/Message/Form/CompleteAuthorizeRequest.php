@@ -7,7 +7,7 @@ namespace Omnipay\SagePay\Message\Form;
  */
 
 use Omnipay\SagePay\Message\AbstractRequest;
-use Omnipay\SagePay\Message\Response;
+use Omnipay\SagePay\Message\Response as GenericResponse;
 
 class CompleteAuthorizeRequest extends AbstractRequest
 {
@@ -50,7 +50,7 @@ class CompleteAuthorizeRequest extends AbstractRequest
      */
     public function sendData($data)
     {
-        return $this->response = new Response($this, $data);
+        return $this->response = new GenericResponse($this, $data);
     }
 
     public function getCrypt()
