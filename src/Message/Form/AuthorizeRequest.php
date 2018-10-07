@@ -65,6 +65,25 @@ class AuthorizeRequest extends DirectAuthorizeRequest
     ];
 
     /**
+     * Add the Form-specific details to the base data.
+     * @reurn array
+     */
+    public function getData()
+    {
+        $this->validate('currency', 'description', 'encryptionKey');
+
+        // The test mode is included to determine the redirect URL.
+
+        return [
+            'VPSProtocol' => $this->VPSProtocol,
+            'TxType' => $this->getTxType(),
+            'Vendor' => $this->getVendor(),
+            'Crypt' => $this->generateCrypt($this->getCryptData()),
+            'TestMode' => $this->getTestMode(),
+        ];
+    }
+
+    /**
      * @return array the data required to be encoded into the form crypt field.
      */
     public function getCryptData()
@@ -107,8 +126,8 @@ class AuthorizeRequest extends DirectAuthorizeRequest
         // Two conditional checks on the "state" fields.
         // We don't check if it is a valid two-character state code.
 
-        if ($data['BillingCountry'] === 'US' && empty ($data['BillingState'])
-            || $data['DeliveryCountry'] === 'US' && empty ($data['DeliveryState'])
+        if ($data['BillingCountry'] === 'US' && empty($data['BillingState'])
+            || $data['DeliveryCountry'] === 'US' && empty($data['DeliveryState'])
         ) {
             throw new InvalidRequestException(
                 'Missing state code for billing or shipping address'
@@ -116,25 +135,6 @@ class AuthorizeRequest extends DirectAuthorizeRequest
         }
 
         return $data;
-    }
-
-    /**
-     * Add the Form-specific details to the base data.
-     * @reurn array
-     */
-    public function getData()
-    {
-        $this->validate('currency', 'description');
-
-        // The test mode is included to determine the redirect URL.
-
-        return [
-            'VPSProtocol' => $this->VPSProtocol,
-            'TxType' => $this->getTxType(),
-            'Vendor' => $this->getVendor(),
-            'Crypt' => $this->generateCrypt($this->getCryptData()),
-            'TestMode' => $this->getTestMode(),
-        ];
     }
 
     /**

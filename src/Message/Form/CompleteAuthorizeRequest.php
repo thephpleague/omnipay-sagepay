@@ -28,7 +28,7 @@ class CompleteAuthorizeRequest extends AbstractRequest
      */
     public function getData()
     {
-        $crypt = $this->httpRequest->query->get('crypt');
+        $crypt = $this->getCrypt() ?: $this->httpRequest->query->get('crypt');
 
         // Remove the leading '@' and decrypt.
 
@@ -46,10 +46,20 @@ class CompleteAuthorizeRequest extends AbstractRequest
     }
 
     /**
-     * Nothing to send - we have the result data in the server request.
+     * Nothing to send to gateway - we have the result data in the server request.
      */
     public function sendData($data)
     {
         return $this->response = new Response($this, $data);
+    }
+
+    public function getCrypt()
+    {
+        return $this->getParameter('cryptx');
+    }
+
+    public function setCrypt($value)
+    {
+        return $this->setParameter('cryptx', $value);
     }
 }
