@@ -189,18 +189,26 @@ class AuthorizeRequest extends DirectAuthorizeRequest
 
         // Build the data in a query string.
 
-        // CHECKME: what happens with UTF-8 data? Do we need to convert
-        // any special characters not in the correct ranges?
-        // What about options for URL encoding of other characters?
+        // The encrypted data MUST be ISO8859-1 regardless of what encoding
+        // is used to submit the form, because that is how the gateway treats
+        // the data internally.
+        // This package assumes input data will be UTF-8 by default, and will
+        // comvert it accordingly. This can be disabled if the data is already
+        // ISO8859-1.
+        // For the Server and Direct gateway methods, the POST encoding type
+        // will tell the gateway how to interpret the character encoding, and
+        // the gateway will do any encoding conversions necessary.
 
         // We cannot use http_build_query() because the gateway does
         // not decode the string as any standard encoded query string.
         // We just join the names and values with "=" and "&" and the
         // gateway somehow decodes ambiguous strings.
 
+        $disableUtf8Decode = (bool)$this->getDisableUtf8Decode();
+
         $query = [];
         foreach ($data as $name => $value) {
-            $query[] = $name . '=' . $value;
+            $query[] = $name . '=' . ($disableUtf8Decode ? $value : utf8_decode($value));
         }
         $query = implode('&', $query);
 

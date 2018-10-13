@@ -237,4 +237,24 @@ trait GatewayParamsTrait
     {
         return $this->setParameter('billingForShipping', $value);
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDisableUtf8Decode()
+    {
+        return $this->getParameter('disableUtf8Decode');
+    }
+
+    /**
+     * The Form API will convert all input data from an assumed UTF-8
+     * encoding to ISO8859-1 by default, unless disabled here.
+     *
+     * @param mixed $value Will be evaluated as boolean.
+     * @return $this
+     */
+    public function setDisableUtf8Decode($value)
+    {
+        return $this->setParameter('disableUtf8Decode', $value);
+    }
 }

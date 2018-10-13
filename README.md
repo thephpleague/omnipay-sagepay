@@ -622,6 +622,15 @@ $gateway = OmniPay::create('SagePay\Form')->initialize([
 
 The `encryptionKey` is generated in "My Sage Pay" when logged in as the administrator.
 
+Note that this gateway will assume all inout data (names, addresses etc.)
+are UTF-8 encoded.
+It will then recode the data to ISO8859-1 before encrypting it for the gateway,
+as the gateway strictly accepts ISO8859-1 only, regardless of what encoding is
+used to submit the form from the merchant site.
+If you do not want this conversion to happen, it can be disabled with this parameter:
+
+    'disableUtf8Decode' => true,
+
 The authorize must be given a `returnUrl` (the return URL on success, or on failure
 if no separate `failureUrl` is provided).
 
@@ -639,10 +648,11 @@ At the gateway, the user will authenticate or authorise their credit card,
 perform any 3D Secure actions that may be requested, then will return to the
 merchant site.
 
-To get the result, the transaction is "completed":
+To get the result details, the transaction is "completed":
 
 ```php
-// The result will in read and decrypted from the return URL query parameters:
+// The result will be read and decrypted from the return URL (or failure URL)
+// query parameters:
 
 $result = $gateway->completeAuthorize()->send();
 
@@ -650,6 +660,14 @@ $result->isSuccessful();
 $result->getTransactionReference();
 // etc.
 ```
+
+If you already have the encrypted response string, then it can be optionally
+passed in:
+
+    $result = $gateway->completeAuthorize(['crypt' => $crypt])->send();
+
+This should normally not be necessary, but is handy for testing or if the
+current page query parameters are not available in a particular architecture.
 
 ### Form Purchase
 
