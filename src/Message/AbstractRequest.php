@@ -67,7 +67,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
      */
     public function getTxType()
     {
-        throw new InvalidRequestException('Transactino type not defined.');
+        throw new InvalidRequestException('Transaction type not defined.');
     }
 
     /**
@@ -98,6 +98,83 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
             list($language) = preg_split('/[-_]/', $language);
 
             $data['Language'] = $language;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Get either the billing or the shipping address from
+     * the card object, mapped to Sage Pay field names.
+     *
+     * @param string $type 'Billing' or 'Shipping'
+     * @return array
+     */
+    protected function getAddressData($type = 'Billing')
+    {
+        $card = $this->getCard();
+
+        // Mapping is Sage Pay name => Omnipay Name
+
+        $mapping = [
+            'Firstnames'    => 'FirstName',
+            'Surname'       => 'LastName',
+            'Address1'      => 'Address1',
+            'Address2'      => 'Address2',
+            'City'          => 'City',
+            'PostCode'      => 'Postcode',
+            'State'         => 'State',
+            'Country'       => 'Country',
+            'Phone'         => 'Phone',
+        ];
+
+        $data = [];
+
+        foreach ($mapping as $sagepayName => $omnipayName) {
+            $data[$sagepayName] = call_user_func([$card, 'get' . $type . $omnipayName]);
+        }
+
+        // The state must not be set for non-US countries.
+
+        if ($data['Country'] !== 'US') {
+            $data['State'] = '';
+        }
+
+        return $data;
+    }
+
+    /**
+     * Add the billing address details to the data.
+     *
+     * @param array $data
+     * @return array $data
+     */
+    protected function getBillingAddressData(array $data = [])
+    {
+        $address = $this->getAddressData('Billing');
+
+        foreach ($address as $name => $value) {
+            $data['Billing' . $name] = $value;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Add the delivery (shipping) address details to the data.
+     * Use the Billing address if the billingForShipping option is set.
+     *
+     * @param array $data
+     * @return array $data
+     */
+    protected function getDeliveryAddressData(array $data = [])
+    {
+        $address = $this->getAddressData(
+            (bool)$this->getBillingForShipping() ? 'Billing' : 'Shipping'
+        );
+
+        foreach ($address as $name => $value) {
+            $data['Delivery' . $name] = $value;
         }
 
         return $data;
@@ -170,13 +247,11 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
      */
     public function getEndpoint()
     {
-        $service = $this->getService();
-
-        if ($this->getTestMode()) {
-            return $this->testEndpoint."/$service.vsp";
-        }
-
-        return $this->liveEndpoint."/$service.vsp";
+        return sprintf(
+            '%s/%s.vsp',
+            $this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint,
+            $this->getService()
+        );
     }
 
     /**
@@ -345,6 +420,28 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     public function getRelatedTransactionId()
     {
         return $this->getParameter('relatedTransactionId');
+    }
+
+    /**
+     * @return int static::ALLOW_GIFT_AID_YES or static::ALLOW_GIFT_AID_NO
+     */
+    public function getAllowGiftAid()
+    {
+        return $this->getParameter('allowGiftAid');
+    }
+
+    /**
+     * This flag allows the gift aid acceptance box to appear for this transaction
+     * on the payment page. This only appears if your vendor account is Gift Aid enabled.
+     *
+     * Values defined in static::ALLOW_GIFT_AID_* constant.
+     *
+     * @param bool|int $allowGiftAid value that casts to boolean
+     * @return $this
+     */
+    public function setAllowGiftAid($value)
+    {
+        $this->setParameter('allowGiftAid', $value);
     }
 
     /**

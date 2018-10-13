@@ -116,6 +116,17 @@ interface ConstantsInterface
     const SERVICE_TOKEN             = 'directtoken';
     const SERVICE_DIRECT3D          = 'direct3dcallback';
 
+    /**
+     * 0 = Do not send either customer or vendor emails
+     * 1 = Send customer and vendor emails if addresses are provided
+     * 2 = Send vendor email but NOT the customer email
+     * If you do not supply this field, 1 is assumed and emails
+     * are sent if addresses are provided.
+     */
+    const SEND_EMAIL_NONE = '0';
+    const SEND_EMAIL_BOTH = '1';
+    const SEND_EMAIL_VENDOR = '2';
+
     //
     // Then the response constants.
     //

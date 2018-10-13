@@ -42,12 +42,12 @@ class DirectAuthorizeRequest extends AbstractRequest
     protected function getBaseAuthorizeData()
     {
         $this->validate('amount', 'card', 'transactionId');
-        $card = $this->getCard();
 
         // Start with the authorisation and API version details.
         $data = $this->getBaseData();
 
         $data['Description'] = $this->getDescription();
+
         // Money formatted as major unit decimal.
         $data['Amount'] = $this->getAmount();
         $data['Currency'] = $this->getCurrency();
@@ -63,36 +63,29 @@ class DirectAuthorizeRequest extends AbstractRequest
             $data['ReferrerID'] = $this->getReferrerId();
         }
 
-        // billing details
-        $data['BillingFirstnames'] = $card->getBillingFirstName();
-        $data['BillingSurname'] = $card->getBillingLastName();
-        $data['BillingAddress1'] = $card->getBillingAddress1();
-        $data['BillingAddress2'] = $card->getBillingAddress2();
-        $data['BillingCity'] = $card->getBillingCity();
-        $data['BillingPostCode'] = $card->getBillingPostcode();
-        $data['BillingState'] = ($card->getBillingCountry() === 'US' ? $card->getBillingState() : '');
-        $data['BillingCountry'] = $card->getBillingCountry();
-        $data['BillingPhone'] = $card->getBillingPhone();
+        // Billing details
 
-        // shipping details
-        $data['DeliveryFirstnames'] = $card->getShippingFirstName();
-        $data['DeliverySurname'] = $card->getShippingLastName();
-        $data['DeliveryAddress1'] = $card->getShippingAddress1();
-        $data['DeliveryAddress2'] = $card->getShippingAddress2();
-        $data['DeliveryCity'] = $card->getShippingCity();
-        $data['DeliveryPostCode'] = $card->getShippingPostcode();
-        $data['DeliveryState'] = ($card->getShippingCountry() === 'US' ? $card->getShippingState() : '');
-        $data['DeliveryCountry'] = $card->getShippingCountry();
-        $data['DeliveryPhone'] = $card->getShippingPhone();
-        $data['CustomerEMail'] = $card->getEmail();
+        $data = $this->getBillingAddressData($data);
+
+        // Shipping details
+
+        $data = $this->getDeliveryAddressData($data);
+
+        $card = $this->getCard();
+
+        if ($card->getEmail()) {
+            $data['CustomerEMail'] = $card->getEmail();
+        }
 
         if ((bool)$this->getUseOldBasketFormat()) {
             $basket = $this->getItemDataNonXML();
+
             if (!empty($basket)) {
                 $data['Basket'] = $basket;
             }
         } else {
             $basketXML = $this->getItemData();
+
             if (!empty($basketXML)) {
                 $data['BasketXML'] = $basketXML;
             }
@@ -101,7 +94,7 @@ class DirectAuthorizeRequest extends AbstractRequest
         $surchargeXml = $this->getSurchargeXml();
 
         if ($surchargeXml) {
-            $data['surchargeXml'] = $this->getSurchargeXml();
+            $data['surchargeXml'] = $surchargeXml;
         }
 
         return $data;

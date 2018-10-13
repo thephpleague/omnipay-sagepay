@@ -32,7 +32,10 @@ Table of Contents
          * [Server Authorize/Purchase](#server-authorizepurchase)
          * [Server Create Card](#server-create-card)
          * [Server Notification Handler](#server-notification-handler)
-      * [Sage Pay Shared Methods (for both Direct and Server):](#sage-pay-shared-methods-for-both-direct-and-server)
+      * [Sage Pay Form Methods](#sage-pay-form-methods)
+         * [Form Authorize](#form-authorize)
+         * [Form Purchase](#form-purchase)
+      * [Sage Pay Shared Methods (Direct and Server)](#sage-pay-shared-methods-for-both-direct-and-server)
          * [Repeat Authorize/Purchase](#repeat-authorizepurchase)
          * [Capture](#capture)
          * [Delete Card](#delete-card)
@@ -69,6 +72,7 @@ The following gateways are provided by this package:
 
 * SagePay_Direct
 * SagePay_Server
+* SagePay_Form
 
 For general Omnipay usage instructions, please see the main
 [Omnipay](https://github.com/thephpleague/omnipay) repository.
@@ -586,7 +590,95 @@ The `$nextUrl` is where you want Sage Pay to send the user to next.
 It will often be the same URL whether the transaction was approved or not,
 since the result will be safely saved in the database.
 
-## Sage Pay Shared Methods (for both Direct and Server):
+## Sage Pay Form Methods
+
+Sage Pay Form requires neither a server-to-server back-channel nor
+IP-based security.
+The payment details are encrypted on the server before being sent to
+the gateway from the user's browser.
+The result is returned to the merchant site also through a client-side
+encrypted message.
+
+Capturing and voiding `Form` transactions is a manual process performed
+in the "My Sage Pay" administration panel.
+
+Supported functions are:
+
+* authorize()
+* purchase()
+
+### Form Authorize
+
+The authorization is intialized in a similar way to a `Server` payment,
+but with an `encryptionKey`:
+
+```php
+$gateway = OmniPay::create('SagePay\Form')->initialize([
+    'vendor' => 'vendorname',
+    'testMode' => true,
+    'encryptionKey' => 'abcdef1212345678',
+]);
+```
+
+The `encryptionKey` is generated in "My Sage Pay" when logged in as the administrator.
+
+Note that this gateway will assume all inout data (names, addresses etc.)
+are UTF-8 encoded.
+It will then recode the data to ISO8859-1 before encrypting it for the gateway,
+as the gateway strictly accepts ISO8859-1 only, regardless of what encoding is
+used to submit the form from the merchant site.
+If you do not want this conversion to happen, it can be disabled with this parameter:
+
+    'disableUtf8Decode' => true,
+
+The authorize must be given a `returnUrl` (the return URL on success, or on failure
+if no separate `failureUrl` is provided).
+
+```php
+$response = $gateway->authorize([
+    ...all the normal details...
+    //
+    'returnUrl' => 'https://example.com/success',
+    'failureUrl' => 'https://example.com/failure',
+]);
+```
+
+The `$response` will be a `POST` redirect, which will take use to the gateway.
+At the gateway, the user will authenticate or authorise their credit card,
+perform any 3D Secure actions that may be requested, then will return to the
+merchant site.
+
+To get the result details, the transaction is "completed":
+
+```php
+// The result will be read and decrypted from the return URL (or failure URL)
+// query parameters:
+
+$result = $gateway->completeAuthorize()->send();
+
+$result->isSuccessful();
+$result->getTransactionReference();
+// etc.
+```
+
+If you already have the encrypted response string, then it can be optionally
+passed in:
+
+    $result = $gateway->completeAuthorize(['crypt' => $crypt])->send();
+
+This should normally not be necessary, but is handy for testing or if the
+current page query parameters are not available in a particular architecture.
+
+### Form Purchase
+
+This is the same as `authorize()`, but the `purchase()` request is used instead,
+and the `completePurchase()` request is used to complete the transaction on return.
+
+## Sage Pay Shared Methods (Direct and Server)
+
+Note: these functions do not work for the `Form` API.
+These actions for `Sage Pay Form` must be performed manually through the "My Sage Pay"
+admin panel.
 
 * capture()
 * refund()
