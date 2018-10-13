@@ -65,12 +65,14 @@ class AuthorizeRequest extends DirectAuthorizeRequest
     ];
 
     /**
-     * Add the Form-specific details to the base data.
+     * Get the full set of Sage Pay Form data, most of which is encrypted.
+     * TxType is only PAYMENT, DEFERRED or AUTHENTICATE
+     *
      * @reurn array
      */
     public function getData()
     {
-        $this->validate('currency', 'description', 'encryptionKey');
+        $this->validate('currency', 'description', 'encryptionKey', 'returnUrl');
 
         // The test mode is included to determine the redirect URL.
 
@@ -85,6 +87,7 @@ class AuthorizeRequest extends DirectAuthorizeRequest
 
     /**
      * @return array the data required to be encoded into the form crypt field.
+     * @throws InvalidRequestException if any mandatory fields are missing
      */
     public function getCryptData()
     {
@@ -97,7 +100,7 @@ class AuthorizeRequest extends DirectAuthorizeRequest
             $data = $this->getTokenData($data);
         }
 
-        // Some parameers specific to Sage Pay Form..
+        // Some [optional] parameters specific to Sage Pay Form..
 
         if ($this->getCustomerName() !== null) {
             $data['CustomerName'] = $this->getCustomerName();
@@ -130,8 +133,6 @@ class AuthorizeRequest extends DirectAuthorizeRequest
 
             $data['SendEmail'] = $this->getSendEmail();
         }
-
-        // TxType: only PAYMENT, DEFERRED or AUTHENTICATE
 
         $data['SuccessURL'] = $this->getReturnUrl();
         $data['FailureURL'] = $this->getFailureUrl() ?: $this->getReturnUrl();

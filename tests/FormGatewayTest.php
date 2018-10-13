@@ -6,8 +6,6 @@ use Omnipay\Tests\GatewayTestCase;
 
 class FormGatewayTest extends GatewayTestCase
 {
-    protected $error_3082_text = '3082 : The Description value is too long.';
-
     public function setUp()
     {
         parent::setUp();
@@ -180,86 +178,92 @@ class FormGatewayTest extends GatewayTestCase
     }
 
     /**
+     * Invalid without any query parameter supplied.
      * @expectedException Omnipay\Common\Exception\InvalidResponseException
      */
-/*
     public function testCompleteAuthorizeInvalid()
     {
         $response = $this->gateway->completeAuthorize($this->completePurchaseOptions)->send();
     }
 
-    public function testPurchaseSuccess()
+    /**
+     * Invalid without any query parameter supplied.
+     * @expectedException Omnipay\Common\Exception\InvalidResponseException
+     */
+    public function testCompletePurchaseInvalid1()
     {
-        $this->setMockHttpResponse('ServerPurchaseSuccess.txt');
-
-        $response = $this->gateway->purchase($this->purchaseOptions)->send();
-
-        $this->assertFalse($response->isSuccessful());
-        $this->assertTrue($response->isRedirect());
-        $this->assertSame('{"SecurityKey":"IK776BWNHN","VPSTxId":"{1E7D9C70-DBE2-4726-88EA-D369810D801D}","VendorTxCode":"123"}', $response->getTransactionReference());
-        $this->assertSame('Server transaction registered successfully.', $response->getMessage());
-        $this->assertSame('https://test.sagepay.com/Simulator/VSPServerPaymentPage.asp?TransactionID={1E7D9C70-DBE2-4726-88EA-D369810D801D}', $response->getRedirectUrl());
-    }
-
-    public function testPurchaseFailure()
-    {
-        $this->setMockHttpResponse('ServerPurchaseFailure.txt');
-
-        $response = $this->gateway->purchase($this->purchaseOptions)->send();
-
-        $this->assertFalse($response->isSuccessful());
-        $this->assertFalse($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
-        $this->assertSame($this->error_3082_text, $response->getMessage());
-    }
-
-    public function testCompletePurchaseSuccess()
-    {
-        $this->getHttpRequest()->request->replace(
-            array(
-                'Status' => 'OK',
-                'TxAuthNo' => 'b',
-                'AVSCV2' => 'c',
-                'AddressResult' => 'd',
-                'PostCodeResult' => 'e',
-                'CV2Result' => 'f',
-                'GiftAid' => 'g',
-                '3DSecureStatus' => 'h',
-                'CAVV' => 'i',
-                'AddressStatus' => 'j',
-                'PayerStatus' => 'k',
-                'CardType' => 'l',
-                'Last4Digits' => 'm',
-                'VPSSignature' => md5('{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}438791OKbexamplecJEUPDN1N7Edefghijklm'),
-            )
-        );
-
         $response = $this->gateway->completePurchase($this->completePurchaseOptions)->send();
-
-        $this->assertTrue($response->isSuccessful());
-        $this->assertSame('{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"b","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"123"}', $response->getTransactionReference());
-        $this->assertNull($response->getMessage());
     }
-*/
+
     /**
      * @expectedException Omnipay\Common\Exception\InvalidResponseException
      */
-/*
-    public function testCompletePurchaseInvalid()
+    public function testCompletePurchaseInvalid2()
     {
+        // No leading '@'.
+        $this->getHttpRequest()->initialize(['crypt' => 'ababab']);
         $response = $this->gateway->completePurchase($this->completePurchaseOptions)->send();
     }
 
-    // Repeat Authorize
-
-    public function testRepeatAuthorizeSuccess()
+    /**
+     * @expectedException Omnipay\Common\Exception\InvalidResponseException
+     */
+    public function testCompletePurchaseInvalid3()
     {
-        $this->setMockHttpResponse('SharedRepeatAuthorize.txt');
+        // Not hexadecimal.
+        $this->getHttpRequest()->initialize(['crypt' => '@ababxx']);
+        $response = $this->gateway->completePurchase($this->completePurchaseOptions)->send();
+    }
 
-        $response = $this->gateway->repeatAuthorize($this->repeatOptions)->send();
+    /**
+     * A valid crypt response format, but not decyptable, so empty data.
+     */
+    public function testCompletePurchaseInvalid4()
+    {
+        $this->getHttpRequest()->initialize(['crypt' => '@ababab']);
+        $response = $this->gateway->completePurchase($this->completePurchaseOptions)->send();
+
+        $this->assertSame([], $response->getData());
+    }
+
+    /**
+     * This is on return from the gateway with a valid encrypted result.
+     */
+    public function testCompletePurchaseSuccess()
+    {
+        // Set the "crypt" query parameter.
+
+        $this->getHttpRequest()->initialize(['crypt' => '@5548276239c33e937e4d9d847d0a01f4c05f1b71dd5cd32568b6985a6d6834aca672315cf3eec01bb20d34cd1ccd7bdd69a9cd89047f7f875103b46efd8f7b97847eea6b6bab5eb8b61da9130a75fffa1c9152b7d39f77e534ea870281b8e280ea1fdbd49a8f5a7c67d1f512fe7a030e81ae6bd2beed762ad074edcd5d7eb4456a6797911ec78e4d16e7d3ac96b919052a764b7ee4940fd6976346608ad8fed1eb6b0b14d84d802c594b3fd94378a26837df66b328f01cfd144f2e7bc166370bf7a833862173412d2798e8739ee7ef9b0568afab0fc69f66af19864480bf3e74fe2fd2043ec90396e40ab62dc9c1f32dee0e309af7561d2286380ebb497105bde2860d401ccfb4cfcd7047ad32e9408d37f5d0fe9a67bd964d5b138b2546a7d54647467c59384eaa20728cf240c460e36db68afdcf0291135f9d5ff58563f14856fd28534a5478ba2579234b247d0d5862c5742495a2ae18c5ca0d6461d641c5215b07e690280fa3eaf5d392e1d6e2791b181a500964d4bc6c76310e47468ae72edddc3c04d83363514c908624747118']);
+
+        $response = $this->gateway->completePurchase($this->completePurchaseOptions)->send();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertSame('Successful repeat.', $response->getMessage());
+        $this->assertFalse($response->isRedirect());
+        $this->assertSame('{"TxAuthNo":"19052426","VPSTxId":"{B7792365-F7F9-6E20-ACD1-390C5CEBDDAF}","VendorTxCode":"phpne-demo-56260425"}', $response->getTransactionReference());
+        $this->assertSame('0000 : The Authorisation was Successful.', $response->getMessage());
+        $this->assertSame('19052426', $response->getTxAuthNo());
+
+        $this->assertSame(
+            [
+                'VendorTxCode' => 'phpne-demo-56260425',
+                'VPSTxId' => '{B7792365-F7F9-6E20-ACD1-390C5CEBDDAF}',
+                'Status' => 'OK',
+                'StatusDetail' => '0000 : The Authorisation was Successful.',
+                'TxAuthNo' => '19052426',
+                'AVSCV2' => 'SECURITY CODE MATCH ONLY',
+                'AddressResult' => 'NOTMATCHED',
+                'PostCodeResult' => 'NOTMATCHED',
+                'CV2Result' => 'MATCHED',
+                'GiftAid' => '0',
+                '3DSecureStatus' => 'NOTCHECKED',
+                'CardType' => 'VISA',
+                'Last4Digits' => '0006',
+                'DeclineCode' => '00',
+                'ExpiryDate' => '1218',
+                'Amount' => '99.99',
+                'BankAuthCode' => '999777',
+            ],
+            $response->getData()
+        );
     }
-*/
 }

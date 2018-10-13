@@ -8,6 +8,7 @@ namespace Omnipay\SagePay\Message\Form;
 
 use Omnipay\SagePay\Message\AbstractRequest;
 use Omnipay\SagePay\Message\Response as GenericResponse;
+use Omnipay\Common\Exception\InvalidResponseException;
 
 class CompleteAuthorizeRequest extends AbstractRequest
 {
@@ -25,22 +26,43 @@ class CompleteAuthorizeRequest extends AbstractRequest
 
     /**
      * Data will be encrypted as a query parameter.
+     *
+     * @return array
+     * @throws InvalidResponseException if "crypt" is missing or invalid.
      */
     public function getData()
     {
+        // The application has the option of passing the query parameter
+        // in, perhaps using its own middleware, or allowing Omnipay t0
+        // provide it.
+
         $crypt = $this->getCrypt() ?: $this->httpRequest->query->get('crypt');
 
-        // Remove the leading '@' and decrypt.
+        // Make sure we have a crypt parameter before trying to decrypt it.
 
-        $query = openssl_decrypt(
-            hex2bin(substr($crypt, 1)),
+        if (empty($crypt) || !is_string($crypt) || substr($crypt, 0, 1) !== '@') {
+            throw new InvalidResponseException('Missing or invalid "crypt" parameter');
+        }
+
+        // Remove the leading '@' and decrypt the remainder into a query string.
+        // And E_WARNING error will be issued if the crypt parameter data is not
+        // a hexadecimal string.
+
+        $hexString = substr($crypt, 1);
+
+        if (! preg_match('/^[0-9a-f]+$/i', $hexString)) {
+            throw new InvalidResponseException('Invalid "crypt" parameter; not hexadecimal');
+        }
+
+        $queryString = openssl_decrypt(
+            hex2bin($hexString),
             'aes-128-cbc',
             $this->getEncryptionKey(),
             OPENSSL_RAW_DATA,
             $this->getEncryptionKey()
         );
 
-        parse_str($query, $data);
+        parse_str($queryString, $data);
 
         return($data);
     }
