@@ -594,6 +594,12 @@ since the result will be safely saved in the database.
 
 Sage Pay Form requires neither a server-to-server back-channel nor
 IP-based security.
+It does not require pre-registration of a transaction, so is ideal for
+a speculative "pay now" button on a page for instant purchases of a
+product or service.
+Unlike `Direct` and `Server`, it does not support saved card references
+or tokens.
+
 The payment details are encrypted on the server before being sent to
 the gateway from the user's browser.
 The result is returned to the merchant site also through a client-side
@@ -622,7 +628,7 @@ $gateway = OmniPay::create('SagePay\Form')->initialize([
 
 The `encryptionKey` is generated in "My Sage Pay" when logged in as the administrator.
 
-Note that this gateway will assume all inout data (names, addresses etc.)
+Note that this gateway will assume all input data (names, addresses etc.)
 are UTF-8 encoded.
 It will then recode the data to ISO8859-1 before encrypting it for the gateway,
 as the gateway strictly accepts ISO8859-1 only, regardless of what encoding is
