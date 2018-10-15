@@ -88,9 +88,9 @@ if using this API.
 
 The Direct gateway methods for handling cards are:
 
-* authorize() - with completeAuthorize for 3D Secure and PayPal redirect
-* purchase() - with completePurchase for 3D Secure and PayPal redirect
-* createCard() - explicit "standalone" creation of a cardReference or token
+* `authorize()` - with completeAuthorize for 3D Secure and PayPal redirect
+* `purchase()` - with completePurchase for 3D Secure and PayPal redirect
+* `createCard()` - explicit "standalone" creation of a cardReference or token
 
 *Note: PayPal is not yet implemented in this driver.*
 
@@ -129,7 +129,7 @@ $requestMessage = $gateway->purchase([
     'currency' => 'GBP',
     'card' => $card,
     'transactionId' => $transactionId,
-    'description' => 'Pizzas for everyone',
+    'description' => 'Pizzas for everyone at PHPNE',
 
     // If 3D Secure is enabled, then provide a return URL for
     // when the user comes back from 3D Secure authentication.
@@ -158,12 +158,12 @@ if ($responseMessage->isRedirect()) {
 }
 ```
 
-That redirect method is intended just for testing.
-Create your own instead, within the rules of your framework, using:
+That `redirect()` method is intended just for demonstration or testing.
+Create your own instead, within your framework, using these helpers:
 
-* $responseMessage->getRedirectUrl()
-* $responseMessage->getRedirectMethod()
-* $responseMessage->getRedirectData()
+* `$responseMessage->getRedirectUrl()`
+* `$responseMessage->getRedirectMethod()`
+* `$responseMessage->getRedirectData()`
 
 #### Redirect Return
 
@@ -248,10 +248,11 @@ Sage Pay Server uses your IP address to authenticate backend access to the
 gateway, and it also needs to a public URL that it can send back-channel
 notifications to. This makes development on a localhost server difficult.
 
-* authorize()
-* purchase()
-* createCard() - explicit "standalone" creation of a cardReference or token
-* acceptNotification() - Notification Handler for authorize, purchase and explicit cardReference registration
+* `authorize()`
+* `purchase()`
+* `createCard()` - explicit "standalone" creation of a cardReference or token
+* `acceptNotification()` - Notification Handler for authorize, purchase and
+   explicit cardReference registration
 
 ### Server Gateway
 
@@ -610,8 +611,8 @@ in the "My Sage Pay" administration panel.
 
 Supported functions are:
 
-* authorize()
-* purchase()
+* `authorize()`
+* `purchase()`
 
 ### Form Authorize
 
@@ -686,13 +687,13 @@ Note: these functions do not work for the `Form` API.
 These actions for `Sage Pay Form` must be performed manually through the "My Sage Pay"
 admin panel.
 
-* capture()
-* refund()
-* void() - void a purchase
-* abort() - abort an authorization before it is captured
-* repeatAuthorize() - new authorization based on past transaction
-* repeatPurchase() - new purchase based on past transaction
-* deleteCard() - remove a cardReference or token from the accout
+* `capture()`
+* `refund()`
+* `void()` - void a purchase
+* `abort()` - abort an authorization before it is captured
+* `repeatAuthorize()` - new authorization based on past transaction
+* `repeatPurchase()` - new purchase based on past transaction
+* `deleteCard()` - remove a cardReference or token from the accout
 
 ### Repeat Authorize/Purchase
 
@@ -891,7 +892,6 @@ but is also the only format currently supported by some of the Sage accounting p
 (e.g. Line 50) which can pull transaction data directly from Sage Pay.
 For applications that require this type of integration, an optional parameter `useOldBasketFormat`
 with a value of `true` can be passed in the driver's `initialize()` method.
-
 
 ## Sage 50 Accounts Software Integration
 
