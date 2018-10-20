@@ -650,12 +650,12 @@ $response = $gateway->authorize([
 ]);
 ```
 
-The `$response` will be a `POST` redirect, which will take use to the gateway.
+The `$response` will be a `POST` redirect, which will take the user to the gateway.
 At the gateway, the user will authenticate or authorise their credit card,
 perform any 3D Secure actions that may be requested, then will return to the
 merchant site.
 
-To get the result details, the transaction is "completed":
+To get the result details, the transaction is "completed" on return:
 
 ```php
 // The result will be read and decrypted from the return URL (or failure URL)
@@ -668,13 +668,18 @@ $result->getTransactionReference();
 // etc.
 ```
 
-If you already have the encrypted response string, then it can be optionally
-passed in:
+If you already have the encrypted response string, then it can be passed in.
+However, you would normally leave it for the driver to read it for you from
+the current server request:
 
+    $crypt = $_GET['crypt']; // or supplied by your framework
     $result = $gateway->completeAuthorize(['crypt' => $crypt])->send();
 
-This should normally not be necessary, but is handy for testing or if the
-current page query parameters are not available in a particular architecture.
+This is handy for testing or if the current page query parameters are not
+available in a particular architecture.
+
+Like `Server` and `Direct`, you can use either the `DEFERRED` or the `AUTHENTICATE`
+method to reserve the amount.
 
 ### Form Purchase
 
