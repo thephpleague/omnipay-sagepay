@@ -93,13 +93,6 @@ class AuthorizeRequest extends DirectAuthorizeRequest
     {
         $data = $this->getBaseAuthorizeData();
 
-        // CHECKME: are tokens supported?
-
-        if ($this->getToken() || $this->getCardReference()) {
-            // If using a token, then set that data.
-            $data = $this->getTokenData($data);
-        }
-
         // Some [optional] parameters specific to Sage Pay Form..
 
         if ($this->getCustomerName() !== null) {
@@ -144,7 +137,7 @@ class AuthorizeRequest extends DirectAuthorizeRequest
         $data = array_intersect_key($data, $this->validFields);
 
         // Throw exception if any mandatory fields are missing.
-        // We need to catch it here before sending the user to an
+        // We need to catch it here before sending the user to a
         // generic (and useless) error on the gateway site.
 
         foreach ($this->validFields as $fieldName => $mandatoryFlag) {

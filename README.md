@@ -88,9 +88,9 @@ if using this API.
 
 The Direct gateway methods for handling cards are:
 
-* authorize() - with completeAuthorize for 3D Secure and PayPal redirect
-* purchase() - with completePurchase for 3D Secure and PayPal redirect
-* createCard() - explicit "standalone" creation of a cardReference or token
+* `authorize()` - with completeAuthorize for 3D Secure and PayPal redirect
+* `purchase()` - with completePurchase for 3D Secure and PayPal redirect
+* `createCard()` - explicit "standalone" creation of a cardReference or token
 
 *Note: PayPal is not yet implemented in this driver.*
 
@@ -129,7 +129,7 @@ $requestMessage = $gateway->purchase([
     'currency' => 'GBP',
     'card' => $card,
     'transactionId' => $transactionId,
-    'description' => 'Pizzas for everyone',
+    'description' => 'Pizzas for everyone at PHPNE',
 
     // If 3D Secure is enabled, then provide a return URL for
     // when the user comes back from 3D Secure authentication.
@@ -158,12 +158,12 @@ if ($responseMessage->isRedirect()) {
 }
 ```
 
-That redirect method is intended just for testing.
-Create your own instead, within the rules of your framework, using:
+That `redirect()` method is intended just for demonstration or testing.
+Create your own instead, within your framework, using these helpers:
 
-* $responseMessage->getRedirectUrl()
-* $responseMessage->getRedirectMethod()
-* $responseMessage->getRedirectData()
+* `$responseMessage->getRedirectUrl()`
+* `$responseMessage->getRedirectMethod()`
+* `$responseMessage->getRedirectData()`
 
 #### Redirect Return
 
@@ -248,10 +248,11 @@ Sage Pay Server uses your IP address to authenticate backend access to the
 gateway, and it also needs to a public URL that it can send back-channel
 notifications to. This makes development on a localhost server difficult.
 
-* authorize()
-* purchase()
-* createCard() - explicit "standalone" creation of a cardReference or token
-* acceptNotification() - Notification Handler for authorize, purchase and explicit cardReference registration
+* `authorize()`
+* `purchase()`
+* `createCard()` - explicit "standalone" creation of a cardReference or token
+* `acceptNotification()` - Notification Handler for authorize, purchase and
+   explicit cardReference registration
 
 ### Server Gateway
 
@@ -594,6 +595,12 @@ since the result will be safely saved in the database.
 
 Sage Pay Form requires neither a server-to-server back-channel nor
 IP-based security.
+It does not require pre-registration of a transaction, so is ideal for
+a speculative "pay now" button on a page for instant purchases of a
+product or service.
+Unlike `Direct` and `Server`, it does not support saved card references
+or tokens.
+
 The payment details are encrypted on the server before being sent to
 the gateway from the user's browser.
 The result is returned to the merchant site also through a client-side
@@ -604,8 +611,8 @@ in the "My Sage Pay" administration panel.
 
 Supported functions are:
 
-* authorize()
-* purchase()
+* `authorize()`
+* `purchase()`
 
 ### Form Authorize
 
@@ -622,7 +629,7 @@ $gateway = OmniPay::create('SagePay\Form')->initialize([
 
 The `encryptionKey` is generated in "My Sage Pay" when logged in as the administrator.
 
-Note that this gateway will assume all inout data (names, addresses etc.)
+Note that this gateway will assume all input data (names, addresses etc.)
 are UTF-8 encoded.
 It will then recode the data to ISO8859-1 before encrypting it for the gateway,
 as the gateway strictly accepts ISO8859-1 only, regardless of what encoding is
@@ -643,12 +650,12 @@ $response = $gateway->authorize([
 ]);
 ```
 
-The `$response` will be a `POST` redirect, which will take use to the gateway.
+The `$response` will be a `POST` redirect, which will take the user to the gateway.
 At the gateway, the user will authenticate or authorise their credit card,
 perform any 3D Secure actions that may be requested, then will return to the
 merchant site.
 
-To get the result details, the transaction is "completed":
+To get the result details, the transaction is "completed" on return:
 
 ```php
 // The result will be read and decrypted from the return URL (or failure URL)
@@ -661,13 +668,18 @@ $result->getTransactionReference();
 // etc.
 ```
 
-If you already have the encrypted response string, then it can be optionally
-passed in:
+If you already have the encrypted response string, then it can be passed in.
+However, you would normally leave it for the driver to read it for you from
+the current server request:
 
+    $crypt = $_GET['crypt']; // or supplied by your framework
     $result = $gateway->completeAuthorize(['crypt' => $crypt])->send();
 
-This should normally not be necessary, but is handy for testing or if the
-current page query parameters are not available in a particular architecture.
+This is handy for testing or if the current page query parameters are not
+available in a particular architecture.
+
+Like `Server` and `Direct`, you can use either the `DEFERRED` or the `AUTHENTICATE`
+method to reserve the amount.
 
 ### Form Purchase
 
@@ -680,13 +692,13 @@ Note: these functions do not work for the `Form` API.
 These actions for `Sage Pay Form` must be performed manually through the "My Sage Pay"
 admin panel.
 
-* capture()
-* refund()
-* void() - void a purchase
-* abort() - abort an authorization before it is captured
-* repeatAuthorize() - new authorization based on past transaction
-* repeatPurchase() - new purchase based on past transaction
-* deleteCard() - remove a cardReference or token from the accout
+* `capture()`
+* `refund()`
+* `void()` - void a purchase
+* `abort()` - abort an authorization before it is captured
+* `repeatAuthorize()` - new authorization based on past transaction
+* `repeatPurchase()` - new purchase based on past transaction
+* `deleteCard()` - remove a cardReference or token from the accout
 
 ### Repeat Authorize/Purchase
 
@@ -885,7 +897,6 @@ but is also the only format currently supported by some of the Sage accounting p
 (e.g. Line 50) which can pull transaction data directly from Sage Pay.
 For applications that require this type of integration, an optional parameter `useOldBasketFormat`
 with a value of `true` can be passed in the driver's `initialize()` method.
-
 
 ## Sage 50 Accounts Software Integration
 
