@@ -2,6 +2,7 @@
 
 namespace Omnipay\SagePay\Message;
 
+use Omnipay\Common\Message\RequestInterface;
 use Omnipay\Tests\TestCase;
 
 class ResponseTest extends TestCase
@@ -99,5 +100,26 @@ class ResponseTest extends TestCase
 
         $this->assertTrue($response->isSuccessful());
         $this->assertSame('{ABCDEFGH-ABCD-ABCD-ABCD-ABCDEFGHIJKL}', $response->getToken());
+    }
+
+
+    public function testRedirectMethodIsPost()
+    {
+        $httpResponse = new Response($this->prophesize(RequestInterface::class)->reveal(), []);
+        $this->assertEquals('POST', $httpResponse->getRedirectMethod());
+    }
+
+    public function testDataGetters()
+    {
+        $vPSTxId = (string) rand(0, 100);
+        $securityKey = (string) rand(0, 100);
+        $data = [
+            'VPSTxId' => $vPSTxId,
+            'SecurityKey' => $securityKey,
+        ];
+        $httpResponse = new Response($this->prophesize(RequestInterface::class)->reveal(), $data);
+
+        $this->assertEquals($vPSTxId, $httpResponse->getVPSTxId());
+        $this->assertEquals($securityKey, $httpResponse->getSecurityKey());
     }
 }
