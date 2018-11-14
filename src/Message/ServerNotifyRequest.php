@@ -214,4 +214,13 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
             exit;
         }
     }
+
+    /**
+     * Overrides the Form/Server/Direct method since there is no
+     * getRequest() to inspect in a notification.
+     */
+    public function getTransactionId()
+    {
+        return $this->getDataItem('VendorTxCode');
+    }
 }

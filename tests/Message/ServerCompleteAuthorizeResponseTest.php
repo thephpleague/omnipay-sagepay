@@ -28,8 +28,11 @@ class ServerCompleteAuthorizeResponseTest extends TestCase
                 'DeclineCode' => '00',
                 'ExpiryDate' => '0722',
                 'BankAuthCode' => '999777',
+                //'VendorTxCode' => '123', <-- Not in response
             )
         );
+
+        // The transaction ID is set in the original request only.
 
         $this->getMockRequest()->shouldReceive('getTransactionId')->once()->andReturn('123');
         $this->getMockRequest()->shouldReceive('getTransactionReference')->once()->andReturn('{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"4255","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"438791"}');
@@ -38,6 +41,36 @@ class ServerCompleteAuthorizeResponseTest extends TestCase
         $this->assertFalse($response->isRedirect());
         $this->assertSame('{"SecurityKey":"JEUPDN1N7E","TxAuthNo":"b","VPSTxId":"{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}","VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertNull($response->getMessage());
+
+        //$this->assertSame('123', $response->getTransactionId());
+    }
+
+    public function testFormCompleteAuthorizeResponseSuccess()
+    {
+        $response = new ServerCompleteAuthorizeResponse(
+            $this->getMockRequest(),
+            array(
+                'Status' => 'OK',
+                'TxAuthNo' => 'b',
+                'AVSCV2' => 'c',
+                'AddressResult' => 'd',
+                'PostCodeResult' => 'e',
+                'CV2Result' => 'f',
+                'GiftAid' => 'g',
+                '3DSecureStatus' => 'h',
+                'CAVV' => 'i',
+                'AddressStatus' => 'j',
+                'PayerStatus' => 'k',
+                'CardType' => 'l',
+                'Last4Digits' => 'm',
+                'DeclineCode' => '00',
+                'ExpiryDate' => '0722',
+                'BankAuthCode' => '999777',
+                'VendorTxCode' => '123', // In response
+            )
+        );
+
+        $this->assertSame('123', $response->getTransactionId());
     }
 
     public function testServerCompleteAuthorizeResponseFailure()

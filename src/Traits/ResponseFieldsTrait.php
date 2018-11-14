@@ -254,4 +254,16 @@ trait ResponseFieldsTrait
             return (int)$dateTime->format('Y');
         }
     }
+
+    /**
+     * The transaction ID will be returned in the data for the Form API, or
+     * we will have to refer to the request for the Server and Direct APIs.
+     *
+     * @return @inherit
+     */
+    public function getTransactionId()
+    {
+        return $this->getDataItem('VendorTxCode')
+            ?: $this->getRequest()->getTransactionId();
+    }
 }
