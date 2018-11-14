@@ -9,7 +9,7 @@
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic,
 multi-gateway payment processing library for PHP.
 This package implements Sage Pay support for Omnipay.
-This version only supports PHP 7.1+.
+This version supports PHP ^5.6 and PHP ^7.
 
 This is the `master` branch of Omnipay, handling Omnipay version `3.x`.
 For the `2.x` branch, please visit https://github.com/thephpleague/omnipay-sagepay/tree/2.x
@@ -629,10 +629,10 @@ $gateway = OmniPay::create('SagePay\Form')->initialize([
 
 The `encryptionKey` is generated in "My Sage Pay" when logged in as the administrator.
 
-Note that this gateway will assume all input data (names, addresses etc.)
+Note that this gateway driver will assume all input data (names, addresses etc.)
 are UTF-8 encoded.
 It will then recode the data to ISO8859-1 before encrypting it for the gateway,
-as the gateway strictly accepts ISO8859-1 only, regardless of what encoding is
+since the gateway strictly accepts ISO8859-1 only, regardless of what encoding is
 used to submit the form from the merchant site.
 If you do not want this conversion to happen, it can be disabled with this parameter:
 
