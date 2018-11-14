@@ -61,7 +61,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
         // if not already in the response (it will be for Sage Pay Form).
 
         if (! array_key_exists('VendorTxCode', $reference)) {
-            $reference['VendorTxCode'] = $this->getRequest()->getTransactionId();
+            $reference['VendorTxCode'] = $this->getTransactionId();
         }
 
         ksort($reference);

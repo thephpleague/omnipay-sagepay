@@ -151,15 +151,6 @@ trait ServerNotifyTrait
     }
 
     /**
-     * The VendorTxCode is POSTed - we will need this for looking up the transaction
-     * locally.
-     */
-    public function getTransactionId()
-    {
-        return $this->getDataItem('VendorTxCode');
-    }
-
-    /**
      * Gateway Reference.
      *
      * @return string|null A reference provided by the gateway to represent this transaction
@@ -188,7 +179,7 @@ trait ServerNotifyTrait
 
         $reference['SecurityKey'] = $this->getSecurityKey();
 
-        $reference['VendorTxCode'] = $this->getDataItem('VendorTxCode');
+        $reference['VendorTxCode'] = $this->getTransactionId();
 
         ksort($reference);
 
