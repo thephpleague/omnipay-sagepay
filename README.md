@@ -509,7 +509,7 @@ The `$request` will capture the POST data sent by Sage Pay:
 $gateway = Omnipay\Omnipay::create('SagePay_Server');
 $gateway->setVendor('your-vendor-name');
 $gateway->setTestMode(true); // To access your test account.
-$request = $gateway->acceptNotification();
+$notifyRequest = $gateway->acceptNotification();
 ```
 
 Your original `transactionId` is available to look up the transaction in the database:
@@ -517,25 +517,31 @@ Your original `transactionId` is available to look up the transaction in the dat
 ```php
 // Use this transaction ID to look up the `$securityKey` you saved:
 
-$transactionId = $request->getTransactionId();
+$transactionId = $notifyRequest->getTransactionId();
 $transaction = customFetchMyTransaction($transactionId); // Local storage
 $securityKey = $transaction->getSecurityKey(); // From your local storage
+
+// Alternatively, if you did not save the `securityKey` as a distinct field,
+// then use the `transactionReference` you saved.
+// The `transactionReference` for this driver will be a compound JSON string
+// with the `securityKey` as an integral part of it, so the driver can use it
+// directly.
+
+$transactionReference = $transaction->getTransactionReference(); // From your local storage
 ```
 
 Now the signature can be checked:
 
 ```php
-// The transactionReference contains a one-time token known as the `securitykey` that is
-// used in the signature hash. You can alternatively `setSecurityKey('...')` if you saved
-// that as a separate field.
+$notifyRequest->setSecurityKey($securityKey);
+// or
+$notifyRequest->setTransactionReference($transactionReference);
 
-$request->setSecurityKey($securityKey);
-
-if (! $request->isValid()) {
+if (! $notifyRequest->isValid()) {
     // Respond to Sage Pay indicating we are not accepting anything about this message.
     // You might want to log `$request->getData()` first, for later analysis.
 
-    $request->invalid($nextUrl, 'Signature not valid - goodbye');
+    $notifyRequest->invalid($nextUrl, 'Signature not valid - goodbye');
 }
 ```
 
@@ -544,7 +550,7 @@ then indicate this with an error. Note an "error" is to indicate that although t
 appears to be legitimate, you do not accept it or cannot handle it for any reason:
 
 ```php
-$request->error($nextUrl, 'This transaction does not exist on the system');
+$notifyRequest->error($nextUrl, 'This transaction does not exist on the system');
 ```
 
 > **Note:** it has been observed that the same notification message may be sent
@@ -558,38 +564,58 @@ If you accept the notification, then you can update your local records and let S
 ```php
 // All raw data - just log it for later analysis:
 
-$request->getData();
+$notifyRequest->getData();
 
 // Save the final transactionReference against the transaction in the database. It will
 // be needed if you want to capture the payment (for an authorize) or void or refund or
 // repeat the payment later.
 
-$finalTransactionReference = $request->getTransactionReference();
+$finalTransactionReference = $notifyRequest->getTransactionReference();
 
 // The payment or authorization result:
-// Result is $request::STATUS_COMPLETED, $request::STATUS_PENDING or $request::STATUS_FAILED
+// Result is $notifyRequest::STATUS_COMPLETED, $notifyRequest::STATUS_PENDING
+// or $notifyRequest::STATUS_FAILED
 
-$request->getTransactionStatus();
+$notifyRequest->getTransactionStatus();
 
 // If you want more detail, look at the raw data. An error message may be found in:
 
-$request->getMessage();
+$notifyRequest->getMessage();
 
 // The transaction may be the result of a `createCard()` request.
 // The cardReference can be found like this:
 
-if ($request->getTxType() === $request::TXTYPE_TOKEN) {
-    $cardReference = $request->getCardReference();
+if ($notifyRequest->getTxType() === $notifyRequest::TXTYPE_TOKEN) {
+    $cardReference = $notifyRequest->getCardReference();
 }
 
 // Now let Sage Pay know you have accepted and saved the result:
 
-$request->confirm($nextUrl);
+$notifyRequest->confirm($nextUrl);
 ```
 
 The `$nextUrl` is where you want Sage Pay to send the user to next.
 It will often be the same URL whether the transaction was approved or not,
 since the result will be safely saved in the database.
+
+The `confirm()`, `error()` and `reject()` methods will all exit the
+application immediately to prevent additional output being added to
+the response. You can disable this by setting the `exitOnResponse`
+option:
+
+```php
+$gateway->setExitOnResponse(false);
+// or
+$notifyRequest->setExitOnResponse(false);
+```
+
+If you just want the body payload, this method will return it without
+echoing it.
+You must return it with a `200` HTTP Status Code:
+
+```php
+$bodyPayload = getResponseBody($status, $nextUrl, $detail = null);
+```
 
 ## Sage Pay Form Methods
 
