@@ -132,6 +132,8 @@ class ServerNotifyRequestTest extends TestCase
         $this->assertSame('failed', $this->request->getTransactionStatus());
 
         $this->assertNull($this->request->getMessage());
+
+        $this->assertFalse($this->request->isSuccessful());
     }
 
     public function testError()
