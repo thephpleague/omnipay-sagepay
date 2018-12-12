@@ -100,6 +100,12 @@ class ServerNotifyRequestTest extends TestCase
             "Status=OK\r\nRedirectUrl=https://www.example.com/\r\nStatusDetail=detail"
         );
         $this->request->confirm('https://www.example.com/', 'detail');
+
+        // Issue https://github.com/thephpleague/omnipay-sagepay/issues/124
+        // The isSuccessful() method is moved to the trait that shares many
+        // common response fields with the notification server request.
+
+        $this->assertTrue($this->request->isSuccessful());
     }
 
     public function testServerNotifyRequestFailure()

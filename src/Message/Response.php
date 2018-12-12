@@ -16,17 +16,6 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
     use ResponseFieldsTrait;
 
     /**
-     * @return bool True if the transaction is successful and complete.
-     */
-    public function isSuccessful()
-    {
-        return $this->getStatus() === static::SAGEPAY_STATUS_OK
-            || $this->getStatus() === static::SAGEPAY_STATUS_OK_REPEATED
-            || $this->getStatus() === static::SAGEPAY_STATUS_REGISTERED
-            || $this->getStatus() === static::SAGEPAY_STATUS_AUTHENTICATED;
-    }
-
-    /**
      * Gateway Reference
      *
      * Sage Pay requires the original VendorTxCode as well as 3 separate

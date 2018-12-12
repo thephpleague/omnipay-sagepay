@@ -24,6 +24,17 @@ trait ResponseFieldsTrait
     }
 
     /**
+     * @return bool True if the transaction is successful and complete.
+     */
+    public function isSuccessful()
+    {
+        return $this->getStatus() === static::SAGEPAY_STATUS_OK
+            || $this->getStatus() === static::SAGEPAY_STATUS_OK_REPEATED
+            || $this->getStatus() === static::SAGEPAY_STATUS_REGISTERED
+            || $this->getStatus() === static::SAGEPAY_STATUS_AUTHENTICATED;
+    }
+
+    /**
      * Get the cardReference generated when creating a card reference
      * during an authorisation or payment, or as an explicit request.
      *
