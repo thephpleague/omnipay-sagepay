@@ -33,7 +33,7 @@ class CompleteAuthorizeRequest extends AbstractRequest
     public function getData()
     {
         // The application has the option of passing the query parameter
-        // in, perhaps using its own middleware, or allowing Omnipay t0
+        // in, perhaps using its own middleware, or allowing Omnipay to
         // provide it.
 
         $crypt = $this->getCrypt() ?: $this->httpRequest->query->get('crypt');
@@ -45,7 +45,7 @@ class CompleteAuthorizeRequest extends AbstractRequest
         }
 
         // Remove the leading '@' and decrypt the remainder into a query string.
-        // And E_WARNING error will be issued if the crypt parameter data is not
+        // An InvalidResponseException is thrown if the crypt parameter data is not
         // a hexadecimal string.
 
         $hexString = substr($crypt, 1);
@@ -63,6 +63,9 @@ class CompleteAuthorizeRequest extends AbstractRequest
         );
 
         parse_str($queryString, $data);
+
+        // The result will be ASCII data only, being a very restricted set of
+        // IDs and flags, so can be treated as UTF-8 without any conversion.
 
         return($data);
     }

@@ -20,6 +20,10 @@
             "email": "adrian@adrianmacneil.com"
         },
         {
+            "name": "Jason Judge",
+            "email": "jason.judge@academe.co.uk"
+        },
+        {
             "name": "Omnipay Contributors",
             "homepage": "https://github.com/thephpleague/omnipay-sagepay/contributors"
         }

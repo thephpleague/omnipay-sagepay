@@ -34,8 +34,9 @@ Table of Contents
          * [Server Notification Handler](#server-notification-handler)
       * [Sage Pay Form Methods](#sage-pay-form-methods)
          * [Form Authorize](#form-authorize)
+         * [Form completeAuthorise](#form-completeauthorise)
          * [Form Purchase](#form-purchase)
-      * [Sage Pay Shared Methods (Direct and Server)](#sage-pay-shared-methods-for-both-direct-and-server)
+      * [Sage Pay Shared Methods (Direct and Server)](#sage-pay-shared-methods-direct-and-server)
          * [Repeat Authorize/Purchase](#repeat-authorizepurchase)
          * [Capture](#capture)
          * [Delete Card](#delete-card)
@@ -681,7 +682,10 @@ At the gateway, the user will authenticate or authorise their credit card,
 perform any 3D Secure actions that may be requested, then will return to the
 merchant site.
 
-To get the result details, the transaction is "completed" on return:
+### Form completeAuthorise
+
+To get the result details, the transaction is "completed" on the
+user's return. This wil be at your `returnUrl` endpoint:
 
 ```php
 // The result will be read and decrypted from the return URL (or failure URL)
@@ -696,13 +700,29 @@ $result->getTransactionReference();
 
 If you already have the encrypted response string, then it can be passed in.
 However, you would normally leave it for the driver to read it for you from
-the current server request:
+the current server request, so the following would not normally be necessary:
 
     $crypt = $_GET['crypt']; // or supplied by your framework
     $result = $gateway->completeAuthorize(['crypt' => $crypt])->send();
 
 This is handy for testing or if the current page query parameters are not
 available in a particular architecture.
+
+It is important to make sure this result is what was expected by your
+merchant site.
+Your transaction ID will be returned in the result and can be inspected:
+
+    $result->getTransactionId()
+
+You *must* make sure this transaction ID matches the one you sent
+the user off with in the first place (store it in your session).
+If they do no match, then you cannot trust the result, as the user
+could be running two checkout flows at the same time, possibly
+for wildly different amounts.
+
+In a future release, the `completeAuthorize()` method will expect the
+`transactionId` to be supplied and it must match before it will
+return a success status.
 
 Like `Server` and `Direct`, you can use either the `DEFERRED` or the `AUTHENTICATE`
 method to reserve the amount.
