@@ -750,7 +750,7 @@ admin panel.
 
 An authorization or purchase can be created from a past authorization or purchase.
 You will need the `transactionReference` of the original transation.
-The `transactionReference` will be a JSON string containing the four peices of
+The `transactionReference` will be a JSON string containing the four pieces of
 information the gateway needs to reuse the transaction.
 
 ```php
