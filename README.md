@@ -599,15 +599,19 @@ The `$nextUrl` is where you want Sage Pay to send the user to next.
 It will often be the same URL whether the transaction was approved or not,
 since the result will be safely saved in the database.
 
-The `confirm()`, `error()` and `reject()` methods will all exit the
+The `confirm()`, `error()` and `reject()` methods will all echo the expected
+return payload and expect your application to rerturn a HTTP Status `200`
+without adding any further content.
+
+These functions used to exit the
 application immediately to prevent additional output being added to
-the response. You can disable this by setting the `exitOnResponse`
+the response. You can restore this functionality by setting the `exitOnResponse`
 option:
 
 ```php
-$gateway->setExitOnResponse(false);
+$gateway->setExitOnResponse(true);
 // or
-$notifyRequest->setExitOnResponse(false);
+$notifyRequest->setExitOnResponse(true);
 ```
 
 If you just want the body payload, this method will return it without
