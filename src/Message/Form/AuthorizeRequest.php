@@ -26,7 +26,7 @@ class AuthorizeRequest extends DirectAuthorizeRequest
         'CustomerName' => false,
         'CustomerEMail' => false,
         'VendorEMail' => false,
-        'SendEMail' => false,
+        'SendEmail' => false,
         'EmailMessage' => false,
         'BillingSurname' => true,
         'BillingFirstnames' => true,
