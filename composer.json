@@ -1,5 +1,5 @@
 {
-    "name": "omnipay/sagepay",
+    "name": "PBH/omnipay/sagepay",
     "type": "library",
     "description": "Sage Pay driver for the Omnipay PHP payment processing library",
     "keywords": [
