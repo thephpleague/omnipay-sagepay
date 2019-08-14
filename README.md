@@ -57,7 +57,7 @@ To install, simply add it to your `composer.json` file:
 ```json
 {
     "require": {
-        "omnipay/sagepay": "~3.0"
+        "pbh-omnipay-sagepay": "~3.0"
     }
 }
 ```
