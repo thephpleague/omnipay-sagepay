@@ -34,7 +34,7 @@ Table of Contents
          * [Server Notification Handler](#server-notification-handler)
       * [Sage Pay Form Methods](#sage-pay-form-methods)
          * [Form Authorize](#form-authorize)
-         * [Form completeAuthorise](#form-completeauthorise)
+         * [Form completeAuthorize](#form-completeauthorize)
          * [Form Purchase](#form-purchase)
       * [Sage Pay Shared Methods (Direct and Server)](#sage-pay-shared-methods-direct-and-server)
          * [Repeat Authorize/Purchase](#repeat-authorizepurchase)
@@ -678,11 +678,14 @@ $response = $gateway->authorize([
 ```
 
 The `$response` will be a `POST` redirect, which will take the user to the gateway.
-At the gateway, the user will authenticate or authorise their credit card,
+At the gateway, the user will authenticate or authorize their credit card,
 perform any 3D Secure actions that may be requested, then will return to the
 merchant site.
 
-### Form completeAuthorise
+Like `Server` and `Direct`, you can use either the `DEFERRED` or the `AUTHENTICATE`
+method to reserve the amount.
+
+### Form completeAuthorize
 
 To get the result details, the transaction is "completed" on the
 user's return. This wil be at your `returnUrl` endpoint:
@@ -723,9 +726,6 @@ for wildly different amounts.
 In a future release, the `completeAuthorize()` method will expect the
 `transactionId` to be supplied and it must match before it will
 return a success status.
-
-Like `Server` and `Direct`, you can use either the `DEFERRED` or the `AUTHENTICATE`
-method to reserve the amount.
 
 ### Form Purchase
 
