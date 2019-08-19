@@ -26,7 +26,7 @@ class AuthorizeRequest extends DirectAuthorizeRequest
         'CustomerName' => false,
         'CustomerEMail' => false,
         'VendorEMail' => false,
-        'SendEmail' => false,
+        'SendEMail' => false,
         'EmailMessage' => false,
         'BillingSurname' => true,
         'BillingFirstnames' => true,
@@ -100,7 +100,7 @@ class AuthorizeRequest extends DirectAuthorizeRequest
         }
 
         if ($this->getVendorEmail() !== null) {
-            $data['VendorEmail'] = $this->getVendorEmail();
+            $data['VendorEMail'] = $this->getVendorEmail();
         }
 
         if ($this->getEmailMessage() !== null) {
@@ -124,7 +124,7 @@ class AuthorizeRequest extends DirectAuthorizeRequest
                 $sendEmail = static::SEND_EMAIL_BOTH;
             }
 
-            $data['SendEmail'] = $this->getSendEmail();
+            $data['SendEMail'] = $this->getSendEmail();
         }
 
         $data['SuccessURL'] = $this->getReturnUrl();
