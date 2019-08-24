@@ -311,7 +311,7 @@ $creditCard = new CreditCard([
 * The country must be a two-character ISO 3166 code.
 * The state will be a two-character ISO code, and is mandatory if the country is "US".
 * The state will be ignored if the country is not "US".
-* Adddress2 is optional, but all other fields are mandatory.
+* Address2 is optional, but all other fields are mandatory.
 * The postcode is optional for Republic of Ireland "IE",
   though *some* banks insist it is present and valid.
 * This gateway lives on an extended ASCII ISO 8859-1 back end.
@@ -599,15 +599,19 @@ The `$nextUrl` is where you want Sage Pay to send the user to next.
 It will often be the same URL whether the transaction was approved or not,
 since the result will be safely saved in the database.
 
-The `confirm()`, `error()` and `reject()` methods will all exit the
+The `confirm()`, `error()` and `reject()` methods will all echo the expected
+return payload and expect your application to return a HTTP Status `200`
+without adding any further content.
+
+These functions used to exit the
 application immediately to prevent additional output being added to
-the response. You can disable this by setting the `exitOnResponse`
+the response. You can restore this functionality by setting the `exitOnResponse`
 option:
 
 ```php
-$gateway->setExitOnResponse(false);
+$gateway->setExitOnResponse(true);
 // or
-$notifyRequest->setExitOnResponse(false);
+$notifyRequest->setExitOnResponse(true);
 ```
 
 If you just want the body payload, this method will return it without
@@ -688,7 +692,7 @@ method to reserve the amount.
 ### Form completeAuthorize
 
 To get the result details, the transaction is "completed" on the
-user's return. This wil be at your `returnUrl` endpoint:
+user's return. This will be at your `returnUrl` endpoint:
 
 ```php
 // The result will be read and decrypted from the return URL (or failure URL)
@@ -744,13 +748,13 @@ admin panel.
 * `abort()` - abort an authorization before it is captured
 * `repeatAuthorize()` - new authorization based on past transaction
 * `repeatPurchase()` - new purchase based on past transaction
-* `deleteCard()` - remove a cardReference or token from the accout
+* `deleteCard()` - remove a cardReference or token from the account
 
 ### Repeat Authorize/Purchase
 
 An authorization or purchase can be created from a past authorization or purchase.
-You will need the `transactionReference` of the original transation.
-The `transactionReference` will be a JSON string containing the four peices of
+You will need the `transactionReference` of the original transaction.
+The `transactionReference` will be a JSON string containing the four pieces of
 information the gateway needs to reuse the transaction.
 
 ```php
@@ -1007,7 +1011,7 @@ If you are having general issues with Omnipay, we suggest posting on
 [Stack Overflow](http://stackoverflow.com/). Be sure to add the
 [omnipay tag](http://stackoverflow.com/questions/tagged/omnipay) so it can be easily found.
 
-If you want to keep up to date with release anouncements, discuss ideas for the project,
+If you want to keep up to date with release announcements, discuss ideas for the project,
 or ask more detailed questions, there is also a [mailing list](https://groups.google.com/forum/#!forum/omnipay) which
 you can subscribe to.
 
