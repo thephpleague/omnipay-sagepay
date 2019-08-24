@@ -701,12 +701,18 @@ user's return. This will be at your `returnUrl` endpoint:
 // against the transactionId provided in the server request.
 // This prevents different payments getting mixed up.
 
-$result = $gateway->completeAuthorize(['transactionId' => $originalTransactionId])->send();
+$completeRequest = $gateway->completeAuthorize(['transactionId' => $originalTransactionId]);
+$result = $completeRequest->send();
 
 $result->isSuccessful();
 $result->getTransactionReference();
 // etc.
 ```
+
+Note that if `send()` throws an exception here due to a `transactionId` mismatch,
+you can still access the decryoted data that was brought back with the user as
+`$completeRequest->getData()`.
+You will need to log this for later analysis.
 
 If you already have the encrypted response string, then it can be passed in.
 However, you would normally leave it for the driver to read it for you from
