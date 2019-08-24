@@ -696,9 +696,12 @@ user's return. This will be at your `returnUrl` endpoint:
 
 ```php
 // The result will be read and decrypted from the return URL (or failure URL)
-// query parameters:
+// query parameters.
+// You MUST provide the original expected transactionId, which is validated
+// against the transactionId provided in the server request.
+// This prevents different payments getting mixed up.
 
-$result = $gateway->completeAuthorize()->send();
+$result = $gateway->completeAuthorize(['transactionId' => $originalTransactionId])->send();
 
 $result->isSuccessful();
 $result->getTransactionReference();
