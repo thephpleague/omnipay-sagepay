@@ -34,6 +34,7 @@ class FormGatewayTest extends GatewayTestCase
 
         $this->completePurchaseOptions = [
             'encryptionKey' => '2f52208a25a1facf',
+            'transactionId' => 'phpne-demo-53922585',
         ];
     }
 
@@ -235,7 +236,12 @@ class FormGatewayTest extends GatewayTestCase
 
         $this->getHttpRequest()->initialize(['crypt' => '@5548276239c33e937e4d9d847d0a01f4c05f1b71dd5cd32568b6985a6d6834aca672315cf3eec01bb20d34cd1ccd7bdd69a9cd89047f7f875103b46efd8f7b97847eea6b6bab5eb8b61da9130a75fffa1c9152b7d39f77e534ea870281b8e280ea1fdbd49a8f5a7c67d1f512fe7a030e81ae6bd2beed762ad074edcd5d7eb4456a6797911ec78e4d16e7d3ac96b919052a764b7ee4940fd6976346608ad8fed1eb6b0b14d84d802c594b3fd94378a26837df66b328f01cfd144f2e7bc166370bf7a833862173412d2798e8739ee7ef9b0568afab0fc69f66af19864480bf3e74fe2fd2043ec90396e40ab62dc9c1f32dee0e309af7561d2286380ebb497105bde2860d401ccfb4cfcd7047ad32e9408d37f5d0fe9a67bd964d5b138b2546a7d54647467c59384eaa20728cf240c460e36db68afdcf0291135f9d5ff58563f14856fd28534a5478ba2579234b247d0d5862c5742495a2ae18c5ca0d6461d641c5215b07e690280fa3eaf5d392e1d6e2791b181a500964d4bc6c76310e47468ae72edddc3c04d83363514c908624747118']);
 
-        $response = $this->gateway->completePurchase($this->completePurchaseOptions)->send();
+        $options = $this->completePurchaseOptions;
+
+        // Switch to the transaction ID actually encrypted in the server request.
+        $options['transactionId'] = 'phpne-demo-56260425';
+
+        $response = $this->gateway->completePurchase($options)->send();
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
@@ -265,5 +271,45 @@ class FormGatewayTest extends GatewayTestCase
             ],
             $response->getData()
         );
+    }
+
+    /**
+     * The wrong transaction ID is supplied with the server request.
+     *
+     * @expectedException Omnipay\Common\Exception\InvalidResponseException
+     */
+    public function testCompletePurchaseReplayAttack()
+    {
+        //$this->expectException(Complicated::class);
+
+        // Set the "crypt" query parameter.
+
+        $this->getHttpRequest()->initialize(['crypt' => '@5548276239c33e937e4d9d847d0a01f4c05f1b71dd5cd32568b6985a6d6834aca672315cf3eec01bb20d34cd1ccd7bdd69a9cd89047f7f875103b46efd8f7b97847eea6b6bab5eb8b61da9130a75fffa1c9152b7d39f77e534ea870281b8e280ea1fdbd49a8f5a7c67d1f512fe7a030e81ae6bd2beed762ad074edcd5d7eb4456a6797911ec78e4d16e7d3ac96b919052a764b7ee4940fd6976346608ad8fed1eb6b0b14d84d802c594b3fd94378a26837df66b328f01cfd144f2e7bc166370bf7a833862173412d2798e8739ee7ef9b0568afab0fc69f66af19864480bf3e74fe2fd2043ec90396e40ab62dc9c1f32dee0e309af7561d2286380ebb497105bde2860d401ccfb4cfcd7047ad32e9408d37f5d0fe9a67bd964d5b138b2546a7d54647467c59384eaa20728cf240c460e36db68afdcf0291135f9d5ff58563f14856fd28534a5478ba2579234b247d0d5862c5742495a2ae18c5ca0d6461d641c5215b07e690280fa3eaf5d392e1d6e2791b181a500964d4bc6c76310e47468ae72edddc3c04d83363514c908624747118']);
+
+        // These options contain a different transactionId from the once expected.
+
+        $options = $this->completePurchaseOptions;
+
+        $response = $this->gateway->completePurchase($options)->send();
+    }
+
+    /**
+     * The missing expected transaction ID supplied by the app.
+     *
+     * @expectedException Omnipay\Common\Exception\InvalidRequestException
+     */
+    public function testCompletePurchaseMissingExpectedParam()
+    {
+        //$this->expectException(Complicated::class);
+
+        // Set the "crypt" query parameter.
+
+        $this->getHttpRequest()->initialize(['crypt' => '@5548276239c33e937e4d9d847d0a01f4c05f1b71dd5cd32568b6985a6d6834aca672315cf3eec01bb20d34cd1ccd7bdd69a9cd89047f7f875103b46efd8f7b97847eea6b6bab5eb8b61da9130a75fffa1c9152b7d39f77e534ea870281b8e280ea1fdbd49a8f5a7c67d1f512fe7a030e81ae6bd2beed762ad074edcd5d7eb4456a6797911ec78e4d16e7d3ac96b919052a764b7ee4940fd6976346608ad8fed1eb6b0b14d84d802c594b3fd94378a26837df66b328f01cfd144f2e7bc166370bf7a833862173412d2798e8739ee7ef9b0568afab0fc69f66af19864480bf3e74fe2fd2043ec90396e40ab62dc9c1f32dee0e309af7561d2286380ebb497105bde2860d401ccfb4cfcd7047ad32e9408d37f5d0fe9a67bd964d5b138b2546a7d54647467c59384eaa20728cf240c460e36db68afdcf0291135f9d5ff58563f14856fd28534a5478ba2579234b247d0d5862c5742495a2ae18c5ca0d6461d641c5215b07e690280fa3eaf5d392e1d6e2791b181a500964d4bc6c76310e47468ae72edddc3c04d83363514c908624747118']);
+
+        $options = $this->completePurchaseOptions;
+
+        unset($options['transactionId']);
+
+        $response = $this->gateway->completePurchase($options)->send();
     }
 }

@@ -9,6 +9,7 @@ namespace Omnipay\SagePay\Message\Form;
 use Omnipay\SagePay\Message\AbstractRequest;
 use Omnipay\SagePay\Message\Response as GenericResponse;
 use Omnipay\Common\Exception\InvalidResponseException;
+use Omnipay\Common\Exception\InvalidRequestException;
 
 class CompleteAuthorizeRequest extends AbstractRequest
 {
@@ -72,14 +73,37 @@ class CompleteAuthorizeRequest extends AbstractRequest
 
     /**
      * Nothing to send to gateway - we have the result data in the server request.
+     *
+     * @throws InvalidResponseException
+     * @throws InvalidResponseException
      */
     public function sendData($data)
     {
+        $this->response = new GenericResponse($this, $data);
+
+        // Issue #131: confirm the response is for the transaction ID we are
+        // expecting, and not replayed from another transaction.
+
+        $originalTransactionId = $this->getTransactionId();
+        $returnedTransactionId = $this->response->getTransactionId();
+
+        if (empty($originalTransactionId)) {
+            throw new InvalidRequestException('Missing expected transactionId parameter');
+        }
+
+        if ($originalTransactionId !== $returnedTransactionId) {
+            throw new InvalidResponseException(sprintf(
+                'Unexpected transactionId; expected "%s" received "%s"',
+                $originalTransactionId,
+                $returnedTransactionId
+            ));
+        }
+
         // The Response in the current namespace conflicts with
         // the Response in the namespace one level down, but only
         // for PHP 5.6. This alias works around it.
 
-        return $this->response = new GenericResponse($this, $data);
+        return $this->response;
     }
 
     /**
