@@ -285,9 +285,8 @@ The `$creditCard` object will provide the billing and shipping details:
 use Omnipay\Common\CreditCard;
 
 $creditCard = new CreditCard([
-    'firstName' => 'Joe',
-    'lastName' => 'Bloggs',
-    //
+    'billingFirstName' => 'Joe',
+    'billingLastName' => 'Bloggs',
     'billingAddress1' => 'Billing Address 1',
     'billingAddress2' => 'Billing Address 2',
     //'billingState' => '',
@@ -299,6 +298,8 @@ $creditCard = new CreditCard([
     'email' =>  'test@example.com',
     'clientIp' => '123.123.123.123',
     //
+    'shippingFirstName' => 'Joe',
+    'shippingLastName' => 'Bloggs',
     'shippingAddress1' => '99',
     'shippingState' => 'NY',
     'shippingCity' => 'City1',
