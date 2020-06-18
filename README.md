@@ -317,6 +317,21 @@ $creditCard = new CreditCard([
   though *some* banks insist it is present and valid.
 * This gateway lives on an extended ASCII ISO 8859-1 back end.
   Really. Do any characterset conversions in your merchant site to avoid surprises.
+* Both billing and shipping name and address is required.
+  However, you can use the `billingForShipping` flag to set the shipping details
+  to what you supply as the billing details.
+
+```php
+// Use the billing name and address for the shipping name and address too.
+$gateway->setBillingForShipping(true);
+
+// or
+
+$response = $gateway->authorize([
+    'billingForShipping' => true,
+    ...
+]);
+```
 
 ```php
 // Create a unique transaction ID to track this transaction.
@@ -337,7 +352,7 @@ $surchargeXml = '<surcharges>'
 // Send the authorize request.
 // Some optional parameters are shown commented out.
 
-$response = $gateway->authorize(array(
+$response = $gateway->authorize([
     'amount' => '9.99',
     'currency' => 'GBP',
     'card' => $card,
@@ -350,7 +365,7 @@ $response = $gateway->authorize(array(
     // 'token' => $token,
     // 'cardReference' => $cardReference,
     // 'useAuthenticate' => true,
-))->send();
+])->send();
 
 If `useAuthenticate` is set, then the `authorize` will use the `AUTHENTICATE`/`AUTHORISE`
 method of reserving the transaction details.
@@ -460,16 +475,16 @@ The URL for the notification handler is set in the authorize or payment message:
 
 $transactionId = {create a unique transaction id};
 
-$items = array(
-    array(
+$items = [
+    [
         'name' => 'My Product Name',
         'description' => 'My Product Description',
         'quantity' => 1,
         'price' => 9.99,
-    )
-);
+    ]
+];
 
-$response = $gateway->purchase(array(
+$response = $gateway->purchase([
     'amount' => 9.99,
     'currency' => 'GBP',
     // Just the name and address, NOT CC details.
@@ -479,7 +494,7 @@ $response = $gateway->purchase(array(
     'transactionId' => $transactionId,
     'description' => 'test',
     'items' => $items,
-))->send();
+])->send();
 
 // Before redirecting, save `$response->getSecurityKey()` in the database,
 // retrievable by `$transactionId`.
@@ -1004,15 +1019,15 @@ If you want to include VAT amount in the item array you must use
 `\Omnipay\SagePay\Extend\Item` as follows.
 
 ```php
-$items = array(
-    array(new \Omnipay\SagePay\Extend\Item(array(
+$items = [
+    [new \Omnipay\SagePay\Extend\Item([
         'name' => 'My Product Name',
         'description' => 'My Product Description',
         'quantity' => 1,
         'price' => 9.99,
         'vat' => 1.665, // VAT amount, not percentage
-    ))
-);
+    ]]
+];
 ```
 
 # Support
