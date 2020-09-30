@@ -37,7 +37,7 @@ class DirectTokenRegistrationRequest extends AbstractRequest
         $data['CV2'] = $this->getCard()->getCvv();
         $data['CardType'] = $this->getCardBrand();
 
-        // The account type only comes into play when a transation is requested.
+        // The account type only comes into play when a transaction is requested.
         unset($data['AccountType']);
 
         return $data;

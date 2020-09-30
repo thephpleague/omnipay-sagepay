@@ -78,7 +78,7 @@ trait GatewayParamsTrait
      * and this option allows it to be turned back on for legacy
      * merchant sites.
      *
-     * @param mixed true if the notify reponse exits the application.
+     * @param mixed true if the notify response exits the application.
      * @return $this
      */
     public function setExitOnResponse($value)
@@ -87,7 +87,7 @@ trait GatewayParamsTrait
     }
 
     /**
-     * @return mixed true if the notify reponse exits the application.
+     * @return mixed true if the notify response exits the application.
      */
     public function getExitOnResponse()
     {

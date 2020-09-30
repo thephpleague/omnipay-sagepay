@@ -60,7 +60,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     }
 
     /**
-     * If it is used, i.e. needed for an enpoint, then it must be defined.
+     * If it is used, i.e. needed for an endpoint, then it must be defined.
      *
      * @return string the transaction type.
      * @throws InvalidRequestException
@@ -185,7 +185,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
      * then use that to instantiate the response object.
      *
      * @param  array
-     * @return Response The reponse object initialised with the data returned from the gateway.
+     * @return Response The response object initialised with the data returned from the gateway.
      */
     public function sendData($data)
     {
@@ -332,7 +332,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     /**
      * An optional flag to indicate if you wish to continue to store the
      * Token in the SagePay token database for future use.
-     * Values set in contants SET_TOKEN_*
+     * Values set in constants SET_TOKEN_*
      *
      * Note: this is just an override method. It is best to leave this unset,
      * and use either setToken or setCardReference. This flag will then be

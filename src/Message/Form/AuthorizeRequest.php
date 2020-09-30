@@ -186,7 +186,7 @@ class AuthorizeRequest extends DirectAuthorizeRequest
         // is used to submit the form, because that is how the gateway treats
         // the data internally.
         // This package assumes input data will be UTF-8 by default, and will
-        // comvert it accordingly. This can be disabled if the data is already
+        // convert it accordingly. This can be disabled if the data is already
         // ISO8859-1.
         // For the Server and Direct gateway methods, the POST encoding type
         // will tell the gateway how to interpret the character encoding, and
@@ -211,7 +211,7 @@ class AuthorizeRequest extends DirectAuthorizeRequest
 
         $key = $this->getEncryptionKey();
 
-        // Normally IV (paramert 5, initialization vector) would be a kind of salt.
+        // Normally IV (parameter 5, initialization vector) would be a kind of salt.
         // That is more relevant when encrypting user details where multiple users
         // could have identical passwords. But this is a one-off transport of a message
         // that will always be unique, so no variable IV is needed.

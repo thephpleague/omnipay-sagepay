@@ -46,10 +46,10 @@ class ServerCompleteAuthorizeResponse extends Response
      * Error (Sage Pay Server only)
      *
      * Notify Sage Pay you received the payment details but there was an error and the payment
-     * cannot be completed. Error should be called rarely, and only when something unforseen
+     * cannot be completed. Error should be called rarely, and only when something unforeseen
      * has happened on your server or database.
      *
-     * @param string URL to foward the customer to. Note this is different to your standard
+     * @param string URL to forward the customer to. Note this is different to your standard
      *               return controller action URL.
      * @param string Optional human readable reasons for not accepting the transaction.
      */
@@ -66,7 +66,7 @@ class ServerCompleteAuthorizeResponse extends Response
      * of the POST, such as the MD5 hash signatures did not match or you do not wish to proceed
      * with the order.
      *
-     * @param string URL to foward the customer to. Note this is different to your standard
+     * @param string URL to forward the customer to. Note this is different to your standard
      *               return controller action URL.
      * @param string Optional human readable reasons for not accepting the transaction.
      */

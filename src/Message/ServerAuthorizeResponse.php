@@ -48,7 +48,7 @@ class ServerAuthorizeResponse extends Response
     }
 
     /**
-     * @return array empy array; all the data is in the GET URL
+     * @return array empty array; all the data is in the GET URL
      */
     public function getRedirectData()
     {

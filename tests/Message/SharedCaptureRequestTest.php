@@ -25,13 +25,13 @@ class SharedCaptureRequestTest extends TestCase
 
         $this->assertSame('RELEASE', $this->request->getTxType());
 
-        // User authenticate explicity true.
+        // User authenticate explicitly true.
 
         $this->request->setUseAuthenticate(true);
 
         $this->assertSame('AUTHORISE', $this->request->getTxType());
 
-        // User authenticate explicity false (back to the default).
+        // User authenticate explicitly false (back to the default).
 
         $this->request->setUseAuthenticate(false);
 

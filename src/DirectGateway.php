@@ -86,7 +86,7 @@ class DirectGateway extends AbstractGateway
     }
 
     /**
-     * Void a completed (captured) transation.
+     * Void a completed (captured) transaction.
      */
     public function refund(array $parameters = [])
     {

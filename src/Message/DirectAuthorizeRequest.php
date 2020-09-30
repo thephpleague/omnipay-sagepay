@@ -9,7 +9,7 @@ namespace Omnipay\SagePay\Message;
 class DirectAuthorizeRequest extends AbstractRequest
 {
     /**
-     * @var array Some mapping from Omnipay card brand codes to Sage Pay card branc codes.
+     * @var array Some mapping from Omnipay card brand codes to Sage Pay card branch codes.
      */
     protected $cardBrandMap = array(
         'mastercard' => 'MC',
@@ -104,7 +104,7 @@ class DirectAuthorizeRequest extends AbstractRequest
      * SagePay throws an error if passed an IPv6 address.
      * Filter out addresses that are not IPv4 format.
      *
-     * @return string|null The IPv4 IP addess string or null if not available in this format.
+     * @return string|null The IPv4 IP address string or null if not available in this format.
      */
     public function getClientIp()
     {
@@ -247,7 +247,7 @@ class DirectAuthorizeRequest extends AbstractRequest
         // A CVV may be supplied whether using a token or credit card details.
         // On *first* use of a token for which a CVV was provided, that CVV will
         // be used when making a transaction. The CVV will then be deleted by the
-        // gateway. For each *resuse* of a cardReference, a new CVV must be provided,
+        // gateway. For each *reuse* of a cardReference, a new CVV must be provided,
         // if the security rules require it.
 
         if ($this->getCard()->getCvv() !== null) {
@@ -285,7 +285,7 @@ class DirectAuthorizeRequest extends AbstractRequest
     }
 
     /**
-     * @return string The XML surchange data as set.
+     * @return string The XML surcharge data as set.
      */
     public function getSurchargeXml()
     {

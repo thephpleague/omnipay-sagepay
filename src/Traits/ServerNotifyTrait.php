@@ -47,7 +47,7 @@ trait ServerNotifyTrait
             $VPSTxId = str_replace(['{', '}'], '', $VPSTxId);
         }
 
-        // Transaction types PAYMENT, DEFERRED and AUTHENTICATE (when suppoted)
+        // Transaction types PAYMENT, DEFERRED and AUTHENTICATE (when supported)
         // and non-transaction TOKEN request.
 
         $signatureData = array(
