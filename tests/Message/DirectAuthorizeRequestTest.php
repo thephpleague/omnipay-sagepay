@@ -6,7 +6,7 @@ use Omnipay\Tests\TestCase;
 
 class DirectAuthorizeRequestTest extends TestCase
 {
-    // VISA incurrs a surcharge of 2.5% when used.
+    // VISA incurs a surcharge of 2.5% when used.
     const SURCHARGE_XML = '<surcharges><surcharge>'
         . '<paymentType>VISA</paymentType><percentage>2.50</percentage>'
         . '</surcharge></surcharges>';
@@ -287,13 +287,13 @@ class DirectAuthorizeRequestTest extends TestCase
     {
         $items = new \Omnipay\Common\ItemBag(array(
             new \Omnipay\Common\Item(array(
-                'name' => "Denisé's Odd & Wierd £name? #12345678901234567890123456789012345678901234567890123456789012345678901234567890",
+                'name' => "Denisé's Odd & Weird £name? #12345678901234567890123456789012345678901234567890123456789012345678901234567890",
                 'description' => 'Description',
                 'quantity' => 2,
                 'price' => 4.23,
             )),
             array(
-                'name' => "Denisé's \"Odd\" & Wierd £discount? #",
+                'name' => "Denisé's \"Odd\" & Weird £discount? #",
                 'description' => 'My Offer',
                 'quantity' => 2,
                 'price' => -0.10,
@@ -309,11 +309,11 @@ class DirectAuthorizeRequestTest extends TestCase
 
         // Names/descriptions should be max 100 characters in length, once invalid characters have been removed.
         $expected = '<basket><item>'
-            . '<description>Denis\'s Odd &amp; Wierd name 123456789012345678901234567890123456789012345678901234567890123456789012345</description><quantity>2</quantity>'
+            . '<description>Denis\'s Odd &amp; Weird name 123456789012345678901234567890123456789012345678901234567890123456789012345</description><quantity>2</quantity>'
             . '<unitNetAmount>4.23</unitNetAmount><unitTaxAmount>0.00</unitTaxAmount>'
             . '<unitGrossAmount>4.23</unitGrossAmount><totalGrossAmount>8.46</totalGrossAmount>'
             . '</item><discounts>'
-            . '<discount><fixed>0.2</fixed><description>Denis\'s "Odd"  Wierd discount? #</description></discount>'
+            . '<discount><fixed>0.2</fixed><description>Denis\'s "Odd"  Weird discount? #</description></discount>'
             . '<discount><fixed>1.6</fixed><description>1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890</description></discount>'
             . '</discounts></basket>';
 

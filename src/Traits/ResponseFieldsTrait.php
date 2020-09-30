@@ -18,8 +18,6 @@ trait ResponseFieldsTrait
      */
     protected function getDataItem($name, $default = null)
     {
-        $data = $this->getData();
-
         return isset($this->data[$name]) ? $this->data[$name] : $default;
     }
 
@@ -31,7 +29,8 @@ trait ResponseFieldsTrait
         return $this->getStatus() === static::SAGEPAY_STATUS_OK
             || $this->getStatus() === static::SAGEPAY_STATUS_OK_REPEATED
             || $this->getStatus() === static::SAGEPAY_STATUS_REGISTERED
-            || $this->getStatus() === static::SAGEPAY_STATUS_AUTHENTICATED;
+            || $this->getStatus() === static::SAGEPAY_STATUS_AUTHENTICATED
+            || $this->getStatus() === static::SAGEPAY_STATUS_PAYPALOK;
     }
 
     /**
@@ -171,7 +170,7 @@ trait ResponseFieldsTrait
     }
 
     /**
-     * The raw frawd response from the gateway.
+     * The raw fraud response from the gateway.
      *
      * @return string One of static::FRAUD_RESPONSE_*
      */
@@ -193,7 +192,7 @@ trait ResponseFieldsTrait
      * The decline code from the bank. These codes are
      * specific to the bank. Please contact them for a description
      * of each code. e.g. 00
-     * @return string Two digit code, specific to the bacnk.
+     * @return string Two digit code, specific to the bank.
      */
     public function getDeclineCode()
     {
@@ -248,6 +247,8 @@ trait ResponseFieldsTrait
         if (! empty($expiryDate)) {
             return (int)substr($expiryDate, 0, 2);
         }
+
+        return null;
     }
 
     /**
@@ -260,10 +261,12 @@ trait ResponseFieldsTrait
         $expiryDate = $this->getDataItem('ExpiryDate');
 
         if (! empty($expiryDate)) {
-            // COnvert 2-digit year to 4-dogot year, in 1970-2069 range.
+            // Convert 2-digit year to 4-digit year, in 1970-2069 range.
             $dateTime = \DateTime::createFromFormat('y', substr($expiryDate, 2, 2));
             return (int)$dateTime->format('Y');
         }
+
+        return null;
     }
 
     /**

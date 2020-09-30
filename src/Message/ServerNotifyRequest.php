@@ -65,7 +65,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
     {
         if (strpos($reference, 'SecurityKey') !== false) {
             // A JSON string provided - the legacy transactionReference format.
-            // Decode it then extact the securityKey.
+            // Decode it then extract the securityKey.
             // We only need the security key here for the signature; all other
             // items from the reference will be in the server request.
 
@@ -138,7 +138,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
      * Notify Sage Pay you received the payment details but there was an error and the payment
      * cannot be completed.
      *
-     * @param string URL to foward the customer to.
+     * @param string URL to forward the customer to.
      * @param string Optional human readable reasons for not accepting the transaction.
      */
     public function error($nextUrl, $detail = null)
@@ -168,7 +168,7 @@ class ServerNotifyRequest extends AbstractRequest implements NotificationInterfa
      * of the POST, such as the MD5 hash signatures did not match or you do not wish to proceed
      * with the order.
      *
-     * @param string URL to foward the customer to.
+     * @param string URL to forward the customer to.
      * @param string Optional human readable reasons for not accepting the transaction.
      */
     public function invalid($nextUrl, $detail = null)

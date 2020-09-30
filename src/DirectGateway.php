@@ -4,6 +4,7 @@ namespace Omnipay\SagePay;
 
 use Omnipay\SagePay\Message\DirectAuthorizeRequest;
 use Omnipay\SagePay\Message\DirectCompleteAuthorizeRequest;
+use Omnipay\SagePay\Message\DirectCompletePayPalRequest;
 use Omnipay\SagePay\Message\DirectPurchaseRequest;
 use Omnipay\SagePay\Message\SharedCaptureRequest;
 use Omnipay\SagePay\Message\SharedVoidRequest;
@@ -42,6 +43,11 @@ class DirectGateway extends AbstractGateway
     public function completeAuthorize(array $parameters = [])
     {
         return $this->createRequest(DirectCompleteAuthorizeRequest::class, $parameters);
+    }
+
+    public function completePayPal(array $parameters = [])
+    {
+        return $this->createRequest(DirectCompletePayPalRequest::class, $parameters);
     }
 
     /**
@@ -86,7 +92,7 @@ class DirectGateway extends AbstractGateway
     }
 
     /**
-     * Void a completed (captured) transation.
+     * Void a completed (captured) transaction.
      */
     public function refund(array $parameters = [])
     {

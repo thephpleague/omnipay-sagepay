@@ -4,7 +4,6 @@ namespace Omnipay\SagePay\Message;
 
 use Omnipay\Common\Message\AbstractResponse;
 use Omnipay\Common\Message\RedirectResponseInterface;
-use Omnipay\Common\Message\RequestInterface;
 use Omnipay\SagePay\Traits\ResponseFieldsTrait;
 use Omnipay\SagePay\ConstantsInterface;
 
@@ -43,7 +42,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
         // The reference is null if we have no transaction details.
 
         if (empty($reference)) {
-            return;
+            return null;
         }
 
         // Remaining transaction details supplied by the merchant site
@@ -66,17 +65,23 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
      */
     public function isRedirect()
     {
-        return $this->getStatus() === static::SAGEPAY_STATUS_3DAUTH;
+        return $this->getStatus() === static::SAGEPAY_STATUS_3DAUTH || $this->getStatus() === static::SAGEPAY_STATUS_PPREDIRECT;
     }
 
     /**
-     * @return string URL to 3D Secure endpoint.
+     * @return string|null URL to 3D Secure endpoint.
      */
     public function getRedirectUrl()
     {
-        if ($this->isRedirect()) {
-            return $this->getDataItem('ACSURL');
+        if (!$this->isRedirect()) {
+            return null;
         }
+
+        if ($this->getStatus() === static::SAGEPAY_STATUS_PPREDIRECT) {
+            return $this->getDataItem('PayPalRedirectURL');
+        }
+
+        return $this->getDataItem('ACSURL');
     }
 
     /**
@@ -84,6 +89,14 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
      */
     public function getRedirectMethod()
     {
+        if (!$this->isRedirect()) {
+            return null;
+        }
+
+        if ($this->getStatus() === static::SAGEPAY_STATUS_PPREDIRECT) {
+            return 'GET';
+        }
+
         return 'POST';
     }
 
@@ -91,17 +104,23 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
      * The usual reason for a redirect is for a 3D Secure check.
      * Note: when PayPal is supported, a different set of data will be returned.
      *
-     * @return array Collected 3D Secure POST data.
+     * @return array|null Collected 3D Secure POST data.
      */
     public function getRedirectData()
     {
-        if ($this->isRedirect()) {
-            return array(
-                'PaReq' => $this->getDataItem('PAReq'),
-                'TermUrl' => $this->getRequest()->getReturnUrl(),
-                'MD' => $this->getDataItem('MD'),
-            );
+        if (!$this->isRedirect()) {
+            return null;
         }
+
+        if ($this->getStatus() === static::SAGEPAY_STATUS_PPREDIRECT) {
+            return array();
+        }
+
+        return array(
+            'PaReq' => $this->getDataItem('PAReq'),
+            'TermUrl' => $this->getRequest()->getReturnUrl(),
+            'MD' => $this->getDataItem('MD'),
+        );
     }
 
     /**

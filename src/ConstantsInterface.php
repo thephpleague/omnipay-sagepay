@@ -106,6 +106,7 @@ interface ConstantsInterface
     const TXTYPE_REFUND         = 'REFUND';
     const TXTYPE_REPEAT         = 'REPEAT';
     const TXTYPE_REPEATDEFERRED = 'REPEATDEFERRED';
+    const TXTYPE_COMPLETE       = 'COMPLETE';
 
     /**
      *
@@ -115,6 +116,7 @@ interface ConstantsInterface
     const SERVICE_REPEAT            = 'repeat';
     const SERVICE_TOKEN             = 'directtoken';
     const SERVICE_DIRECT3D          = 'direct3dcallback';
+    const SERVICE_PAYPAL            = 'complete';
 
     /**
      * 0 = Do not send either customer or vendor emails
@@ -149,6 +151,7 @@ interface ConstantsInterface
     const SAGEPAY_STATUS_MALFORMED      = 'MALFORMED';
     const SAGEPAY_STATUS_INVALID        = 'INVALID';
     const SAGEPAY_STATUS_ERROR          = 'ERROR';
+    const SAGEPAY_STATUS_PAYPALOK       = 'PAYPALOK';
 
     /**
      * Raw values for AddressResult
