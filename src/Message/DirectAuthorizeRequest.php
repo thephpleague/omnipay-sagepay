@@ -2,6 +2,8 @@
 
 namespace Omnipay\SagePay\Message;
 
+use Omnipay\SagePay\PayPal;
+
 /**
  * Sage Pay Direct Authorize Request
  */
@@ -9,7 +11,7 @@ namespace Omnipay\SagePay\Message;
 class DirectAuthorizeRequest extends AbstractRequest
 {
     /**
-     * @var array Some mapping from Omnipay card brand codes to Sage Pay card branch codes.
+     * @var array Some mapping from Omnipay card brand codes to Sage Pay card brand codes.
      */
     protected $cardBrandMap = array(
         'mastercard' => 'MC',
@@ -191,6 +193,14 @@ class DirectAuthorizeRequest extends AbstractRequest
         // Validate the card details (number, date, cardholder name).
         $this->getCard()->validate();
 
+        $data['CardType'] = $this->getCardBrand();
+
+        if ($this->isPayPalPayment()) {
+            $data['PayPalCallbackURL'] = $this->getCard()->getCallbackUrl();
+
+            return $data;
+        }
+
         if ($this->getCardholderName()) {
             $data['CardHolder'] = $this->getCardholderName();
         } else {
@@ -203,7 +213,6 @@ class DirectAuthorizeRequest extends AbstractRequest
         }
 
         $data['ExpiryDate'] = $this->getCard()->getExpiryDate('my');
-        $data['CardType'] = $this->getCardBrand();
 
         if ($this->getCard()->getStartMonth() and $this->getCard()->getStartYear()) {
             $data['StartDate'] = $this->getCard()->getStartDate('my');
@@ -290,5 +299,13 @@ class DirectAuthorizeRequest extends AbstractRequest
     public function getSurchargeXml()
     {
         return $this->getParameter('surchargeXml');
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isPayPalPayment()
+    {
+        return $this->getCardBrand() === 'PAYPAL' && $this->getCard() instanceof PayPal;
     }
 }

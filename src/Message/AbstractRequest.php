@@ -437,11 +437,10 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
      * Values defined in static::ALLOW_GIFT_AID_* constant.
      *
      * @param bool|int $allowGiftAid value that casts to boolean
-     * @return $this
      */
-    public function setAllowGiftAid($value)
+    public function setAllowGiftAid($allowGiftAid)
     {
-        $this->setParameter('allowGiftAid', $value);
+        $this->setParameter('allowGiftAid', $allowGiftAid);
     }
 
     /**
