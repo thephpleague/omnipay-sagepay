@@ -648,4 +648,25 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
 
         return parent::setTransactionReference($value);
     }
+
+    /**
+     * Is this a repeat transaction.
+     *
+     * For an account to repeat transactions based on an
+     * initial approval they need to get continuous authorization
+     * enabled by Sagepay.
+     *
+     * https://www.opayo.co.uk/support/12/36/transaction-types
+     *
+     * These can be identified because the details from the previous
+     * transaction are passed in to be re-used. In this instance
+     * the txn_type is altered and the params sent include the details
+     * of the previous transaction.
+     *
+     * @return bool
+     */
+    protected function isRepeatTransaction()
+    {
+        return !empty($this->getRelatedTransactionId());
+    }
 }
