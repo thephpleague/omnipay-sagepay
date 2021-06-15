@@ -53,7 +53,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     /**
      * @var string The protocol version number.
      */
-    protected $VPSProtocol = '4.00';
+    protected $VPSProtocol = '3.00';
 
     /**
      * @var string Endpoint base URLs.
