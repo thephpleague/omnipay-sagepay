@@ -257,4 +257,95 @@ trait GatewayParamsTrait
     {
         return $this->setParameter('disableUtf8Decode', $value);
     }
+
+    public function setThreeDSNotificationURL($value)
+    {
+        return $this->setParameter('ThreeDSNotificationURL', $value);
+    }
+
+    public function getThreeDSNotificationURL()
+    {
+        return $this->getParameter('ThreeDSNotificationURL');
+    }
+
+    public function setBrowserJavascriptEnabled($value)
+    {
+        return $this->setParameter('BrowserJavascriptEnabled', $value);
+    }
+
+    public function getBrowserJavascriptEnabled()
+    {
+        return $this->getParameter('BrowserJavascriptEnabled');
+    }
+
+    public function setBrowserLanguage($value)
+    {
+        return $this->setParameter('BrowserLanguage', $value);
+    }
+
+    public function getBrowserLanguage()
+    {
+        return $this->getParameter('BrowserLanguage');
+    }
+
+    public function setChallengeWindowSize($value)
+    {
+        return $this->setParameter('ChallengeWindowSize', $value);
+    }
+
+    public function getChallengeWindowSize()
+    {
+        return $this->getParameter('ChallengeWindowSize');
+    }
+
+    public function setBrowserJavaEnabled($value)
+    {
+        return $this->setParameter('BrowserJavaEnabled', $value);
+    }
+
+    public function getBrowserJavaEnabled()
+    {
+        return $this->getParameter('BrowserJavaEnabled');
+    }
+
+
+    public function setBrowserColorDepth($value)
+    {
+        return $this->setParameter('BrowserColorDepth', $value);
+    }
+
+    public function getBrowserColorDepth()
+    {
+        return $this->getParameter('BrowserColorDepth');
+    }
+
+    public function setBrowserScreenHeight($value)
+    {
+        return $this->setParameter('BrowserScreenHeight', $value);
+    }
+
+    public function getBrowserScreenHeight()
+    {
+        return $this->getParameter('BrowserScreenHeight');
+    }
+
+    public function setBrowserScreenWidth($value)
+    {
+        return $this->setParameter('BrowserScreenWidth', $value);
+    }
+
+    public function getBrowserScreenWidth()
+    {
+        return $this->getParameter('BrowserScreenWidth');
+    }
+
+    public function setBrowserTZ($value)
+    {
+        return $this->setParameter('BrowserTZ', $value);
+    }
+
+    public function getBrowserTZ()
+    {
+        return $this->getParameter('BrowserTZ');
+    }
 }

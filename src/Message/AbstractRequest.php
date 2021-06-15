@@ -18,6 +18,34 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     use GatewayParamsTrait;
 
     /**
+     * Flag whether customer's browser can run javascript.
+     */
+    const BROWSER_JAVASCRIPT_YES   = 1;
+    const BROWSER_JAVASCRIPT_NO    = 0;
+
+    /**
+     * Fallback browser language
+     */
+    const BROWSER_LANGUAGE = 'en-GB';
+
+    /**
+     * Dimensions of the challenge window to be displayed to the cardholder.
+     *
+     * 01 = 250 x 400
+     * 02 = 390 x 400
+     * 03 = 500 x 600
+     * 04 = 600 x 400
+     * 05 = Full screen
+     *
+     * @var string
+     */
+    const CHALLENGE_WINDOW_SIZE_01 = '01';
+    const CHALLENGE_WINDOW_SIZE_02 = '02';
+    const CHALLENGE_WINDOW_SIZE_03 = '03';
+    const CHALLENGE_WINDOW_SIZE_04 = '04';
+    const CHALLENGE_WINDOW_SIZE_05 = '05';
+
+    /**
      * @var string The service name, used in the endpoint URL.
      */
     protected $service;
@@ -70,6 +98,17 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
         throw new InvalidRequestException('Transaction type not defined.');
     }
 
+
+    public function getProtocol()
+    {
+        return $this->getParameter('protocol');
+    }
+
+    public function setProtocol($value)
+    {
+        return $this->setParameter('protocol', $value);
+    }
+
     /**
      * Basic authorisation, transaction type and protocol version.
      *
@@ -79,7 +118,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     {
         $data = array();
 
-        $data['VPSProtocol'] = $this->VPSProtocol;
+        $data['VPSProtocol'] = $this->getProtocol() ?: $this->VPSProtocol;
         $data['TxType'] = $this->getTxType();
         $data['Vendor'] = $this->getVendor();
         $data['AccountType'] = $this->getAccountType() ?: static::ACCOUNT_TYPE_E;
