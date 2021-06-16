@@ -71,6 +71,17 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['BrowserTZ'] = $this->getBrowserTZ();
         // ----
 
+        // repeat payments required fields
+        $data['MITType'] = $this->getMITType();
+        $data['COFUsage'] = $this->getCOFUsage();
+        $data['InitiatedType'] = $this->getInitiatedType();
+        $data['SchemeTraceID'] = $this->getSchemeTraceID();
+        $data['RecurringExpiry'] = $this->getRecurringExpiry();
+        $data['RecurringFrequency'] = $this->getRecurringFrequency();
+        $data['ACSTransID'] = $this->getACSTransID();
+        $data['DSTransID'] = $this->getDSTransID();
+
+
         $data['ApplyAVSCV2'] = $this->getApplyAVSCV2() ?: static::APPLY_AVSCV2_DEFAULT;
         $data['Apply3DSecure'] = $this->getApply3DSecure() ?: static::APPLY_3DSECURE_APPLY;
 

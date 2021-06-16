@@ -348,4 +348,84 @@ trait GatewayParamsTrait
     {
         return $this->getParameter('BrowserTZ');
     }
+
+    public function setInitiatedType($value)
+    {
+        return $this->setParameter('InitiatedType', $value);
+    }
+
+    public function getInitiatedType()
+    {
+        return $this->getParameter('InitiatedType');
+    }
+
+    public function setCOFUsage($value)
+    {
+        return $this->setParameter('COFUsage', $value);
+    }
+
+    public function getCOFUsage()
+    {
+        return $this->getParameter('COFUsage');
+    }
+
+    public function setMITType($value)
+    {
+        return $this->setParameter('MITType', $value);
+    }
+
+    public function getMITType()
+    {
+        return $this->getParameter('MITType');
+    }
+
+    public function setSchemeTraceID($value)
+    {
+        return $this->setParameter('SchemeTraceID', $value);
+    }
+
+    public function getSchemeTraceID()
+    {
+        return $this->getParameter('SchemeTraceID');
+    }
+
+    public function setRecurringExpiry($value)
+    {
+        return $this->setParameter('RecurringExpiry', $value);
+    }
+
+    public function getRecurringExpiry()
+    {
+        return $this->getParameter('RecurringExpiry');
+    }
+
+    public function setRecurringFrequency($value)
+    {
+        return $this->setParameter('RecurringFrequency', $value);
+    }
+
+    public function getRecurringFrequency()
+    {
+        return $this->getParameter('RecurringFrequency');
+    }
+
+    public function setACSTransID($value)
+    {
+        return $this->setParameter('ACSTransID', $value);
+    }
+
+    public function getACSTransID()
+    {
+        return $this->getParameter('ACSTransID');
+    }
+
+    public function setDSTransID($value)
+    {
+        return $this->setParameter('DSTransID', $value);
+    }
+
+    public function getDSTransID()
+    {
+        return $this->getParameter('DSTransID');
+    }
 }
