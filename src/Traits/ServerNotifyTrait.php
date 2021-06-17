@@ -69,58 +69,38 @@ trait ServerNotifyTrait
             // Do not use any of these fields for a successful TOKEN transaction,
             // even though some of them may be present.
 
-            // if protocol 3
-            if($this->getProtocol() == '3.00'){
+            $signatureData = array_merge(
+                $signatureData,
+                array(
+                    // Details for AVSCV2:
+                    $this->getAddressResult(),
+                    $this->getPostCodeResult(),
+                    $this->getCV2Result(),
+                    //
+                    $this->getGiftAid(),
+                    $this->get3DSecureStatus(),
+                    $this->getCAVV(),
+                    $this->getAddressStatus(),
+                    $this->getPayerStatus(),
+                    $this->getCardType(),
+                    $this->getLast4Digits(),
+                    // New for protocol v3.00
+                    $this->getDeclineCode(),
+                    $this->getExpiryDate(),
+                    $this->getFraudResponse(),
+                    $this->getBankAuthCode(),
+                )
+            );
+            // new in v4
+            if ( $this->getDataItem('VPSProtocol') =='4.00'){
                 $signatureData = array_merge(
                     $signatureData,
                     array(
-                        // Details for AVSCV2:
-                        $this->getAddressResult(),
-                        $this->getPostCodeResult(),
-                        $this->getCV2Result(),
-                        //
-                        $this->getGiftAid(),
-                        $this->get3DSecureStatus(),
-                        $this->getCAVV(),
-                        $this->getAddressStatus(),
-                        $this->getPayerStatus(),
-                        $this->getCardType(),
-                        $this->getLast4Digits(),
-                        // New for protocol v3.00
-                        $this->getDeclineCode(),
-                        $this->getExpiryDate(),
-                        $this->getFraudResponse(),
-                        $this->getBankAuthCode(),
+                        $this->getDataItem('ACSTransID'),
+                        $this->getDataItem('DSTransID'),
+                        $this->getDataItem('SchemeTraceID'),
                     )
                 );
-            } elseif ($this->getProtocol() =='4.00'){
-                $signatureData = array_merge(
-                    $signatureData,
-                    array(
-                        // Details for AVSCV2:
-                        $this->getAddressResult(),
-                        $this->getPostCodeResult(),
-                        $this->getCV2Result(),
-                        //
-                        $this->getGiftAid(),
-                        $this->get3DSecureStatus(),
-                        $this->getCAVV(),
-                        $this->getAddressStatus(),
-                        $this->getPayerStatus(),
-                        $this->getCardType(),
-                        $this->getLast4Digits(),
-                        // New for protocol v3.00
-                        $this->getDeclineCode(),
-                        $this->getExpiryDate(),
-                        $this->getFraudResponse(),
-                        $this->getBankAuthCode(),
-                        $this->getACSTransID(),
-                        $this->getDSTransID(),
-                        $this->getSchemeTraceID(),
-                    )
-                );
-            } else {
-                die('unsupported version used');
             }
 
         }
