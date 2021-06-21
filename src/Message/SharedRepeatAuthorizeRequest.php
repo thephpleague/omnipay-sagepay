@@ -69,8 +69,7 @@ class SharedRepeatAuthorizeRequest extends AbstractRequest
         $card = $this->getCard();
 
         // If a card is provided, then assume all billing details are being updated.
-
-        if ($card) {
+        if ($card && !empty($card->getParameters()) && !empty(array_filter($card->getParameters()))) {
             $data = $this->getBillingAddressData($data);
 
             // If the customer is present, then the CV2 can be supplied again for extra security.
