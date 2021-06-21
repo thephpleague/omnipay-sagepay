@@ -73,7 +73,7 @@ class DirectGatewayTest extends GatewayTestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
 
-        // With no suuccess and no redirect, there will be no transaction reference.
+        // With no success and no redirect, there will be no transaction reference.
         //$this->assertSame('{"VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertNull($response->getTransactionReference());
 
