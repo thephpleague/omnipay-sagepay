@@ -17,37 +17,41 @@ For the `2.x` branch, please visit https://github.com/thephpleague/omnipay-sagep
 Table of Contents
 =================
 
-   * [Omnipay: Sage Pay](#omnipay-sage-pay)
-   * [Table of Contents](#table-of-contents)
-   * [Installation](#installation)
-   * [Basic Usage](#basic-usage)
-   * [Supported Methods](#supported-methods)
-      * [Sage Pay Direct Methods](#sage-pay-direct-methods)
-         * [Direct Authorize/Purchase](#direct-authorizepurchase)
-            * [Redirect (3D Secure)](#redirect-3d-secure)
-            * [Redirect Return](#redirect-return)
-         * [Direct Create Card](#direct-create-card)
-      * [Sage Pay Server Methods](#sage-pay-server-methods)
-         * [Server Gateway](#server-gateway)
-         * [Server Authorize/Purchase](#server-authorizepurchase)
-         * [Server Create Card](#server-create-card)
-         * [Server Notification Handler](#server-notification-handler)
-      * [Sage Pay Form Methods](#sage-pay-form-methods)
-         * [Form Authorize](#form-authorize)
-         * [Form completeAuthorize](#form-completeauthorize)
-         * [Form Purchase](#form-purchase)
-      * [Sage Pay Shared Methods (Direct and Server)](#sage-pay-shared-methods-direct-and-server)
-         * [Repeat Authorize/Purchase](#repeat-authorizepurchase)
-         * [Capture](#capture)
-         * [Delete Card](#delete-card)
-   * [Token Billing](#token-billing)
-      * [Generating a Token or CardReference](#generating-a-token-or-cardreference)
-      * [Using a Token or CardReference](#using-a-token-or-cardreference)
-   * [Basket format](#basket-format)
-      * [Sage 50 Accounts Software Integration](#sage-50-accounts-software-integration)
-   * [Account Types](#account-types)
-   * [VAT](#vat)
-   * [Support](#support)
+<!-- TOC -->
+
+- [Omnipay: Sage Pay](#omnipay-sage-pay)
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+- [Supported Methods](#supported-methods)
+    - [Sage Pay Direct Methods](#sage-pay-direct-methods)
+        - [Direct Authorize/Purchase](#direct-authorizepurchase)
+            - [Redirect (3D Secure)](#redirect-3d-secure)
+            - [Redirect Return](#redirect-return)
+        - [Direct Create Card](#direct-create-card)
+    - [Sage Pay Server Methods](#sage-pay-server-methods)
+        - [Server Gateway](#server-gateway)
+        - [Server Authorize/Purchase](#server-authorizepurchase)
+        - [Server Create Card](#server-create-card)
+        - [Server Notification Handler](#server-notification-handler)
+    - [Sage Pay Form Methods](#sage-pay-form-methods)
+        - [Form Authorize](#form-authorize)
+        - [Form completeAuthorize](#form-completeauthorize)
+        - [Form Purchase](#form-purchase)
+    - [Sage Pay Shared Methods (Direct and Server)](#sage-pay-shared-methods-direct-and-server)
+        - [Repeat Authorize/Purchase](#repeat-authorizepurchase)
+        - [Capture](#capture)
+        - [Delete Card](#delete-card)
+- [Token Billing](#token-billing)
+    - [Generating a Token or CardReference](#generating-a-token-or-cardreference)
+    - [Using a Token or CardReference](#using-a-token-or-cardreference)
+- [Basket format](#basket-format)
+    - [Sage 50 Accounts Software Integration](#sage-50-accounts-software-integration)
+- [Account Types](#account-types)
+- [VAT](#vat)
+- [Support](#support)
+- [References](#references)
+
+<!-- /TOC -->
 
 # Installation
 
@@ -1042,3 +1046,7 @@ you can subscribe to.
 
 If you believe you have found a bug, please report it using the [GitHub issue tracker](https://github.com/thephpleague/omnipay-sagepay/issues),
 or better yet, fork the library and submit a pull request.
+
+#References
+- [Sage pay tokens using token management](https://www.opayo.co.uk/file/1171/download-document/sagepaytokensystemprotocolandintegrationguidelinev3.0_0.pdf)
+- [Other sage pay transaction types for Server method](https://developer-eu.elavon.com/docs/opayo-shared-api)
