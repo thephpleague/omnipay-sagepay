@@ -1,5 +1,5 @@
 {
-    "name": "saintanger/sagepay",
+    "name": "saintanger/omnipay-sagepay",
     "type": "library",
     "description": "Sage Pay driver for the Omnipay PHP payment processing library",
     "keywords": [
