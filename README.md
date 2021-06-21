@@ -1042,3 +1042,7 @@ you can subscribe to.
 
 If you believe you have found a bug, please report it using the [GitHub issue tracker](https://github.com/thephpleague/omnipay-sagepay/issues),
 or better yet, fork the library and submit a pull request.
+
+#References
+- [Sage pay tokens using token management](https://www.opayo.co.uk/file/1171/download-document/sagepaytokensystemprotocolandintegrationguidelinev3.0_0.pdf?token=EZBq0jEwB6kPOWajwqCm36TSd2Xm07hHzuR9bqHvNGU)
+- [Other sage pay transaction types for Server method](https://www.opayo.co.uk/file/21071/download-document/SHARED_Protocol_Guidelines_010814.pdf?token=r_h9Olz9)
