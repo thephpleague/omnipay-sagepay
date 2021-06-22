@@ -14,7 +14,7 @@
     ],
     "version": "master",
     "source": {
-        "url": "git@github.com:saintanger/omnipay-sagepay.git",
+        "url": "https://github.com:saintanger/omnipay-sagepay.git",
         "type": "git"
     },
     "homepage": "https://github.com/thephpleague/omnipay-sagepay",
