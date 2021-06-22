@@ -1,5 +1,5 @@
 {
-    "name": "saintanger/omnipay-sagepay",
+    "name": "omnipay/sagepay",
     "type": "library",
     "description": "Sage Pay driver for the Omnipay PHP payment processing library",
     "keywords": [
@@ -12,11 +12,7 @@
         "sage pay",
         "sagepay"
     ],
-    "version": "master",
-    "source": {
-        "url": "https://github.com:saintanger/omnipay-sagepay.git",
-        "type": "git"
-    },
+
     "homepage": "https://github.com/thephpleague/omnipay-sagepay",
     "license": "MIT",
     "authors": [
