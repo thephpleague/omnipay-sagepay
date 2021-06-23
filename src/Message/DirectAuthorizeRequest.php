@@ -9,7 +9,7 @@ namespace Omnipay\SagePay\Message;
 class DirectAuthorizeRequest extends AbstractRequest
 {
     /**
-     * @var array Some mapping from Omnipay card brand codes to Sage Pay card branc codes.
+     * @var array Some mapping from Omnipay card brand codes to Sage Pay card brand codes.
      */
     protected $cardBrandMap = array(
         'mastercard' => 'MC',
