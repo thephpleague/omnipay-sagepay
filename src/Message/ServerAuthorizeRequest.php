@@ -9,7 +9,7 @@ class ServerAuthorizeRequest extends DirectAuthorizeRequest
 {
     public function getService()
     {
-        return static::SERVICE_SERVER_REGISTER;
+        return $this->isRepeatTransaction() ? static::SERVICE_REPEAT : static::SERVICE_SERVER_REGISTER;
     }
 
     /**
@@ -20,9 +20,7 @@ class ServerAuthorizeRequest extends DirectAuthorizeRequest
      */
     public function getData()
     {
-        if (! $this->getReturnUrl()) {
-            $this->validate('notifyUrl');
-        }
+        $this->checkRequiredFields();
 
         $data = $this->getBaseAuthorizeData();
 
@@ -81,5 +79,28 @@ class ServerAuthorizeRequest extends DirectAuthorizeRequest
         }
 
         return $data;
+    }
+
+    /**
+     * Check necessary fields are passed in.
+     *
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
+     */
+    protected function checkRequiredFields()
+    {
+        if (!$this->isRepeatTransaction()) {
+            if (!$this->getReturnUrl()) {
+                $this->validate('notifyUrl');
+            }
+        } else {
+            $this->validate(
+                'relatedTransactionId',
+                'vpsTxId',
+                'securityKey',
+                'txAuthNo',
+                'currency',
+                'description'
+            );
+        }
     }
 }

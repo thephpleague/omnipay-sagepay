@@ -19,6 +19,6 @@ class ServerPurchaseRequest extends ServerAuthorizeRequest
      */
     public function getTxType()
     {
-        return static::TXTYPE_PAYMENT;
+        return $this->getRelatedTransactionId() ? static::TXTYPE_REPEAT : static::TXTYPE_PAYMENT;
     }
 }
