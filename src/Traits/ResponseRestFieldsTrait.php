@@ -142,7 +142,7 @@ trait ResponseRestFieldsTrait
         }
         return (object) $avsCvcCheck;
     }
-    
+
     /**
      * This is the response from AVS and CV2 checks.
      * Provided for Vendor info and backward compatibility with the
@@ -313,7 +313,7 @@ trait ResponseRestFieldsTrait
         $expiryDate = $this->getDataItem('ExpiryDate');
 
         if (! empty($expiryDate)) {
-            // COnvert 2-digit year to 4-dogot year, in 1970-2069 range.
+            // Convert 2-digit year to 4-digit year, in 1970-2069 range.
             $dateTime = \DateTime::createFromFormat('y', substr($expiryDate, 2, 2));
             return (int)$dateTime->format('Y');
         }
