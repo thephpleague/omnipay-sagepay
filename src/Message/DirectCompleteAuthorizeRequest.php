@@ -16,18 +16,26 @@ class DirectCompleteAuthorizeRequest extends AbstractRequest
 
     public function getData()
     {
-        // Inconsistent letter case is intentional.
-        // The issuing bank will return PaRes, but the merchant
-        // site must send this result as PARes to Sage Pay.
+        if($this->httpRequest->request->has('cres')){
+            $data = array(
+                'CRes' => $this->httpRequest->request->get('cres'), // inconsistent caps are intentional
+                'VPSTxId' => $this->httpRequest->request->get('threeDSSessionData'),
+            );
 
-        $data = array(
-            'MD' => $this->getMd() ?: $this->httpRequest->request->get('MD'),
-            'PARes' => $this->getPaRes() ?: $this->httpRequest->request->get('PaRes'),
-        );
+            if (empty($data['CRes']) || empty($data['VPSTxId'])) {
+                throw new InvalidResponseException;
+            }
+        }else{
+            $data = array(
+                'MD' => $this->httpRequest->request->get('MD'),
+                'PARes' => $this->httpRequest->request->get('PaRes'), // inconsistent caps are intentional
+            );
 
-        if (empty($data['MD']) || empty($data['PARes'])) {
-            throw new InvalidResponseException;
+            if (empty($data['MD']) || empty($data['PARes'])) {
+                throw new InvalidResponseException;
+            }
         }
+
 
         return $data;
     }

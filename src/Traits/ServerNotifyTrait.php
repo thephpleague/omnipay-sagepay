@@ -91,6 +91,18 @@ trait ServerNotifyTrait
                     $this->getBankAuthCode(),
                 )
             );
+            // new in v4
+            if ( $this->getDataItem('VPSProtocol') =='4.00'){
+                $signatureData = array_merge(
+                    $signatureData,
+                    array(
+                        $this->getDataItem('ACSTransID'),
+                        $this->getDataItem('DSTransID'),
+                        $this->getDataItem('SchemeTraceID'),
+                    )
+                );
+            }
+
         }
 
         return md5(implode('', $signatureData));
