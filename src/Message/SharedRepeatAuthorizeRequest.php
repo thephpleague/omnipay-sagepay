@@ -91,6 +91,19 @@ class SharedRepeatAuthorizeRequest extends AbstractRequest
             $data['BasketXML'] = $basketXML;
         }
 
+        // add v4 request fields
+        if ($this->getProtocol() == '4.00'){
+
+            $data['MITType'] = $this->getMITType();
+            $data['COFUsage'] = $this->getCOFUsage();
+            $data['InitiatedType'] = $this->getInitiatedType();
+            $data['SchemeTraceID'] = $this->getSchemeTraceID();
+            $data['RecurringExpiry'] = $this->getRecurringExpiry();
+            $data['RecurringFrequency'] = $this->getRecurringFrequency();
+            $data['ACSTransID'] = $this->getACSTransID();
+            $data['DSTransID'] = $this->getDSTransID();
+        }
+
         return $data;
     }
 
