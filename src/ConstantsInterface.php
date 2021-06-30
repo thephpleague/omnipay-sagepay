@@ -115,6 +115,10 @@ interface ConstantsInterface
     const SERVICE_REPEAT            = 'repeat';
     const SERVICE_TOKEN             = 'directtoken';
     const SERVICE_DIRECT3D          = 'direct3dcallback';
+    const SERVICE_REST_MSK          = 'merchant-session-keys';
+    const SERVICE_REST_TRANSACTIONS = 'transactions';
+    const SERVICE_REST_INSTRUCTIONS = 'instructions';
+    const SERVICE_REST_3D           = '3d-secure';
 
     /**
      * 0 = Do not send either customer or vendor emails
