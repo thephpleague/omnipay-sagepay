@@ -119,6 +119,7 @@ interface ConstantsInterface
     const SERVICE_REST_TRANSACTIONS = 'transactions';
     const SERVICE_REST_INSTRUCTIONS = 'instructions';
     const SERVICE_REST_3D           = '3d-secure';
+    const SERVICE_REST_3D_CHALLENGE = '3d-secure-challenge';
 
     /**
      * 0 = Do not send either customer or vendor emails

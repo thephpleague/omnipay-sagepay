@@ -12,6 +12,10 @@ class ServerRestCompletePurchaseRequest extends AbstractRestRequest
 {
     public function getService()
     {
+        if($this->httpRequest->request->has('cres')){
+            return static::SERVICE_REST_3D_CHALLENGE;
+        }
+
         return static::SERVICE_REST_3D;
     }
 
@@ -27,14 +31,24 @@ class ServerRestCompletePurchaseRequest extends AbstractRestRequest
 
     public function getData()
     {
+        if($this->httpRequest->request->has('cres')){
+            $data = array(
+                'CRes' => $this->httpRequest->request->get('cres'), // inconsistent caps are intentional
+                'VPSTxId' => $this->httpRequest->request->get('threeDSSessionData'),
+            );
 
-        $data = array(
-            'MD' => $this->getMd() ?: $this->httpRequest->request->get('MD'),
-            'paRes' => $this->getPaRes() ?: $this->httpRequest->request->get('PaRes'),
-        );
+            if (empty($data['CRes']) || empty($data['VPSTxId'])) {
+                throw new InvalidResponseException;
+            }
+        }else{
+            $data = array(
+                'MD' => $this->getMd() ?: $this->httpRequest->request->get('MD'),
+                'paRes' => $this->getPaRes() ?: $this->httpRequest->request->get('PaRes'),
+            );
 
-        if (empty($data['MD']) || empty($data['paRes'])) {
-            throw new InvalidResponseException;
+            if (empty($data['MD']) || empty($data['paRes'])) {
+                throw new InvalidResponseException;
+            }
         }
 
         return $data;
