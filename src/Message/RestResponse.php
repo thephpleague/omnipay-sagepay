@@ -65,11 +65,18 @@ class RestResponse extends AbstractResponse implements RedirectResponseInterface
     public function getRedirectData()
     {
         if ($this->isRedirect()) {
-            return array(
-                'PaReq' => $this->getDataItem('paReq'),
-                'TermUrl' => $this->getRequest()->getReturnUrl(),
-                'MD' => $this->getRequest()->getMd(),
-            );
+            if($this->getDataItem('cReq')){
+                return array(
+                    'creq' => $this->getDataItem('cReq'),
+                    'threeDSSessionData' => $this->getRequest()->getMd(),
+                );
+            }else{
+                return array(
+                    'PaReq' => $this->getDataItem('paReq'),
+                    'TermUrl' => $this->getRequest()->getReturnUrl(),
+                    'MD' => $this->getRequest()->getMd(),
+                );
+            }
         }
     }
 

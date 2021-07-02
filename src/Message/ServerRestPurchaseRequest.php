@@ -11,7 +11,7 @@ class ServerRestPurchaseRequest extends AbstractRestRequest
     {
         return static::SERVICE_REST_TRANSACTIONS;
     }
-    
+
     /**
      * @return string the transaction type
      */
@@ -54,6 +54,7 @@ class ServerRestPurchaseRequest extends AbstractRestRequest
         $data['currency'] = $this->getCurrency();
         $data['NotificationURL'] = $this->getNotifyUrl() ?: $this->getReturnUrl();
         $data['MD'] = $this->getMd();
+        $data['strongCustomerAuthentication'] = $this->getStrongCustomerAuthentication();
 
         $data = $this->getBillingAddressData($data);
         $data = $this->getShippingDetailsData($data);
@@ -63,7 +64,7 @@ class ServerRestPurchaseRequest extends AbstractRestRequest
         }
 
         // $data['ApplyAVSCV2'] = $this->getApplyAVSCV2() ?: static::APPLY_AVSCV2_DEFAULT;
-        // $data['apply3DSecure'] = $this->getApply3DSecure() ?: static::APPLY_3DSECURE_APPLY;
+        $data['apply3DSecure'] = $this->getApply3DSecure() ?: static::APPLY_3DSECURE_APPLY;
         // user parent data here and the abstract can provide txtype vendor etc
         return $data;
     }
@@ -86,5 +87,24 @@ class ServerRestPurchaseRequest extends AbstractRestRequest
         $data['paymentMethod']['card']['merchantSessionKey'] = $this->getMerchantSessionKey();
         $data['paymentMethod']['card']['cardIdentifier'] = $this->getCardIdentifier();
         return $data;
+    }
+
+    /**
+     * Set the strongCustomerAuthentication field(s).
+     *
+     * @param json $strongCustomerAuthentication The strongCustomerAuthentication for sagepay.
+     * @return $this
+     */
+    public function setStrongCustomerAuthentication($strongCustomerAuthentication)
+    {
+        return $this->setParameter('strongCustomerAuthentication', $strongCustomerAuthentication);
+    }
+
+    /**
+     * @return string The strongCustomerAuthentication data as set.
+     */
+    public function getStrongCustomerAuthentication()
+    {
+        return $this->getParameter('strongCustomerAuthentication');
     }
 }

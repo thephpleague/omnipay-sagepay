@@ -33,11 +33,11 @@ class ServerRestCompletePurchaseRequest extends AbstractRestRequest
     {
         if($this->httpRequest->request->has('cres')){
             $data = array(
-                'CRes' => $this->httpRequest->request->get('cres'), // inconsistent caps are intentional
-                'VPSTxId' => $this->httpRequest->request->get('threeDSSessionData'),
+                'cRes' => $this->httpRequest->request->get('cres'), // inconsistent caps are intentional
+                'MD' => $this->httpRequest->request->get('threeDSSessionData'),
             );
 
-            if (empty($data['CRes']) || empty($data['VPSTxId'])) {
+            if (empty($data['cres']) || empty($data['MD'])) {
                 throw new InvalidResponseException;
             }
         }else{
