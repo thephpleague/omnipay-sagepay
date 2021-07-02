@@ -14,6 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 abstract class AbstractRestRequest extends AbstractRequest implements ConstantsInterface
 {
 
+    protected $VPSProtocol = '4.00';
 
     /**
      * @var string The service name, used in the endpoint URL.
@@ -95,7 +96,7 @@ abstract class AbstractRestRequest extends AbstractRequest implements ConstantsI
         return $this->apiVersion;
     }
 
-    
+
     public function getUsername()
     {
         return $this->getParameter('username');
