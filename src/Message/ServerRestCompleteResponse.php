@@ -13,6 +13,6 @@ class ServerRestCompleteResponse extends RestResponse
      */
     public function isSuccessful()
     {
-        return strtoupper($this->getStatus()) === static::SAGEPAY_STATUS_AUTHENTICATED;
+        return strtoupper($this->get3DSecureStatus() ?? $this->getStatus()) === static::SAGEPAY_STATUS_AUTHENTICATED;
     }
 }

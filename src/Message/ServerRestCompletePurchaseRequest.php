@@ -37,7 +37,7 @@ class ServerRestCompletePurchaseRequest extends AbstractRestRequest
                 'MD' => $this->httpRequest->request->get('threeDSSessionData'),
             );
 
-            if (empty($data['cres']) || empty($data['MD'])) {
+            if (empty($data['cRes']) || empty($data['MD'])) {
                 throw new InvalidResponseException;
             }
         }else{
