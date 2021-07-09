@@ -142,7 +142,7 @@ trait ResponseRestFieldsTrait
         }
         return (object) $avsCvcCheck;
     }
-    
+
     /**
      * This is the response from AVS and CV2 checks.
      * Provided for Vendor info and backward compatibility with the
@@ -205,7 +205,7 @@ trait ResponseRestFieldsTrait
     {
         $secure3DResponse = $this->getDataItem('3DSecure');
 
-        if (array_key_exists('status', $secure3DResponse)) {
+        if (is_array($secure3DResponse) && array_key_exists('status', $secure3DResponse)) {
             return strtoupper($secure3DResponse['status']);
         }
 
