@@ -47,7 +47,7 @@ class ServerRestPurchaseRequest extends AbstractRestRequest
 
         $data = $this->getBaseData();
 
-        $data['transactionType'] = $this->getTxType();
+        $data['transactionType'] = ucfirst(strtolower($this->getTxType()));
         $data['vendorTxCode'] = $this->getTransactionId();
         $data['description'] = $this->getDescription();
         $data['amount'] = (int) $this->getAmount();
