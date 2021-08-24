@@ -55,6 +55,7 @@ class ServerRestPurchaseRequest extends AbstractRestRequest
         $data['NotificationURL'] = $this->getNotifyUrl() ?: $this->getReturnUrl();
         $data['MD'] = $this->getMd();
         $data['strongCustomerAuthentication'] = $this->getStrongCustomerAuthentication();
+        $data['credentialType'] = $this->getCredentialType();
 
         $data = $this->getBillingAddressData($data);
         $data = $this->getShippingDetailsData($data);

@@ -19,7 +19,7 @@ class ServerRestRepeatRequest extends AbstractRestRequest
      */
     public function getTxType()
     {
-        return ucfirst(strtolower(static::TXTYPE_REPEAT);
+        return ucfirst(strtolower(static::TXTYPE_REPEAT));
     }
 
     /**
