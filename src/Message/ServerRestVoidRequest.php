@@ -19,13 +19,13 @@ class ServerRestVoidRequest extends AbstractRestRequest
     {
         return static::SERVICE_REST_TRANSACTIONS;
     }
-    
+
     /**
      * @return string the transaction type
      */
     public function getTxType()
     {
-        return static::TXTYPE_VOID;
+        return ucfirst(strtolower(static::TXTYPE_VOID);
     }
 
     /**
@@ -45,7 +45,7 @@ class ServerRestVoidRequest extends AbstractRestRequest
     {
         return $this->getParameter('transactionId');
     }
-    
+
     /**
      * @param array $data
      * @return ServerRestInstructionResponse

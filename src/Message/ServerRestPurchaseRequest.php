@@ -17,7 +17,7 @@ class ServerRestPurchaseRequest extends AbstractRestRequest
      */
     public function getTxType()
     {
-        return static::TXTYPE_PAYMENT;
+        return ucfirst(strtolower(static::TXTYPE_PAYMENT));
     }
 
     /**
@@ -47,7 +47,7 @@ class ServerRestPurchaseRequest extends AbstractRestRequest
 
         $data = $this->getBaseData();
 
-        $data['transactionType'] = ucfirst(strtolower($this->getTxType()));
+        $data['transactionType'] = $this->getTxType();
         $data['vendorTxCode'] = $this->getTransactionId();
         $data['description'] = $this->getDescription();
         $data['amount'] = (int) $this->getAmount();

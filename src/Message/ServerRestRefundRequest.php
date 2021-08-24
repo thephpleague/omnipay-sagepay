@@ -13,13 +13,13 @@ class ServerRestRefundRequest extends AbstractRestRequest
     {
         return static::SERVICE_REST_TRANSACTIONS;
     }
-    
+
     /**
      * @return string the transaction type
      */
     public function getTxType()
     {
-        return static::TXTYPE_REFUND;
+        return ucfirst(strtolower(static::TXTYPE_REFUND));
     }
 
     /**
