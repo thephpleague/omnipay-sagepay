@@ -127,6 +127,26 @@ abstract class AbstractRestRequest extends AbstractRequest implements ConstantsI
         return $this->getParameter('cardIdentifier');
     }
 
+    public function getTokenReusable()
+    {
+        return $this->getParameter('tokenReusable');
+    }
+
+    public function getTokenSave()
+    {
+        return $this->getParameter('tokenSave');
+    }
+
+    public function setTokenReusable()
+    {
+        return $this->setParameter('tokenReusable');
+    }
+
+    public function setTokenSave($value)
+    {
+        return $this->setParameter('tokenSave', $value);
+    }
+
     public function setMerchantSessionKey($value)
     {
         return $this->setParameter('merchantSessionKey', $value);

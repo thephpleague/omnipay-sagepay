@@ -87,6 +87,12 @@ class ServerRestPurchaseRequest extends AbstractRestRequest
     {
         $data['paymentMethod']['card']['merchantSessionKey'] = $this->getMerchantSessionKey();
         $data['paymentMethod']['card']['cardIdentifier'] = $this->getCardIdentifier();
+        if (!is_null($this->getTokenReusable())) {
+            $data['paymentMethod']['card']['reusable'] = $this->getTokenReusable();
+        }
+        if (!is_null($this->getTokenSave())) {
+            $data['paymentMethod']['card']['save'] = $this->getTokenSave();
+        }
         return $data;
     }
 
