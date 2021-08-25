@@ -137,7 +137,7 @@ abstract class AbstractRestRequest extends AbstractRequest implements ConstantsI
         return $this->getParameter('tokenSave');
     }
 
-    public function setTokenReusable()
+    public function setTokenReusable($value)
     {
         return $this->setParameter('tokenReusable', $value);
     }

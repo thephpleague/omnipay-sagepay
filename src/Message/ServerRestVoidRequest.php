@@ -25,7 +25,7 @@ class ServerRestVoidRequest extends AbstractRestRequest
      */
     public function getTxType()
     {
-        return ucfirst(strtolower(static::TXTYPE_VOID);
+        return ucfirst(strtolower(static::TXTYPE_VOID));
     }
 
     /**
