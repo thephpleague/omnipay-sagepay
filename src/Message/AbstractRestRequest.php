@@ -139,7 +139,7 @@ abstract class AbstractRestRequest extends AbstractRequest implements ConstantsI
 
     public function setTokenReusable()
     {
-        return $this->setParameter('tokenReusable');
+        return $this->setParameter('tokenReusable', $value);
     }
 
     public function setTokenSave($value)
@@ -155,6 +155,25 @@ abstract class AbstractRestRequest extends AbstractRequest implements ConstantsI
     public function setCardIdentifier($value)
     {
         return $this->setParameter('cardIdentifier', $value);
+    }
+
+    /**
+     * Set the credentialType field(s).
+     *
+     * @param json $credentialType The credentialType for sagepay.
+     * @return $this
+     */
+    public function setCredentialType($credentialType)
+    {
+        return $this->setParameter('credentialType', $credentialType);
+    }
+
+    /**
+     * @return string The credentialType data as set.
+     */
+    public function getCredentialType()
+    {
+        return $this->getParameter('credentialType');
     }
 
     /**

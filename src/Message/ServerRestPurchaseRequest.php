@@ -97,25 +97,6 @@ class ServerRestPurchaseRequest extends AbstractRestRequest
     }
 
     /**
-     * Set the credentialType field(s).
-     *
-     * @param json $credentialType The credentialType for sagepay.
-     * @return $this
-     */
-    public function setCredentialType($credentialType)
-    {
-        return $this->setParameter('credentialType', $credentialType);
-    }
-
-    /**
-     * @return string The credentialType data as set.
-     */
-    public function getCredentialType()
-    {
-        return $this->getParameter('credentialType');
-    }
-
-    /**
      * Set the strongCustomerAuthentication field(s).
      *
      * @param json $strongCustomerAuthentication The strongCustomerAuthentication for sagepay.

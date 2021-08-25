@@ -37,6 +37,7 @@ class ServerRestRepeatRequest extends AbstractRestRequest
         $data['amount'] = (int) $this->getAmount();
         $data['currency'] = $this->getCurrency();
         $data['referenceTransactionId'] = $this->getReferenceTransactionId();
+        $data['credentialType'] = $this->getCredentialType();
 
         return $data;
     }
