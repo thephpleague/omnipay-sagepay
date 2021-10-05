@@ -34,11 +34,11 @@
         }
     },
     "require": {
-        "php": "^5.6|^7",
+        "php": "^7.2|^8",
         "omnipay/common": "~3.0"
     },
     "require-dev": {
-        "omnipay/tests": "~3.0",
+        "omnipay/tests": "^4.1",
         "squizlabs/php_codesniffer": "^3"
     },
     "extra": {
