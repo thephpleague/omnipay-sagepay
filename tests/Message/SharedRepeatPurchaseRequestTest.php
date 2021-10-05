@@ -11,7 +11,7 @@ class SharedRepeatPurchaseRequestTest extends TestCase
      */
     protected $request;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

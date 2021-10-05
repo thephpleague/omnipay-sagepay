@@ -7,7 +7,7 @@ use Omnipay\Tests\TestCase;
 
 class ResponseTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->getMockRequest()->shouldReceive('getTransactionId')->andReturn('123456');
     }

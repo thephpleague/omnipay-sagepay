@@ -11,7 +11,7 @@ class SharedTokenRemovalRequestTest extends TestCase
      */
     private $request;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->request = new SharedTokenRemovalRequest($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize(array(

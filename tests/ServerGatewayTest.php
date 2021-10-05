@@ -8,7 +8,7 @@ class ServerGatewayTest extends GatewayTestCase
 {
     protected $error_3082_text = '3082 : The Description value is too long.';
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
