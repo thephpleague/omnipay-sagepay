@@ -2,13 +2,13 @@
 
 namespace Omnipay\SagePay;
 
-use Omnipay\SagePay\Message\ServerRestCompletePurchaseRequest;
-use Omnipay\SagePay\Message\ServerRestMerchantSessionKeyRequest;
-use Omnipay\SagePay\Message\ServerRestPurchaseRequest;
+use Omnipay\SagePay\Message\ServerRestVoidRequest;
 use Omnipay\SagePay\Message\ServerRestRefundRequest;
 use Omnipay\SagePay\Message\ServerRestRepeatRequest;
+use Omnipay\SagePay\Message\ServerRestPurchaseRequest;
+use Omnipay\SagePay\Message\ServerRestCompletePurchaseRequest;
+use Omnipay\SagePay\Message\ServerRestMerchantSessionKeyRequest;
 use Omnipay\SagePay\Message\ServerRestRetrieveTransactionRequest;
-use Omnipay\SagePay\Message\ServerRestVoidRequest;
 
 /**
  * Sage Pay Rest Server Gateway
@@ -19,7 +19,7 @@ class RestServerGateway extends ServerGateway
     {
         return 'Sage Pay REST Server';
     }
-    
+
     public function getUsername()
     {
         return $this->getParameter('username');
@@ -43,7 +43,7 @@ class RestServerGateway extends ServerGateway
     /**
      * Create merchant session key (MSK).
      */
-    public function createMerchantSessionKey(array $parameters = array())
+    public function createMerchantSessionKey(array $parameters = [])
     {
         return $this->createRequest(ServerRestMerchantSessionKeyRequest::class, $parameters);
     }
@@ -51,7 +51,7 @@ class RestServerGateway extends ServerGateway
     /**
      * Purchase and handling of return from 3D Secure redirection.
      */
-    public function purchase(array $parameters = array())
+    public function purchase(array $parameters = [])
     {
         return $this->createRequest(ServerRestPurchaseRequest::class, $parameters);
     }
@@ -59,7 +59,7 @@ class RestServerGateway extends ServerGateway
     /**
      * Handle purchase notifcation callback.
      */
-    public function complete(array $parameters = array())
+    public function complete(array $parameters = [])
     {
         return $this->createRequest(ServerRestCompletePurchaseRequest::class, $parameters);
     }
@@ -67,7 +67,15 @@ class RestServerGateway extends ServerGateway
     /**
      * Get transaction information from Sage.
      */
-    public function getTransaction(array $parameters = array())
+    public function getTransaction(array $parameters = [])
+    {
+        return $this->fetchTransaction($parameters);
+    }
+
+    /**
+     * Fetch transaction information from Sage.
+     */
+    public function fetchTransaction(array $parameters = [])
     {
         return $this->createRequest(ServerRestRetrieveTransactionRequest::class, $parameters);
     }
@@ -75,7 +83,7 @@ class RestServerGateway extends ServerGateway
     /**
      * Refund request.
      */
-    public function refund(array $parameters = array())
+    public function refund(array $parameters = [])
     {
         return $this->createRequest(ServerRestRefundRequest::class, $parameters);
     }
@@ -83,7 +91,7 @@ class RestServerGateway extends ServerGateway
     /**
      * Repeat request.
      */
-    public function repeat(array $parameters = array())
+    public function repeat(array $parameters = [])
     {
         return $this->createRequest(ServerRestRepeatRequest::class, $parameters);
     }
@@ -91,7 +99,7 @@ class RestServerGateway extends ServerGateway
     /**
      * Void request.
      */
-    public function void(array $parameters = array())
+    public function void(array $parameters = [])
     {
         return $this->createRequest(ServerRestVoidRequest::class, $parameters);
     }

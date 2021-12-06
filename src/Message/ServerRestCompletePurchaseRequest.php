@@ -12,7 +12,7 @@ class ServerRestCompletePurchaseRequest extends AbstractRestRequest
 {
     public function getService()
     {
-        if($this->httpRequest->request->has('cres')){
+        if ($this->httpRequest->request->has('cres')) {
             return static::SERVICE_REST_3D_CHALLENGE;
         }
 
@@ -31,7 +31,7 @@ class ServerRestCompletePurchaseRequest extends AbstractRestRequest
 
     public function getData()
     {
-        if($this->httpRequest->request->has('cres')){
+        if ($this->httpRequest->request->has('cres')) {
             $data = array(
                 'cRes' => $this->httpRequest->request->get('cres'), // inconsistent caps are intentional
                 'MD' => $this->httpRequest->request->get('threeDSSessionData'),
@@ -40,7 +40,7 @@ class ServerRestCompletePurchaseRequest extends AbstractRestRequest
             if (empty($data['cRes']) || empty($data['MD'])) {
                 throw new InvalidResponseException;
             }
-        }else{
+        } else {
             $data = array(
                 'MD' => $this->getMd() ?: $this->httpRequest->request->get('MD'),
                 'paRes' => $this->getPaRes() ?: $this->httpRequest->request->get('PaRes'),
