@@ -15,7 +15,7 @@ class DirectTokenRequestTest extends TestCase
      */
     protected $card;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->request = new DirectTokenRegistrationRequest(
             $this->getHttpClient(),

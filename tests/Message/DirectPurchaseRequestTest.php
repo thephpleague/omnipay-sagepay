@@ -16,7 +16,7 @@ class DirectPurchaseRequestTest extends DirectAuthorizeRequestTest
      */
     protected $request;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

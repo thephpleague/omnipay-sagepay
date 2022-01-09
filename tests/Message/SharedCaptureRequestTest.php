@@ -6,7 +6,7 @@ use Omnipay\Tests\TestCase;
 
 class SharedCaptureRequestTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -38,11 +38,10 @@ class SharedCaptureRequestTest extends TestCase
         $this->assertSame('RELEASE', $this->request->getTxType());
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
-     */
     public function testMissingAmount()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidRequestException::class);
+
         $this->request->getData();
     }
 
@@ -60,22 +59,20 @@ class SharedCaptureRequestTest extends TestCase
         $this->assertSame('4255', $data['TxAuthNo']);
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
-     */
     public function testAuthMissingDescription()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidRequestException::class);
+
         $this->request->setAmount(123.45);
         $this->request->setUseAuthenticate(true);
 
         $this->request->getData();
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
-     */
     public function testAuthMissingTransactionId()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidRequestException::class);
+
         $this->request->setAmount(123.45);
         $this->request->setDescription('desc');
         $this->request->setUseAuthenticate(true);
