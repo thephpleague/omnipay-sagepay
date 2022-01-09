@@ -9,7 +9,7 @@
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic,
 multi-gateway payment processing library for PHP.
 This package implements Sage Pay support for Omnipay.
-This version supports PHP ^5.6 and PHP ^7.
+This version supports PHP ^7.3 and PHP ^8.
 
 This is the `master` branch of Omnipay, handling Omnipay version `3.x`.
 For the `2.x` branch, please visit https://github.com/thephpleague/omnipay-sagepay/tree/2.x
