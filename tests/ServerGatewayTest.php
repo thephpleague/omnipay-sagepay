@@ -8,7 +8,7 @@ class ServerGatewayTest extends GatewayTestCase
 {
     protected $error_3082_text = '3082 : The Description value is too long.';
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -129,11 +129,9 @@ class ServerGatewayTest extends GatewayTestCase
         $this->assertNull($response->getMessage());
     }
 
-    /**
-     * @expectedException Omnipay\Common\Exception\InvalidResponseException
-     */
     public function testCompleteAuthorizeInvalid()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidResponseException::class);
         $response = $this->gateway->completeAuthorize($this->completePurchaseOptions)->send();
     }
 
@@ -190,11 +188,9 @@ class ServerGatewayTest extends GatewayTestCase
         $this->assertNull($response->getMessage());
     }
 
-    /**
-     * @expectedException Omnipay\Common\Exception\InvalidResponseException
-     */
     public function testCompletePurchaseInvalid()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidResponseException::class);
         $response = $this->gateway->completePurchase($this->completePurchaseOptions)->send();
     }
 

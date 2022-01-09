@@ -6,7 +6,7 @@ use Omnipay\Tests\TestCase;
 
 class SharedRefundRequestTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

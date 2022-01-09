@@ -2,7 +2,7 @@
 
 **Sage Pay driver for the Omnipay PHP payment processing library**
 
-[![Build Status](https://travis-ci.org/thephpleague/omnipay-sagepay.png?branch=master)](https://travis-ci.org/thephpleague/omnipay-sagepay)
+[![Unit Tests](https://github.com/thephpleague/omnipay-sagepay/actions/workflows/run-tests.yml/badge.svg)](https://github.com/thephpleague/omnipay-sagepay/actions/workflows/run-tests.yml)
 [![Latest Stable Version](https://poser.pugx.org/omnipay/sagepay/version.png)](https://packagist.org/packages/omnipay/sagepay)
 [![Total Downloads](https://poser.pugx.org/omnipay/sagepay/d/total.png)](https://packagist.org/packages/omnipay/sagepay)
 

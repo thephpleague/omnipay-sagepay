@@ -16,7 +16,7 @@ class DirectAuthorizeRequestTest extends TestCase
      */
     protected $request;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -123,7 +123,7 @@ class DirectAuthorizeRequestTest extends TestCase
         // The element does exist, and must contain the basket XML, with optional XML header and
         // trailing newlines.
         $this->assertArrayHasKey('BasketXML', $data);
-        $this->assertContains($basketXml, $data['BasketXML']);
+        $this->assertStringContainsString($basketXml, $data['BasketXML']);
     }
 
     public function testBasketExtendItem()
@@ -151,7 +151,7 @@ class DirectAuthorizeRequestTest extends TestCase
         // The element does exist, and must contain the basket XML, with optional XML header and
         // trailing newlines.
         $this->assertArrayHasKey('BasketXML', $data);
-        $this->assertContains($basketXml, $data['BasketXML']);
+        $this->assertStringContainsString($basketXml, $data['BasketXML']);
     }
 
     public function testGetDataNoReferrerId()
@@ -280,7 +280,7 @@ class DirectAuthorizeRequestTest extends TestCase
         // The element does exist, and must contain the basket XML, with optional XML header and
         // trailing newlines.
         $this->assertArrayHasKey('BasketXML', $data);
-        $this->assertNotContains('<discount>', $data['BasketXML']);
+        $this->assertStringNotContainsString('<discount>', $data['BasketXML']);
     }
 
     public function testMixedBasketWithSpecialChars()
@@ -321,7 +321,7 @@ class DirectAuthorizeRequestTest extends TestCase
         $data = $this->request->getData();
 
         $this->assertArrayHasKey('BasketXML', $data);
-        $this->assertContains($expected, $data['BasketXML'], 'Basket XML does not match the expected output');
+        $this->assertStringContainsString($expected, $data['BasketXML'], 'Basket XML does not match the expected output');
     }
 
     public function testNonXmlBasket()

@@ -184,11 +184,10 @@ class ServerNotifyRequestTest extends TestCase
         $this->request->error('https://www.example.com/', 'detail');
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidResponseException
-     */
     public function testConfirmInvalidSignature()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidResponseException::class);
+
         $this->request = new ServerNotifyRequest(
             $this->getHttpClient(),
             $this->getHttpRequest()
@@ -200,11 +199,10 @@ class ServerNotifyRequestTest extends TestCase
         $this->request->confirm('https://www.example.com/', 'detail');
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidResponseException
-     */
     public function testErrorInvalidSignature()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidResponseException::class);
+
         $this->request = new ServerNotifyRequest(
             $this->getHttpClient(),
             $this->getHttpRequest()

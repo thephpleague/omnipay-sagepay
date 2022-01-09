@@ -6,7 +6,7 @@ use Omnipay\Tests\GatewayTestCase;
 
 class FormGatewayTest extends GatewayTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -107,10 +107,10 @@ class FormGatewayTest extends GatewayTestCase
      * supplied, which largely amount to missing parameters.
      *
      * @dataProvider missingParameterProvider
-     * @expectedException \Omnipay\Common\Exception\InvalidRequestException
      */
     public function testAuthorizeFailure($missingParameter)
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidRequestException::class);
         $parameters = $this->purchaseOptions;
 
         unset($parameters[$missingParameter]);
@@ -180,37 +180,33 @@ class FormGatewayTest extends GatewayTestCase
 
     /**
      * Invalid without any query parameter supplied.
-     * @expectedException Omnipay\Common\Exception\InvalidResponseException
      */
     public function testCompleteAuthorizeInvalid()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidResponseException::class);
         $response = $this->gateway->completeAuthorize($this->completePurchaseOptions)->send();
     }
 
     /**
      * Invalid without any query parameter supplied.
-     * @expectedException Omnipay\Common\Exception\InvalidResponseException
      */
     public function testCompletePurchaseInvalid1()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidResponseException::class);
         $response = $this->gateway->completePurchase($this->completePurchaseOptions)->send();
     }
 
-    /**
-     * @expectedException Omnipay\Common\Exception\InvalidResponseException
-     */
     public function testCompletePurchaseInvalid2()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidResponseException::class);
         // No leading '@'.
         $this->getHttpRequest()->initialize(['crypt' => 'ababab']);
         $response = $this->gateway->completePurchase($this->completePurchaseOptions)->send();
     }
 
-    /**
-     * @expectedException Omnipay\Common\Exception\InvalidResponseException
-     */
     public function testCompletePurchaseInvalid3()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidResponseException::class);
         // Not hexadecimal.
         $this->getHttpRequest()->initialize(['crypt' => '@ababxx']);
         $response = $this->gateway->completePurchase($this->completePurchaseOptions)->send();
@@ -275,11 +271,10 @@ class FormGatewayTest extends GatewayTestCase
 
     /**
      * The wrong transaction ID is supplied with the server request.
-     *
-     * @expectedException Omnipay\Common\Exception\InvalidResponseException
      */
     public function testCompletePurchaseReplayAttack()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidResponseException::class);
         //$this->expectException(Complicated::class);
 
         // Set the "crypt" query parameter.
@@ -295,11 +290,10 @@ class FormGatewayTest extends GatewayTestCase
 
     /**
      * The missing expected transaction ID supplied by the app.
-     *
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
      */
     public function testCompletePurchaseMissingExpectedParam()
     {
+        $this->expectException(\Omnipay\Common\Exception\InvalidRequestException::class);
         //$this->expectException(Complicated::class);
 
         // Set the "crypt" query parameter.
