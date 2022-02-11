@@ -89,6 +89,10 @@ trait ServerNotifyTrait
                     $this->getExpiryDate(),
                     $this->getFraudResponse(),
                     $this->getBankAuthCode(),
+                    // New for protocol v4.00
+                    $this->getACSTransID(),
+                    $this->getDSTransID(),
+                    $this->getSchemeTraceID(),
                 )
             );
         }

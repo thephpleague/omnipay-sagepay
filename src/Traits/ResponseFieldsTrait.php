@@ -214,6 +214,30 @@ trait ResponseFieldsTrait
     }
 
     /**
+     * @return string
+     */
+    public function getDSTransID()
+    {
+        return $this->getDataItem('DSTransID');
+    }
+
+    /**
+     * @return string
+     */
+    public function getACSTransID()
+    {
+        return $this->getDataItem('ACSTransID');
+    }
+
+    /**
+     * @return string
+     */
+    public function getSchemeTraceID()
+    {
+        return $this->getDataItem('SchemeTraceID');
+    }
+
+    /**
      * Raw expiry date for the card, "MMYY" format by default.
      * The expiry date is available for Sage Pay Direct responses, even if the
      * remaining card details are not.
