@@ -59,8 +59,8 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['BrowserJavascriptEnabled'] = $this->getBrowserJavascriptEnabled() ?: static::BROWSER_JAVASCRIPT_NO;
         $data['BrowserLanguage'] = $this->getBrowserLanguage() ?: static::BROWSER_LANGUAGE;
         $data['ThreeDSNotificationURL'] = $this->getThreeDSNotificationURL();
-        $data['BrowserAcceptHeader'] = $_SERVER['HTTP_ACCEPT'];
-        $data['BrowserUserAgent'] = $_SERVER['HTTP_USER_AGENT'];
+        $data['BrowserAcceptHeader'] = $_SERVER['HTTP_ACCEPT'] ?? null;
+        $data['BrowserUserAgent'] = $_SERVER['HTTP_USER_AGENT'] ?? null;
         $data['ChallengeWindowSize'] = $this->getChallengeWindowSize() ?: static::CHALLENGE_WINDOW_SIZE_05;
 
         // Proctocol v4.00 - if BrowserJavascriptEnabled
