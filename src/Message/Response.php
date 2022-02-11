@@ -96,6 +96,13 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
     public function getRedirectData()
     {
         if ($this->isRedirect()) {
+            if ($creq = $this->getDataItem('CReq')) {
+                return [
+                    'creq' => $creq,
+                    'threeDSSessionData' => $this->getVPSTxId(),
+                ];
+            }
+
             return array(
                 'PaReq' => $this->getDataItem('PAReq'),
                 'TermUrl' => $this->getRequest()->getReturnUrl(),

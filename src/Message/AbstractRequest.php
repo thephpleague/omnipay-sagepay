@@ -18,6 +18,34 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     use GatewayParamsTrait;
 
     /**
+     * Flag whether customer's browser can run javascript.
+     */
+    const BROWSER_JAVASCRIPT_YES   = 1;
+    const BROWSER_JAVASCRIPT_NO    = 0;
+
+    /**
+     * Fallback browser language
+     */
+    const BROWSER_LANGUAGE = 'en-GB';
+
+    /**
+     * Dimensions of the challenge window to be displayed to the cardholder.
+     *
+     * 01 = 250 x 400
+     * 02 = 390 x 400
+     * 03 = 500 x 600
+     * 04 = 600 x 400
+     * 05 = Full screen
+     *
+     * @var string
+     */
+    const CHALLENGE_WINDOW_SIZE_01 = '01';
+    const CHALLENGE_WINDOW_SIZE_02 = '02';
+    const CHALLENGE_WINDOW_SIZE_03 = '03';
+    const CHALLENGE_WINDOW_SIZE_04 = '04';
+    const CHALLENGE_WINDOW_SIZE_05 = '05';
+
+    /**
      * @var string The service name, used in the endpoint URL.
      */
     protected $service;
@@ -25,7 +53,7 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     /**
      * @var string The protocol version number.
      */
-    protected $VPSProtocol = '3.00';
+    protected $VPSProtocol = '4.00';
 
     /**
      * @var string Endpoint base URLs.

@@ -36,7 +36,7 @@ class DirectTokenRequestTest extends TestCase
     {
         $data = $this->request->getData();
 
-        $this->assertSame('3.00', $data['VPSProtocol']);
+        $this->assertSame('4.00', $data['VPSProtocol']);
         $this->assertSame('GBP', $data['Currency']);
         $this->assertSame('123', $data['VendorTxCode']);
         $this->assertSame('TOKEN', $data['TxType']);

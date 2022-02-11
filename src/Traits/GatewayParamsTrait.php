@@ -5,6 +5,8 @@ namespace Omnipay\SagePay\Traits;
 //use Omnipay\Common\Exception\InvalidResponseException;
 //use Omnipay\Common\Message\NotificationInterface;
 //use Omnipay\SagePay\Message\Response;
+use Omnipay\SagePay\AbstractGateway;
+use Omnipay\SagePay\Message\AbstractRequest;
 
 /**
  * Parameters that can be set at the gateway class, and so
@@ -256,5 +258,294 @@ trait GatewayParamsTrait
     public function setDisableUtf8Decode($value)
     {
         return $this->setParameter('disableUtf8Decode', $value);
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setThreeDSNotificationURL($value)
+    {
+        return $this->setParameter('ThreeDSNotificationURL', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getThreeDSNotificationURL()
+    {
+        return $this->getParameter('ThreeDSNotificationURL');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setBrowserJavascriptEnabled($value)
+    {
+        return $this->setParameter('BrowserJavascriptEnabled', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBrowserJavascriptEnabled()
+    {
+        return $this->getParameter('BrowserJavascriptEnabled');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setBrowserLanguage($value)
+    {
+        return $this->setParameter('BrowserLanguage', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBrowserLanguage()
+    {
+        return $this->getParameter('BrowserLanguage');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setChallengeWindowSize($value)
+    {
+        return $this->setParameter('ChallengeWindowSize', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChallengeWindowSize()
+    {
+        return $this->getParameter('ChallengeWindowSize');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setBrowserJavaEnabled($value)
+    {
+        return $this->setParameter('BrowserJavaEnabled', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBrowserJavaEnabled()
+    {
+        return $this->getParameter('BrowserJavaEnabled');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setBrowserColorDepth($value)
+    {
+        return $this->setParameter('BrowserColorDepth', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBrowserColorDepth()
+    {
+        return $this->getParameter('BrowserColorDepth');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setBrowserScreenHeight($value)
+    {
+        return $this->setParameter('BrowserScreenHeight', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBrowserScreenHeight()
+    {
+        return $this->getParameter('BrowserScreenHeight');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setBrowserScreenWidth($value)
+    {
+        return $this->setParameter('BrowserScreenWidth', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBrowserScreenWidth()
+    {
+        return $this->getParameter('BrowserScreenWidth');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setBrowserTZ($value)
+    {
+        return $this->setParameter('BrowserTZ', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBrowserTZ()
+    {
+        return $this->getParameter('BrowserTZ');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setInitiatedType($value)
+    {
+        return $this->setParameter('InitiatedType', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInitiatedType()
+    {
+        return $this->getParameter('InitiatedType');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setCOFUsage($value)
+    {
+        return $this->setParameter('COFUsage', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCOFUsage()
+    {
+        return $this->getParameter('COFUsage');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setMITType($value)
+    {
+        return $this->setParameter('MITType', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMITType()
+    {
+        return $this->getParameter('MITType');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setSchemeTraceID($value)
+    {
+        return $this->setParameter('SchemeTraceID', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSchemeTraceID()
+    {
+        return $this->getParameter('SchemeTraceID');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setRecurringExpiry($value)
+    {
+        return $this->setParameter('RecurringExpiry', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRecurringExpiry()
+    {
+        return $this->getParameter('RecurringExpiry');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setRecurringFrequency($value)
+    {
+        return $this->setParameter('RecurringFrequency', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRecurringFrequency()
+    {
+        return $this->getParameter('RecurringFrequency');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setACSTransID($value)
+    {
+        return $this->setParameter('ACSTransID', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getACSTransID()
+    {
+        return $this->getParameter('ACSTransID');
+    }
+
+    /**
+     * @param $value
+     * @return AbstractGateway|AbstractRequest
+     */
+    public function setDSTransID($value)
+    {
+        return $this->setParameter('DSTransID', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDSTransID()
+    {
+        return $this->getParameter('DSTransID');
     }
 }

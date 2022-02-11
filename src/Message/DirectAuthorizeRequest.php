@@ -56,6 +56,30 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['VendorTxCode'] = $this->getTransactionId();
         $data['ClientIPAddress'] = $this->getClientIp();
 
+        $data['BrowserJavascriptEnabled'] = $this->getBrowserJavascriptEnabled() ?: static::BROWSER_JAVASCRIPT_NO;
+        $data['BrowserLanguage'] = $this->getBrowserLanguage() ?: static::BROWSER_LANGUAGE;
+        $data['ThreeDSNotificationURL'] = $this->getThreeDSNotificationURL();
+        $data['BrowserAcceptHeader'] = $_SERVER['HTTP_ACCEPT'] ?? null;
+        $data['BrowserUserAgent'] = $_SERVER['HTTP_USER_AGENT'] ?? null;
+        $data['ChallengeWindowSize'] = $this->getChallengeWindowSize() ?: static::CHALLENGE_WINDOW_SIZE_05;
+
+        // Proctocol v4.00 - if BrowserJavascriptEnabled
+        $data['BrowserJavaEnabled'] = $this->getBrowserJavaEnabled();
+        $data['BrowserColorDepth'] = $this->getBrowserColorDepth();
+        $data['BrowserScreenHeight'] = $this->getBrowserScreenHeight();
+        $data['BrowserScreenWidth'] = $this->getBrowserScreenWidth();
+        $data['BrowserTZ'] = $this->getBrowserTZ();
+
+        // repeat payments required fields
+        $data['MITType'] = $this->getMITType();
+        $data['COFUsage'] = $this->getCOFUsage();
+        $data['InitiatedType'] = $this->getInitiatedType();
+        $data['SchemeTraceID'] = $this->getSchemeTraceID();
+        $data['RecurringExpiry'] = $this->getRecurringExpiry();
+        $data['RecurringFrequency'] = $this->getRecurringFrequency();
+        $data['ACSTransID'] = $this->getACSTransID();
+        $data['DSTransID'] = $this->getDSTransID();
+
         $data['ApplyAVSCV2'] = $this->getApplyAVSCV2() ?: static::APPLY_AVSCV2_DEFAULT;
         $data['Apply3DSecure'] = $this->getApply3DSecure() ?: static::APPLY_3DSECURE_APPLY;
 
