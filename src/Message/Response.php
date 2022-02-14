@@ -247,11 +247,20 @@ class Response extends AbstractResponse implements RedirectResponseInterface
     public function getRedirectData()
     {
         if ($this->isRedirect()) {
-            return array(
-                'PaReq' => $this->data['PAReq'],
-                'TermUrl' => $this->getRequest()->getReturnUrl(),
-                'MD' => $this->data['MD'],
-            );
+            if (isset($this->data['CReq'])) {
+                // 3DSv2 (v4 sagepay protocol)
+                return [
+                    'creq' => $this->data['CReq'],
+                    'threeDSSessionData' => $this->data['VPSTxId'],
+                ];
+            } else {
+                // fallback from 3DSv2 to 3DSv1 (v3 sagepay protocol)
+                return [
+                    'PaReq' => $this->data['PAReq'],
+                    'TermUrl' => $this->getRequest()->getReturnUrl(),
+                    'MD' => $this->data['MD'],
+                ];
+            }
         }
     }
 

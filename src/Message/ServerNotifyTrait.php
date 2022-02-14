@@ -47,7 +47,7 @@ trait ServerNotifyTrait
         // Transaction types PAYMENT, DEFERRED and AUTHENTICATE (when suppoted)
         // and non-transaction TOKEN request.
 
-        $signature_data = array(
+        $signatureData = array(
             $VPSTxId,
             // VendorTxCode
             $this->getTransactionId(),
@@ -64,8 +64,8 @@ trait ServerNotifyTrait
             // Do not use any of these fields for a successful TOKEN transaction, even
             // though some of them may be present.
 
-            $signature_data = array_merge(
-                $signature_data,
+            $signatureData = array_merge(
+                $signatureData,
                 array(
                     // Details for AVSCV2:
                     $this->getAddressResult(),
@@ -86,9 +86,21 @@ trait ServerNotifyTrait
                     $this->getBankAuthCode(),
                 )
             );
+
+            // new in v4
+            if ( $this->getDataItem('VPSProtocol') =='4.00'){
+                $signatureData = array_merge(
+                    $signatureData,
+                    array(
+                        $this->getDataItem('ACSTransID'),
+                        $this->getDataItem('DSTransID'),
+                        $this->getDataItem('SchemeTraceID'),
+                    )
+                );
+            }
         }
 
-        return md5(implode('', $signature_data));
+        return md5(implode('', $signatureData));
     }
 
     /**

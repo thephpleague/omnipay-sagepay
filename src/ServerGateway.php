@@ -6,12 +6,15 @@ namespace Omnipay\SagePay;
 use Omnipay\SagePay\Message\ServerAuthorizeRequest;
 use Omnipay\SagePay\Message\ServerCompleteAuthorizeRequest;
 use Omnipay\SagePay\Message\ServerPurchaseRequest;
+use Omnipay\SagePay\Traits\GatewayParamsTrait;
 
 /**
- * Sage Pay Server Gateway
+ * Sage Pay Server Gateway (Hosted/Redirect integration)
  */
 class ServerGateway extends DirectGateway
 {
+    use GatewayParamsTrait;
+
     public function getName()
     {
         return 'Sage Pay Server';

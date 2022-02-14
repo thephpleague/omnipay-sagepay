@@ -71,6 +71,32 @@ class DirectAuthorizeRequest extends AbstractRequest
         $data['DeliveryPhone'] = $card->getShippingPhone();
         $data['CustomerEMail'] = $card->getEmail();
 
+
+        $data['BrowserJavascriptEnabled'] = $this->getBrowserJavascriptEnabled() ?: static::BROWSER_JAVASCRIPT_NO;
+        $data['BrowserLanguage'] = $this->getBrowserLanguage() ?: static::BROWSER_LANGUAGE;
+        $data['ThreeDSNotificationURL'] = $this->getThreeDSNotificationURL();
+        $data['BrowserAcceptHeader'] = $_SERVER['HTTP_ACCEPT'];
+        $data['BrowserUserAgent'] = $_SERVER['HTTP_USER_AGENT'];
+        $data['ChallengeWindowSize'] = $this->getChallengeWindowSize() ?: static::CHALLENGE_WINDOW_SIZE_05;
+        // ----
+        // ---- "4.00" - required if BrowserJavascriptEnabled == "1"
+        $data['BrowserJavaEnabled'] = $this->getBrowserJavaEnabled();
+        $data['BrowserColorDepth'] = $this->getBrowserColorDepth();
+        $data['BrowserScreenHeight'] = $this->getBrowserScreenHeight();
+        $data['BrowserScreenWidth'] = $this->getBrowserScreenWidth();
+        $data['BrowserTZ'] = $this->getBrowserTZ();
+        // ----
+
+        // repeat payments required fields
+        $data['MITType'] = $this->getMITType();
+        $data['COFUsage'] = $this->getCOFUsage();
+        $data['InitiatedType'] = $this->getInitiatedType();
+        $data['SchemeTraceID'] = $this->getSchemeTraceID();
+        $data['RecurringExpiry'] = $this->getRecurringExpiry();
+        $data['RecurringFrequency'] = $this->getRecurringFrequency();
+        $data['ACSTransID'] = $this->getACSTransID();
+        $data['DSTransID'] = $this->getDSTransID();
+
         if ($this->getUseOldBasketFormat()) {
             $basket = $this->getItemDataNonXML();
             if (!empty($basket)) {

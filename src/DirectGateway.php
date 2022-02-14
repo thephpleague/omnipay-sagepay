@@ -3,12 +3,15 @@
 namespace Omnipay\SagePay;
 
 use Omnipay\Common\AbstractGateway;
+use Omnipay\SagePay\Traits\GatewayParamsTrait;
 
 /**
- * Sage Pay Direct Gateway
+ * Sage Pay Direct Gateway (API integration)
  */
 class DirectGateway extends AbstractGateway
 {
+    use GatewayParamsTrait;
+
     // Gateway identification.
 
     public function getName()
