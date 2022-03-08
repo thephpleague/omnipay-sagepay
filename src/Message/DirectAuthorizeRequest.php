@@ -135,7 +135,7 @@ class DirectAuthorizeRequest extends AbstractRequest
         $ip = parent::getClientIp();
 
         // OmniPay core could do with a helper for this.
-        if (! preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $ip)) {
+        if (! is_null($ip) && ! preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $ip)) {
             $ip = null;
         }
 
