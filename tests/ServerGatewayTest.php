@@ -76,7 +76,7 @@ class ServerGatewayTest extends GatewayTestCase
         $this->assertTrue($response->isRedirect());
         $this->assertSame('{"SecurityKey":"IK776BWNHN","VPSTxId":"{1E7D9C70-DBE2-4726-88EA-D369810D801D}","VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('Server transaction registered successfully.', $response->getMessage());
-        $this->assertSame('https://test.sagepay.com/Simulator/VSPServerPaymentPage.asp?TransactionID={1E7D9C70-DBE2-4726-88EA-D369810D801D}', $response->getRedirectUrl());
+        $this->assertSame('https://sandbox.opayo.eu.elavon.com/Simulator/VSPServerPaymentPage.asp?TransactionID={1E7D9C70-DBE2-4726-88EA-D369810D801D}', $response->getRedirectUrl());
     }
 
     public function testAuthorizeFailure()
@@ -145,7 +145,7 @@ class ServerGatewayTest extends GatewayTestCase
         $this->assertTrue($response->isRedirect());
         $this->assertSame('{"SecurityKey":"IK776BWNHN","VPSTxId":"{1E7D9C70-DBE2-4726-88EA-D369810D801D}","VendorTxCode":"123"}', $response->getTransactionReference());
         $this->assertSame('Server transaction registered successfully.', $response->getMessage());
-        $this->assertSame('https://test.sagepay.com/Simulator/VSPServerPaymentPage.asp?TransactionID={1E7D9C70-DBE2-4726-88EA-D369810D801D}', $response->getRedirectUrl());
+        $this->assertSame('https://sandbox.opayo.eu.elavon.com/Simulator/VSPServerPaymentPage.asp?TransactionID={1E7D9C70-DBE2-4726-88EA-D369810D801D}', $response->getRedirectUrl());
     }
 
     public function testPurchaseFailure()

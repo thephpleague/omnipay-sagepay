@@ -36,6 +36,6 @@ class SharedAbortRequestTest extends TestCase
     {
         $url = $this->request->getEndpoint();
 
-        $this->assertSame('https://test.sagepay.com/gateway/service/abort.vsp', $url);
+        $this->assertSame('https://sandbox.opayo.eu.elavon.com/gateway/service/abort.vsp', $url);
     }
 }

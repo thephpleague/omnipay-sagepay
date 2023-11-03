@@ -36,6 +36,6 @@ class SharedRefundRequestTest extends TestCase
     {
         $url = $this->request->getEndpoint();
 
-        $this->assertSame('https://test.sagepay.com/gateway/service/refund.vsp', $url);
+        $this->assertSame('https://sandbox.opayo.eu.elavon.com/gateway/service/refund.vsp', $url);
     }
 }

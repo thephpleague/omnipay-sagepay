@@ -73,7 +73,7 @@ class FormGatewayTest extends GatewayTestCase
 
         // Live (non-test) endpoint.
         $this->assertSame(
-            'https://live.sagepay.com/gateway/service/vspform-register.vsp',
+            'https://live.opayo.eu.elavon.com/gateway/service/vspform-register.vsp',
             $response->getRedirectUrl()
         );
 
