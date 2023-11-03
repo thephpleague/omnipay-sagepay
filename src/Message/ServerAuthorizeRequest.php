@@ -38,7 +38,7 @@ class ServerAuthorizeRequest extends DirectAuthorizeRequest
 
         // Set the profile only if it is LOW (for iframe use) or NORMAL (for full-page redirects)
 
-        $profile = strtoupper($this->getProfile());
+        $profile = strtoupper($this->getProfile() ?? '');
 
         if ($profile === static::PROFILE_NORMAL || $profile === static::PROFILE_LOW) {
             $data['Profile'] = $this->getProfile();
