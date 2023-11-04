@@ -201,7 +201,7 @@ class AuthorizeRequest extends DirectAuthorizeRequest
 
         $query = [];
         foreach ($data as $name => $value) {
-            $query[] = $name . '=' . ($disableUtf8Decode ? $value : utf8_decode($value));
+            $query[] = $name . '=' . ($disableUtf8Decode ? $value : mb_convert_encoding($value, 'ISO-8859-1', 'UTF-8'));
         }
         $query = implode('&', $query);
 
