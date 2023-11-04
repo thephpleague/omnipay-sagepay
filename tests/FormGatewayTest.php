@@ -6,6 +6,10 @@ use Omnipay\Tests\GatewayTestCase;
 
 class FormGatewayTest extends GatewayTestCase
 {
+    protected $purchaseOptions;
+    protected $captureOptions;
+    protected $completePurchaseOptions;
+
     public function setUp(): void
     {
         parent::setUp();

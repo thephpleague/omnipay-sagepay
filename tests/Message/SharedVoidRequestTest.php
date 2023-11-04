@@ -6,6 +6,8 @@ use Omnipay\Tests\TestCase;
 
 class SharedVoidRequestTest extends TestCase
 {
+    protected $request;
+
     public function setUp(): void
     {
         parent::setUp();

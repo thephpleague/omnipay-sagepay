@@ -6,6 +6,13 @@ use Omnipay\Tests\GatewayTestCase;
 
 class DirectGatewayTest extends GatewayTestCase
 {
+    protected $purchaseOptions;
+    protected $captureOptions;
+    protected $repeatOptions;
+    protected $refundOptions;
+    protected $voidOptions;
+    protected $abortOptions;
+
     public function setUp(): void
     {
         parent::setUp();
