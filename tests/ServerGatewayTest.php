@@ -8,6 +8,14 @@ class ServerGatewayTest extends GatewayTestCase
 {
     protected $error_3082_text = '3082 : The Description value is too long.';
 
+    protected $purchaseOptions;
+    protected $captureOptions;
+    protected $completePurchaseOptions;
+    protected $voidOptions;
+    protected $abortOptions;
+    protected $refundOptions;
+    protected $repeatOptions;
+
     public function setUp(): void
     {
         parent::setUp();
