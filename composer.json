@@ -35,8 +35,7 @@
     },
     "require": {
         "php": "^7.3|^8",
-        "omnipay/common": "~3.0",
-        "symfony/http-client": "^6.0"
+        "omnipay/common": "~3.0"
     },
     "require-dev": {
         "omnipay/tests": "^4.1",
@@ -56,7 +55,7 @@
     },
     "config": {
         "allow-plugins": {
-            "php-http/discovery": true
+            "php-http/discovery": false
         }
     }
 }
