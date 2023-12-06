@@ -1,4 +1,4 @@
-# Omnipay: Sage Pay
+# Omnipay: Sage Pay (now Opayo by Elavon)
 
 **Sage Pay/Opayo driver for the Omnipay PHP payment processing library**
 
