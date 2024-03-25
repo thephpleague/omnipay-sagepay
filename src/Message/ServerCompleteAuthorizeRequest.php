@@ -53,7 +53,12 @@ class ServerCompleteAuthorizeRequest extends AbstractRequest
             $this->httpRequest->request->get('DeclineCode', '').
             $this->httpRequest->request->get('ExpiryDate', '').
             $this->httpRequest->request->get('FraudResponse', '').
-            $this->httpRequest->request->get('BankAuthCode', '');
+            $this->httpRequest->request->get('BankAuthCode', '').
+            // New for protocol v4.00
+            // Described in the docs here: https://developer.elavon.com/products/opayo-server/v1/notification-of-transaction-result
+            $this->httpRequest->request->get('ACSTransID', '').
+            $this->httpRequest->request->get('DSTransID', '').
+            $this->httpRequest->request->get('SchemeTraceID', '');
 
         return md5($signature_string);
     }
