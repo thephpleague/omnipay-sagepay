@@ -120,9 +120,14 @@ class ServerGatewayTest extends GatewayTestCase
                 'DeclineCode' => '00',
                 'ExpiryDate' => '0722',
                 'BankAuthCode' => '999777',
+                // New fields for protocol v4.0
+                'ACSTransID' => 'abcuuid',
+                'DSTransID' => '123uuid',
+                'SchemeTraceID' => 'V123',
                 'VPSSignature' => md5(
                     '{F955C22E-F67B-4DA3-8EA3-6DAC68FA59D2}'
                     . '438791' . 'OK' . 'bexamplecJEUPDN1N7Edefghijklm' . '00' . '0722' . '999777'
+                    . 'abcuuid' . '123uuid' . 'V123'
                 ),
             )
         );
