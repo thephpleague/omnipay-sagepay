@@ -11,8 +11,9 @@ multi-gateway payment processing library for PHP.
 This package implements Sage Pay support for Omnipay.
 This version supports PHP ^5.6 and PHP ^7.
 
-This is the `master` branch of Omnipay, handling Omnipay version `3.x`.
-For the `2.x` branch, please visit https://github.com/thephpleague/omnipay-sagepay/tree/2.x
+
+> [!WARNING]  
+> This is the `3.x` branch of Omnipay Sage Pay, it probably won't be actively maintained. This `3.x` branch is kept to support Sage Pay protocol 3.00. For the latest stable version supporting Sage Pay/Opayo protocol 4.00; compatible with PHP ^7.3 and PHP ^8, please use the `master` branch.
 
 Table of Contents
 =================
