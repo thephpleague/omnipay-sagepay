@@ -6,6 +6,13 @@ use Omnipay\Tests\GatewayTestCase;
 
 class DirectGatewayTest extends GatewayTestCase
 {
+    protected $purchaseOptions;
+    protected $captureOptions;
+    protected $repeatOptions;
+    protected $refundOptions;
+    protected $voidOptions;
+    protected $abortOptions;
+
     public function setUp()
     {
         parent::setUp();
@@ -90,7 +97,7 @@ class DirectGatewayTest extends GatewayTestCase
         $this->assertTrue($response->isRedirect());
         $this->assertNull($response->getTransactionReference());
         $this->assertNull($response->getMessage());
-        $this->assertSame('https://test.sagepay.com/Simulator/3DAuthPage.asp', $response->getRedirectUrl());
+        $this->assertSame('https://sandbox.opayo.eu.elavon.com/Simulator/3DAuthPage.asp', $response->getRedirectUrl());
 
         $redirectData = $response->getRedirectData();
         $this->assertSame('065379457749061954', $redirectData['MD']);
@@ -132,7 +139,7 @@ class DirectGatewayTest extends GatewayTestCase
         $this->assertTrue($response->isRedirect());
         $this->assertNull($response->getTransactionReference());
         $this->assertNull($response->getMessage());
-        $this->assertSame('https://test.sagepay.com/Simulator/3DAuthPage.asp', $response->getRedirectUrl());
+        $this->assertSame('https://sandbox.opayo.eu.elavon.com/Simulator/3DAuthPage.asp', $response->getRedirectUrl());
 
         $redirectData = $response->getRedirectData();
         $this->assertSame('065379457749061954', $redirectData['MD']);

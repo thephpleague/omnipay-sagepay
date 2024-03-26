@@ -7,6 +7,8 @@ use Mockery as m;
 
 class DirectCompleteAuthorizeRequestTest extends TestCase
 {
+    protected $request;
+
     public function testDirectCompleteAuthorizeRequestSuccess()
     {
         parent::setUp();

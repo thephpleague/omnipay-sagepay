@@ -15,8 +15,8 @@ class Response extends AbstractResponse implements RedirectResponseInterface, Co
     /**
      * @var string Endpoint base URLs.
      */
-    protected $liveEndpoint = 'https://live.sagepay.com/gateway/service/vspform-register.vsp';
-    protected $testEndpoint = 'https://test.sagepay.com/gateway/service/vspform-register.vsp';
+    protected $liveEndpoint = 'https://live.opayo.eu.elavon.com/gateway/service/vspform-register.vsp';
+    protected $testEndpoint = 'https://sandbox.opayo.eu.elavon.com/gateway/service/vspform-register.vsp';
 
     /**
      * Always a redirect, so not yet successful.

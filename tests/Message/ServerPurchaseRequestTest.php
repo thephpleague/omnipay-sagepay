@@ -6,8 +6,9 @@ use Omnipay\Tests\TestCase;
 
 class ServerPurchaseRequestTest extends TestCase
 {
-
     const SURCHARGE_XML = '<surcharges><surcharge><paymentType>VISA</paymentType><percentage>2.50</percentage></surcharge></surcharges>';
+
+    protected $request;
 
     public function testInitialize()
     {
