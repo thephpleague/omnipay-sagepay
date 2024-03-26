@@ -6,6 +6,10 @@ use Omnipay\Tests\GatewayTestCase;
 
 class FormGatewayTest extends GatewayTestCase
 {
+    protected $purchaseOptions;
+    protected $captureOptions;
+    protected $completePurchaseOptions;
+
     public function setUp()
     {
         parent::setUp();
@@ -72,7 +76,7 @@ class FormGatewayTest extends GatewayTestCase
 
         // Live (non-test) endpoint.
         $this->assertSame(
-            'https://live.sagepay.com/gateway/service/vspform-register.vsp',
+            'https://live.opayo.eu.elavon.com/gateway/service/vspform-register.vsp',
             $response->getRedirectUrl()
         );
 

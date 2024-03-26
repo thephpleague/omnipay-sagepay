@@ -6,6 +6,8 @@ use Omnipay\Tests\TestCase;
 
 class SharedCaptureRequestTest extends TestCase
 {
+    protected $request;
+
     public function setUp()
     {
         parent::setUp();
