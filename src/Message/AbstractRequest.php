@@ -30,8 +30,8 @@ abstract class AbstractRequest extends OmnipayAbstractRequest implements Constan
     /**
      * @var string Endpoint base URLs.
      */
-    protected $liveEndpoint = 'https://live.sagepay.com/gateway/service';
-    protected $testEndpoint = 'https://test.sagepay.com/gateway/service';
+    protected $liveEndpoint = 'https://live.opayo.eu.elavon.com/gateway/service';
+    protected $testEndpoint = 'https://sandbox.opayo.eu.elavon.com/gateway/service';
 
     /**
      * Convenience method to switch iframe mode on or off.

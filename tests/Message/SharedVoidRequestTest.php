@@ -6,6 +6,8 @@ use Omnipay\Tests\TestCase;
 
 class SharedVoidRequestTest extends TestCase
 {
+    protected $request;
+
     public function setUp()
     {
         parent::setUp();
@@ -39,6 +41,6 @@ class SharedVoidRequestTest extends TestCase
     {
         $url = $this->request->getEndpoint();
 
-        $this->assertSame('https://test.sagepay.com/gateway/service/void.vsp', $url);
+        $this->assertSame('https://sandbox.opayo.eu.elavon.com/gateway/service/void.vsp', $url);
     }
 }
