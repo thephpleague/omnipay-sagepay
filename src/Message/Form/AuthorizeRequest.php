@@ -17,6 +17,7 @@ class AuthorizeRequest extends DirectAuthorizeRequest
      * The DeliveryState is conditionally mandatory.
      */
     protected $validFields = [
+        'AccountType' => false,
         'VendorTxCode' => true,
         'Amount' => true,
         'Currency' => true,
