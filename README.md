@@ -781,8 +781,8 @@ admin panel.
 * `refund()`
 * `void()` - void a purchase
 * `abort()` - abort an authorization before it is captured
-* `repeatAuthorize()` - new authorization based on past transaction
-* `repeatPurchase()` - new purchase based on past transaction
+* `repeatAuthorize()` - new authorization based on past transaction (deprecated, use authorize with cardReference)
+* `repeatPurchase()` - new purchase based on past transaction (deprecated, use purchase with cardReference)
 * `deleteCard()` - remove a cardReference or token from the account
 
 ### Repeat Authorize/Purchase
@@ -792,10 +792,14 @@ You will need the `transactionReference` of the original transaction.
 The `transactionReference` will be a JSON string containing the four pieces of
 information the gateway needs to reuse the transaction.
 
-```php
-// repeatAuthorize() or repeatPurchase()
+Although a separate repeatPurchase/repeatAuthorize request exists it is
+recommended you use purchase along with the transactionReference for
+interoperability with other Omnipay gateways.
 
-$repeatRequest = $gateway->repeatAuthorize([
+```php
+// use authorize or purchase to process a repeat payment.
+
+$repeatRequest = $gateway->authorize([
     'transactionReference' => $originalTransactionReference,
     // or
     'securityKey' => $originalSecurityKey,

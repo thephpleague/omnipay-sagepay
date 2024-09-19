@@ -21,7 +21,9 @@ class DirectAuthorizeRequest extends AbstractRequest
      */
     public function getTxType()
     {
-        if ($this->getUseAuthenticate()) {
+        if ($this->isRepeatTransaction()) {
+            return static::TXTYPE_REPEATDEFERRED;
+        } elseif ($this->getUseAuthenticate()) {
             return static::TXTYPE_AUTHENTICATE;
         } else {
             return static::TXTYPE_DEFERRED;
@@ -41,7 +43,12 @@ class DirectAuthorizeRequest extends AbstractRequest
      */
     protected function getBaseAuthorizeData()
     {
-        $this->validate('amount', 'card', 'transactionId');
+        $this->validate('amount', 'transactionId');
+        if (!$this->isRepeatTransaction()) {
+            // If we have a related transation id the card is not required
+            // as we are using the cardReference.
+            $this->validate('card');
+        }
 
         // Start with the authorisation and API version details.
         $data = $this->getBaseData();
@@ -87,18 +94,27 @@ class DirectAuthorizeRequest extends AbstractRequest
             $data['ReferrerID'] = $this->getReferrerId();
         }
 
-        // Billing details
-
-        $data = $this->getBillingAddressData($data);
-
-        // Shipping details
-
-        $data = $this->getDeliveryAddressData($data);
+        if ($this->getRelatedTransactionId()) {
+            // The following parameters allow the related transaction ID to be re-used.
+            $data['RelatedVendorTxCode'] = $this->getRelatedTransactionId();
+            $data['RelatedVPSTxId'] = $this->getVpsTxId();
+            $data['RelatedSecurityKey'] = $this->getSecurityKey();
+            $data['RelatedTxAuthNo'] = $this->getTxAuthNo();
+        }
 
         $card = $this->getCard();
+        // Card is optional for repeatPurchase so only process the following
+        // if it is present.
+        if ($card) {
+            // Billing details
+            $data = $this->getBillingAddressData($data);
 
-        if ($card->getEmail()) {
-            $data['CustomerEMail'] = $card->getEmail();
+            // Shipping details
+            $data = $this->getDeliveryAddressData($data);
+
+            if ($card->getEmail()) {
+                $data['CustomerEMail'] = $card->getEmail();
+            }
         }
 
         if ((bool)$this->getUseOldBasketFormat()) {
